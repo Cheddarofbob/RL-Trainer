@@ -37,24 +37,21 @@
       border-radius: 12px;
     }
 
-    .pack-name {
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
-
-    .pack-code {
-      font-size: 20px;
-      font-weight: bold;
-      letter-spacing: 1px;
-      margin-bottom: 20px;
-    }
-
+    select,
     button {
       margin: 8px;
-      padding: 14px 22px;
+      padding: 14px 18px;
       font-size: 16px;
       border: none;
       border-radius: 8px;
+    }
+
+    select {
+      background: white;
+      color: #101522;
+    }
+
+    button {
       background: #168cff;
       color: white;
       cursor: pointer;
@@ -63,80 +60,195 @@
     button:hover {
       background: #0072e5;
     }
+
+    .routine {
+      margin-top: 25px;
+      text-align: left;
+      background: #141a28;
+      padding: 20px;
+      border-radius: 10px;
+      display: none;
+    }
+
+    .routine h2 {
+      text-align: center;
+      margin-top: 0;
+    }
+
+    .routine-item {
+      margin: 15px 0;
+      padding: 12px;
+      background: #1f283b;
+      border-radius: 8px;
+    }
+
+    .code {
+      font-weight: bold;
+      color: #66b5ff;
+    }
   </style>
 </head>
 
 <body>
 
   <div class="container">
+
     <h1>🚀 RL Trainer</h1>
 
     <p>
-      Random Rocket League training packs to help you improve.
+      Pick your rank and get a simple Rocket League training routine.
     </p>
 
     <div class="card">
-      <div class="pack-name" id="packName">
-        Click the button to get a training pack
-      </div>
 
-      <div class="pack-code" id="packCode">
-        ---- ---- ----
-      </div>
+      <h2>What should I train?</h2>
 
-      <button onclick="getRandomPack()">
-        Give Me a Random Pack
+      <select id="rank">
+        <option value="">Choose your rank</option>
+        <option value="gold">Gold</option>
+        <option value="platinum">Platinum</option>
+        <option value="diamond">Diamond</option>
+        <option value="champion">Champion</option>
+        <option value="grandchampion">Grand Champion</option>
+      </select>
+
+      <button onclick="generateRoutine()">
+        Build My Routine
       </button>
 
-      <button onclick="copyCode()">
-        Copy Code
-      </button>
+      <div class="routine" id="routine"></div>
+
     </div>
+
   </div>
 
   <script>
-    const trainingPacks = [
-      {
-        name: "Aerial Practice",
-        code: "A3E1-92C2-8757-4195"
-      },
-      {
-        name: "Shooting Consistency",
-        code: "4912-A5C9-9A56-555D"
-      },
-      {
-        name: "Wall Shots",
-        code: "9F6D-4387-4C57-2E4B"
-      },
-      {
-        name: "Goalie Training",
-        code: "8D93-C997-0ACD-8416"
-      },
-      {
-        name: "Fast Aerials",
-        code: "F001-A333-AAEB-2786"
-      }
-    ];
 
-    function getRandomPack() {
-      const randomIndex = Math.floor(Math.random() * trainingPacks.length);
-      const pack = trainingPacks[randomIndex];
+    const routines = {
 
-      document.getElementById("packName").textContent = pack.name;
-      document.getElementById("packCode").textContent = pack.code;
-    }
+      gold: [
+        {
+          skill: "Basic Shooting",
+          time: "10 minutes",
+          code: "4912-A5C9-9A56-555D"
+        },
+        {
+          skill: "Basic Aerials",
+          time: "10 minutes",
+          code: "A3E1-92C2-8757-4195"
+        },
+        {
+          skill: "Free Play",
+          time: "10 minutes",
+          code: "Focus on hitting the ball hard and recovering quickly."
+        }
+      ],
 
-    function copyCode() {
-      const code = document.getElementById("packCode").textContent;
+      platinum: [
+        {
+          skill: "Shooting Consistency",
+          time: "10 minutes",
+          code: "4912-A5C9-9A56-555D"
+        },
+        {
+          skill: "Fast Aerials",
+          time: "10 minutes",
+          code: "F001-A333-AAEB-2786"
+        },
+        {
+          skill: "Wall Shots",
+          time: "10 minutes",
+          code: "9F6D-4387-4C57-2E4B"
+        }
+      ],
 
-      if (code === "---- ---- ----") {
-        alert("Get a training pack first.");
+      diamond: [
+        {
+          skill: "Advanced Shooting",
+          time: "10 minutes",
+          code: "4912-A5C9-9A56-555D"
+        },
+        {
+          skill: "Fast Aerial Control",
+          time: "10 minutes",
+          code: "F001-A333-AAEB-2786"
+        },
+        {
+          skill: "Wall Reads",
+          time: "10 minutes",
+          code: "9F6D-4387-4C57-2E4B"
+        }
+      ],
+
+      champion: [
+        {
+          skill: "Speed and Recoveries",
+          time: "10 minutes",
+          code: "Use Free Play and focus on wave dashes and fast recoveries."
+        },
+        {
+          skill: "Aerial Precision",
+          time: "10 minutes",
+          code: "A3E1-92C2-8757-4195"
+        },
+        {
+          skill: "Shot Placement",
+          time: "10 minutes",
+          code: "4912-A5C9-9A56-555D"
+        }
+      ],
+
+      grandchampion: [
+        {
+          skill: "High-Speed Free Play",
+          time: "10 minutes",
+          code: "Stay supersonic as much as possible while maintaining control."
+        },
+        {
+          skill: "Advanced Aerial Control",
+          time: "10 minutes",
+          code: "F001-A333-AAEB-2786"
+        },
+        {
+          skill: "Consistency Under Pressure",
+          time: "10 minutes",
+          code: "Practice difficult shots without resetting after mistakes."
+        }
+      ]
+
+    };
+
+    function generateRoutine() {
+
+      const rank = document.getElementById("rank").value;
+      const routineBox = document.getElementById("routine");
+
+      if (!rank) {
+        alert("Choose your rank first.");
         return;
       }
 
-      navigator.clipboard.writeText(code);
-      alert("Training pack code copied!");
+      const selectedRoutine = routines[rank];
+
+      let html = "<h2>Your 30-Minute Training Routine</h2>";
+
+      selectedRoutine.forEach(item => {
+
+        html += `
+          <div class="routine-item">
+            <strong>${item.skill}</strong><br>
+            ${item.time}<br>
+            <span class="code">${item.code}</span>
+          </div>
+        `;
+
+      });
+
+      routineBox.innerHTML = html;
+      routineBox.style.display = "block";
+
     }
+
   </script>
 
 </body>
