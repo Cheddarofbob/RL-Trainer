@@ -61,6 +61,25 @@
 .goal-delete{background:#6b3440;padding:8px 10px;font-size:13px}
 @media(max-width:950px){.goal-grid{grid-template-columns:1fr 1fr 1fr}}
 @media(max-width:650px){.goal-grid{grid-template-columns:1fr}}
+/* ===== STREAKS + HISTORY + SCHEDULES ===== */
+.history-list,.schedule-list{display:grid;gap:10px;margin-top:14px}
+.history-item,.schedule-item{background:#101827;border:1px solid #2b3b56;border-radius:10px;padding:14px}
+.history-head,.schedule-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.history-title,.schedule-title{font-weight:bold;color:#cde7ff}
+.history-meta,.schedule-meta{color:#8fa3bd;font-size:13px;margin-top:5px;line-height:1.5}
+.history-stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.history-pill{background:#17283a;color:#cde7ff;border-radius:18px;padding:6px 9px;font-size:12px}
+.schedule-builder{margin-top:18px;padding:16px;background:#101827;border-radius:10px}
+.schedule-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr 1fr auto;gap:9px;align-items:end}
+.day-picker{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.day-picker label{display:flex;align-items:center;gap:4px;background:#172033;padding:7px 9px;border-radius:7px;color:#c7d0df;font-size:13px}
+.day-picker input{width:auto;accent-color:#54d98c}
+.schedule-delete{background:#6b3440;padding:8px 10px;font-size:13px}
+.schedule-toggle{background:#30415e;padding:8px 10px;font-size:13px}
+.today-banner{margin-top:12px;padding:12px;border-radius:8px;background:#122238;color:#cde7ff;line-height:1.55}
+@media(max-width:950px){.schedule-grid{grid-template-columns:1fr 1fr 1fr}}
+@media(max-width:650px){.schedule-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -93,6 +112,7 @@
 <div class="stat"><div id="statMinutes" class="stat-number">0</div><div class="stat-label">Training Minutes</div></div>
 <div class="stat"><div id="statGoals" class="stat-number">0</div><div class="stat-label">Active Goals</div></div>
 <div class="stat"><div id="statSchedules" class="stat-number">0</div><div class="stat-label">Active Schedules</div></div>
+<div class="stat"><div id="statStreak" class="stat-number">0</div><div class="stat-label">Day Streak</div></div>
 </div>
 
 <h3>Goals</h3>
@@ -108,6 +128,29 @@
 <div class="account-note">Goal progress is calculated automatically from saved sessions, drill timers, completed sessions, training days, and success-target check-offs.</div>
 <div id="goalList" class="goal-list"></div>
 </div>
+
+<h3>Training Schedule</h3>
+<div class="schedule-builder">
+<div class="schedule-grid">
+<div class="field"><label for="scheduleTitle">Schedule Name</label><input id="scheduleTitle" type="text" maxlength="60" value="Training Session"></div>
+<div class="field"><label for="scheduleTime">Start Time</label><input id="scheduleTime" type="time" value="18:00"></div>
+<div class="field"><label for="scheduleDuration">Minutes</label><select id="scheduleDuration"><option value="15">15</option><option value="30" selected>30</option><option value="45">45</option><option value="60">60</option></select></div>
+<div class="field"><label for="scheduleRank">Rank</label><select id="scheduleRank"><option value="">Use Current Rank</option><option value="Bronze">Bronze</option><option value="Silver">Silver</option><option value="Gold">Gold</option><option value="Platinum">Platinum</option><option value="Diamond">Diamond</option><option value="Champion">Champion</option><option value="Grand Champion">Grand Champion</option><option value="Supersonic Legend">Supersonic Legend</option></select></div>
+<div class="field"><label for="scheduleFocus">Focus</label><select id="scheduleFocus"><option value="">Any Focus</option><option value="All-Around Improvement">All-Around Improvement</option><option value="Shooting Accuracy">Shooting Accuracy</option><option value="Power Shots">Power Shots</option><option value="Ground Control">Ground Control</option><option value="Saves">Saves</option><option value="Clears">Clears</option><option value="Shadow Defense">Shadow Defense</option><option value="Basic Aerials">Basic Aerials</option><option value="Fast Aerials">Fast Aerials</option><option value="Aerial Accuracy">Aerial Accuracy</option><option value="Redirects">Redirects</option><option value="Wall Play">Wall Play</option><option value="Backboard Reads">Backboard Reads</option><option value="Double Touches">Double Touches</option><option value="Recoveries / Car Control">Recoveries / Car Control</option><option value="Free Play / Speed">Free Play / Speed</option></select></div>
+<button onclick="createSchedule()">Add Schedule</button>
+</div>
+<div class="field-help">Choose the days this plan should appear on your dashboard.</div>
+<div class="day-picker">
+<label><input class="schedule-day" type="checkbox" value="0">Sun</label><label><input class="schedule-day" type="checkbox" value="1">Mon</label><label><input class="schedule-day" type="checkbox" value="2">Tue</label><label><input class="schedule-day" type="checkbox" value="3">Wed</label><label><input class="schedule-day" type="checkbox" value="4">Thu</label><label><input class="schedule-day" type="checkbox" value="5">Fri</label><label><input class="schedule-day" type="checkbox" value="6">Sat</label>
+</div>
+<div id="todaySchedule" class="today-banner">No scheduled training loaded yet.</div>
+<div id="scheduleList" class="schedule-list"></div>
+</div>
+
+<h3>Training History</h3>
+<div class="account-note">Your latest saved sessions, actual timer minutes, completion status, and success-target results.</div>
+<div id="historyList" class="history-list"></div>
+
 <h3>Rocket League Profile</h3>
 <div class="profile-grid">
 <div class="field"><label for="profileDisplayName">In-Game Name</label><input id="profileDisplayName" type="text" maxlength="40" autocomplete="nickname" placeholder="Your Rocket League name"></div>
@@ -248,7 +291,7 @@ document.getElementById("accountDisplayName").textContent=profile.display_name||
 }
 async function loadDashboardStats(userId){
 const [sessionsResult,goalsResult,schedulesResult]=await Promise.all([
-  supabaseClient.from("training_sessions").select("completed_minutes,completed").eq("user_id",userId),
+  supabaseClient.from("training_sessions").select("session_date,completed_minutes,completed").eq("user_id",userId),
   supabaseClient.from("goals").select("id",{count:"exact",head:true}).eq("user_id",userId).eq("completed",false),
   supabaseClient.from("training_schedules").select("id",{count:"exact",head:true}).eq("user_id",userId).eq("enabled",true)
 ]);
@@ -262,6 +305,7 @@ document.getElementById("statSessions").textContent=completed;
 document.getElementById("statMinutes").textContent=minutes;
 document.getElementById("statGoals").textContent=goalsResult.count||0;
 document.getElementById("statSchedules").textContent=schedulesResult.count||0;
+document.getElementById("statStreak").textContent=computeTrainingStreak(rows);
 }
 async function refreshDashboard(){
 if(!currentUser)return;
@@ -269,6 +313,8 @@ const profile=await ensureProfile(currentUser);
 populateProfile(profile);
 await loadDashboardStats(currentUser.id);
 await loadGoals();
+await loadSchedules();
+await loadHistory();
 setAccountStatus("Dashboard refreshed.","success");
 }
 async function saveProfile(){
@@ -292,12 +338,14 @@ async function renderAuth(session){
 currentUser=session?.user||null;
 const forms=document.getElementById("authForms");
 const panel=document.getElementById("accountPanel");
-if(!currentUser){forms.style.display="block";panel.style.display="none";document.getElementById("accountEmail").textContent="";const goalList=document.getElementById("goalList");if(goalList)goalList.innerHTML="";return;}
+if(!currentUser){forms.style.display="block";panel.style.display="none";document.getElementById("accountEmail").textContent="";const goalList=document.getElementById("goalList");if(goalList)goalList.innerHTML="";const scheduleList=document.getElementById("scheduleList");if(scheduleList)scheduleList.innerHTML="";const historyList=document.getElementById("historyList");if(historyList)historyList.innerHTML="";return;}
 forms.style.display="none";panel.style.display="block";document.getElementById("accountEmail").textContent=currentUser.email||"";
 const profile=await ensureProfile(currentUser);
 populateProfile(profile);
 await loadDashboardStats(currentUser.id);
 await loadGoals();
+await loadSchedules();
+await loadHistory();
 }
 async function initializeAuth(){
 const {data,error}=await supabaseClient.auth.getSession();
@@ -667,6 +715,104 @@ return`<div class="goal-item ${complete?"goal-complete":""}">
 </div>`;
 }).join("");
 if(writes.length)await Promise.all(writes);
+}
+
+
+/* =====================================================
+   STREAKS + TRAINING HISTORY + SCHEDULES
+===================================================== */
+function dateFromLocalString(value){
+const [y,m,d]=value.split("-").map(Number);
+return new Date(y,m-1,d);
+}
+function dateDiffDays(a,b){
+return Math.round((dateFromLocalString(a)-dateFromLocalString(b))/86400000);
+}
+function computeTrainingStreak(sessions){
+const activeDates=[...new Set((sessions||[]).filter(s=>s.completed||Number(s.completed_minutes)>0).map(s=>s.session_date).filter(Boolean))].sort().reverse();
+if(!activeDates.length)return 0;
+const today=localDateString();
+const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);
+const yesterdayString=localDateString(yesterday);
+if(activeDates[0]!==today&&activeDates[0]!==yesterdayString)return 0;
+let streak=1;
+for(let i=1;i<activeDates.length;i++){
+if(dateDiffDays(activeDates[i-1],activeDates[i])===1)streak++;else break;
+}
+return streak;
+}
+function scheduleDaysLabel(days){
+const names=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+return (days||[]).map(d=>names[Number(d)]).filter(Boolean).join(", ")||"No days";
+}
+function scheduleTimeLabel(value){
+if(!value)return"Any time";
+const [h,m]=value.slice(0,5).split(":").map(Number);
+const d=new Date();d.setHours(h,m,0,0);
+return d.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});
+}
+async function createSchedule(){
+if(!currentUser){setAccountStatus("Log in before creating a schedule.","error");return;}
+const title=document.getElementById("scheduleTitle").value.trim()||"Training Session";
+const days=[...document.querySelectorAll(".schedule-day:checked")].map(x=>Number(x.value));
+const startTime=document.getElementById("scheduleTime").value||null;
+const duration=Number(document.getElementById("scheduleDuration").value)||30;
+const rank=document.getElementById("scheduleRank").value||null;
+const focus=document.getElementById("scheduleFocus").value||null;
+if(!days.length){setAccountStatus("Choose at least one training day.","error");return;}
+const {error}=await supabaseClient.from("training_schedules").insert({user_id:currentUser.id,title,days_of_week:days,start_time:startTime,duration_minutes:duration,rank,focus,enabled:true});
+if(error){setAccountStatus(error.message,"error");return;}
+setAccountStatus("Training schedule added.","success");
+await loadSchedules();
+await loadDashboardStats(currentUser.id);
+}
+async function toggleSchedule(scheduleId,enabled){
+if(!currentUser)return;
+const {error}=await supabaseClient.from("training_schedules").update({enabled:!enabled}).eq("id",scheduleId).eq("user_id",currentUser.id);
+if(error){setAccountStatus(error.message,"error");return;}
+await loadSchedules();await loadDashboardStats(currentUser.id);
+}
+async function deleteSchedule(scheduleId){
+if(!currentUser)return;
+if(!confirm("Delete this training schedule?"))return;
+const {error}=await supabaseClient.from("training_schedules").delete().eq("id",scheduleId).eq("user_id",currentUser.id);
+if(error){setAccountStatus(error.message,"error");return;}
+await loadSchedules();await loadDashboardStats(currentUser.id);
+}
+async function loadSchedules(){
+const list=document.getElementById("scheduleList");
+const todayBox=document.getElementById("todaySchedule");
+if(!list||!todayBox)return;
+if(!currentUser){list.innerHTML="";todayBox.textContent="No scheduled training loaded yet.";return;}
+const {data,error}=await supabaseClient.from("training_schedules").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false});
+if(error){console.error("Schedule load error",error);return;}
+const rows=data||[];
+const today=new Date().getDay();
+const todays=rows.filter(s=>s.enabled&&(s.days_of_week||[]).map(Number).includes(today));
+if(todays.length){todayBox.innerHTML=`<strong>Today:</strong> ${todays.map(s=>`${s.title} — ${scheduleTimeLabel(s.start_time)} • ${s.duration_minutes} min${s.focus?` • ${s.focus}`:""}`).join("<br>")}`;}else{todayBox.innerHTML="<strong>Today:</strong> No scheduled training. Recovery day or build a session whenever you want.";}
+if(!rows.length){list.innerHTML=`<div class="account-note">No schedules yet. Add your regular training days above.</div>`;return;}
+list.innerHTML=rows.map(s=>`<div class="schedule-item"><div class="schedule-head"><div><div class="schedule-title">${s.title}${s.enabled?"":" • PAUSED"}</div><div class="schedule-meta">${scheduleDaysLabel(s.days_of_week)} • ${scheduleTimeLabel(s.start_time)} • ${s.duration_minutes} min${s.rank?` • ${s.rank}`:""}${s.focus?` • ${s.focus}`:""}</div></div><div><button class="schedule-toggle" onclick="toggleSchedule('${s.id}',${Boolean(s.enabled)})">${s.enabled?"Pause":"Enable"}</button> <button class="schedule-delete" onclick="deleteSchedule('${s.id}')">Delete</button></div></div></div>`).join("");
+}
+async function loadHistory(){
+const list=document.getElementById("historyList");
+if(!list)return;
+if(!currentUser){list.innerHTML="";return;}
+const {data:sessions,error}=await supabaseClient.from("training_sessions").select("id,session_date,rank,focus,program_name,planned_minutes,completed_minutes,completed,started_at,completed_at").eq("user_id",currentUser.id).order("created_at",{ascending:false}).limit(20);
+if(error){console.error("History load error",error);return;}
+if(!sessions?.length){list.innerHTML=`<div class="account-note">No saved training history yet. Save and start a generated session to begin tracking.</div>`;return;}
+const ids=sessions.map(s=>s.id);
+const {data:drills,error:drillError}=await supabaseClient.from("training_drills").select("session_id,elapsed_seconds,completed,success_target_met").eq("user_id",currentUser.id).in("session_id",ids);
+if(drillError){console.error("History drill load error",drillError);return;}
+const bySession=new Map();
+for(const d of drills||[]){if(!bySession.has(d.session_id))bySession.set(d.session_id,[]);bySession.get(d.session_id).push(d);}
+list.innerHTML=sessions.map(s=>{
+const ds=bySession.get(s.id)||[];
+const actualSeconds=ds.reduce((sum,d)=>sum+(Number(d.elapsed_seconds)||0),0);
+const actualMinutes=actualSeconds>0?Math.round(actualSeconds/6)/10:Number(s.completed_minutes)||0;
+const completedDrills=ds.filter(d=>d.completed).length;
+const successHits=ds.filter(d=>d.success_target_met).length;
+return`<div class="history-item"><div class="history-head"><div><div class="history-title">${s.focus} • ${s.program_name||"Training Session"}</div><div class="history-meta">${s.session_date} • ${s.rank} • Planned ${s.planned_minutes} min${s.completed?" • COMPLETE":" • IN PROGRESS"}</div></div></div><div class="history-stats"><span class="history-pill">⏱ ${actualMinutes} actual min</span><span class="history-pill">✓ ${completedDrills}/${ds.length} drills</span><span class="history-pill">🎯 ${successHits} targets hit</span></div></div>`;
+}).join("");
 }
 
 const packs={
