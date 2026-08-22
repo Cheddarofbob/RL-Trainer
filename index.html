@@ -1,903 +1,100 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RL Trainer</title>
-<style>
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#0d1320;color:#fff}.container{max-width:1120px;margin:auto;padding:35px 20px 70px}header{text-align:center;margin-bottom:35px}h1{font-size:48px;margin:0 0 8px}.subtitle{color:#aab7cf;font-size:18px;line-height:1.55}.card{background:#172033;padding:25px;border-radius:14px;margin-top:25px}.card h2{margin-top:0}.controls{display:grid;grid-template-columns:repeat(4,minmax(160px,1fr));gap:10px;align-items:center}select,button{padding:13px 15px;border:0;border-radius:8px;font-size:16px}select{background:#fff;color:#111827}button{background:#168cff;color:#fff;cursor:pointer}button:hover{background:#0672d8}.library-count{color:#75bdff;margin-top:12px;font-weight:bold}.results,.random-result{display:none}.random-result{background:#101827;margin-top:20px;padding:22px;border-radius:10px}.random-title{font-size:26px;font-weight:bold}.random-meta{color:#9fb1c9;margin-top:8px}.rank-header{text-align:center;margin-bottom:25px}.rank-title{font-size:32px;font-weight:bold}.total-time{color:#62b4ff;margin-top:7px;font-weight:bold}.badge{display:inline-block;padding:7px 12px;border-radius:20px;margin:10px 4px 0;font-size:14px;font-weight:bold}.focus-badge{background:#203653;color:#9bd1ff}.program-badge{background:#3a2d1f;color:#ffd69a}.mode-badge{background:#18382a;color:#86efac}.rank-focus{color:#b8c4d8;max-width:860px;margin:15px auto;line-height:1.65}.rank-guide{max-width:860px;margin:15px auto;background:#151f31;border:1px solid #2b3b56;border-radius:10px;padding:15px;text-align:left}.rank-guide strong{color:#a8d8ff}.rank-guide ul{margin:8px 0 0 20px;padding:0}.rank-guide li{margin:6px 0;color:#c7d0df}.avoid{color:#f3c98b;margin-top:10px}.session-note{background:#122238;color:#cde7ff;padding:12px;border-radius:8px;margin:15px auto;max-width:860px;line-height:1.55}.block-title{font-size:18px;font-weight:bold;color:#a8d8ff;margin:26px 0 8px}.drill{background:#101827;border-left:4px solid #54d98c;padding:20px;margin:12px 0;border-radius:8px}.drill-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.drill-name{font-size:22px;font-weight:bold}.time{color:#67b7ff;font-weight:bold}.category{color:#67d99a;font-size:14px;margin-top:8px;font-weight:bold}.pack-name{margin-top:15px;font-size:18px;font-weight:bold}.creator{color:#8fa3bd;font-size:14px;margin-top:5px}.code{color:#70c0ff;font-family:monospace;font-size:19px;font-weight:bold;margin:12px 0}.section-label{font-weight:bold;margin-top:17px}.instructions,.why{line-height:1.65;margin-top:5px}.instructions{color:#c7d0df}.why{color:#aebbd0;font-style:italic}.success,.tip,.rank-standard{padding:13px;margin-top:14px;border-radius:7px;line-height:1.55}.success{background:#16263a;color:#cde7ff}.tip{background:#182a22;color:#c8f1d9}.rank-standard{background:#2a2135;color:#e8d5ff}.warning{background:#252013;color:#f5dda0;padding:15px;border-radius:8px;margin-top:22px;line-height:1.55}.regen{margin-top:16px;background:#30415e}footer{text-align:center;color:#71809a;margin-top:50px;font-size:14px}@media(max-width:850px){.controls{grid-template-columns:1fr 1fr}}@media(max-width:650px){h1{font-size:38px}.controls{grid-template-columns:1fr}select,button{width:100%}}
-</style>
-</head>
-<body>
-<div class="container">
-<header><h1>🚀 RL Trainer</h1><div class="subtitle">Purpose-built Rocket League sessions where every block teaches the exact skill you selected.</div></header>
-
-<div class="card">
-<h2>🎲 Give Me a Random Pack</h2>
-<p>Pull a random custom training pack from the complete RL Trainer library.</p>
-<button onclick="randomPack()">Give Me a Random Pack</button>
-<div id="libraryCount" class="library-count"></div>
-<div id="randomResult" class="random-result"></div>
-</div>
-
-<div class="card">
-<h2>🎯 Build Today's Training Session</h2>
-<p>Choose your rank, available time, and exact focus. The pack is the training tool; the instructions always stay locked to your selected skill.</p>
-<div class="controls">
-<select id="rankSelect"><option value="">Choose Your Rank</option><option value="bronze">Bronze</option><option value="silver">Silver</option><option value="gold">Gold</option><option value="platinum">Platinum</option><option value="diamond">Diamond</option><option value="champion">Champion</option><option value="grandchampion">Grand Champion</option><option value="ssl">Supersonic Legend</option></select>
-<select id="timeSelect"><option value="">How Much Time?</option><option value="15">15 Minutes</option><option value="30">30 Minutes</option><option value="45">45 Minutes</option><option value="60">60 Minutes</option></select>
-<select id="focusSelect"><option value="">Choose Training Focus</option><option value="allaround">All-Around Improvement</option><option value="shootingAccuracy">Shooting Accuracy</option><option value="powerShots">Power Shots</option><option value="groundControl">Ground Control</option><option value="saves">Saves</option><option value="clears">Clears</option><option value="shadowDefense">Shadow Defense</option><option value="basicAerials">Basic Aerials</option><option value="fastAerials">Fast Aerials</option><option value="aerialAccuracy">Aerial Accuracy</option><option value="redirects">Redirects</option><option value="wallPlay">Wall Play</option><option value="backboardReads">Backboard Reads</option><option value="doubleTouches">Double Touches</option><option value="recoveries">Recoveries / Car Control</option><option value="freeplaySpeed">Free Play / Speed</option></select>
-<button onclick="buildPlan()">Build My Session</button>
-</div>
-<div id="planResults" class="results"></div>
-</div>
-<footer>RL Trainer — Train with purpose. Improve with consistency.</footer>
-</div>
-
-<script>
-
-const packs={
-groundShots:{name:"Ground Shots",creator:"Poquito",code:"6EB1-79B2-33B8-681C",category:"Shooting"},
-saves:{name:"Saves",creator:"Poquito",code:"2E23-ABD5-20C6-DBD4",category:"Defense"},
-clears:{name:"Clears",creator:"Poquito",code:"5DA1-EA21-5EF9-EA21",category:"Defense"},
-wallShots:{name:"Wall Shots",creator:"Poquito",code:"9F6D-4387-4C57-2E4B",category:"Wall Play"},
-aerialPass:{name:"Aerial Shots - Pass",creator:"Poquito",code:"C7E0-9E0B-B739-A899",category:"Aerials"},
-aerialRedirects:{name:"Aerial Shots - Redirects",creator:"Poquito",code:"8D93-C997-0ACD-8416",category:"Redirects"},
-aerialRebounds:{name:"Aerial Shots - Rebounds",creator:"Poquito",code:"E94F-C04B-434D-7FE6",category:"Backboard"},
-shootingConsistency:{name:"Shooting Consistency",creator:"Wayprotein",code:"4912-A5C9-9A56-555D",category:"Shooting"},
-doubleJumpAerials:{name:"Double Jump Aerials",creator:"Doomsee",code:"F269-B159-0BAC-AC2E",category:"Aerials"},
-backboardTherapy:{name:"Backboard Therapy",creator:"Wayprotein",code:"D7F8-FD53-98D1-DAFE",category:"Backboard"},
-doubleTapPlayground:{name:"Double Tap Playground",creator:"Wayprotein",code:"CAFC-FB3E-3C0F-B8F1",category:"Double Touches"},
-selfSetBackboard:{name:"Self-Set Backboard Consistency",creator:"Community",code:"23BC-0377-C228-A338",category:"Double Touches"},
-backboardShotsLachinio:{name:"Backboard Shots",creator:"Lachinio",code:"AFFD-5023-BD4F-D320",category:"Backboard"},
-backboardShotsSquishy:{name:"Backboard Shots",creator:"Squishy",code:"2486-EEA6-B887-A040",category:"Backboard"},
-backboardConsistency:{name:"Backboard Shots - Consistency",creator:"Noir1992",code:"FDC7-3073-501D-0054",category:"Backboard"},
-defensiveBackboardReads:{name:"Defensive Backboard Reads",creator:"Torment",code:"9F09-E4D3-EAB0-69AD",category:"Defense"},
-sideWallClears:{name:"Side Wall Clears",creator:"NRG Jacob",code:"A9B9-16DF-1975-53F0",category:"Wall Play"},
-angledShots:{name:"Angled Shots",creator:"G2 Kronovi",code:"04CC-0655-E7D1-99CD",category:"Shooting"},
-consistencyPack:{name:"Consistency Pack #1",creator:"GarrettG",code:"65A3-8CEB-9B57-EC16",category:"All-Around"},
-shotsWallsRedirects:{name:"Shots, Walls and Redirects",creator:"Sir Pancake III",code:"DB16-B097-6181-F26A",category:"All-Around"},
-warmupShotsClears:{name:"Warm Up Shots/Clears",creator:"Mr Jokerer",code:"21F1-B6A9-2525-C0C8",category:"All-Around"},
-backboardReads:{name:"Backboard Reads",creator:"Community",code:"07E1-81BC-DD2E-BF8C",category:"Defense"},
-rocketeerAerialVariety:{name:"Rocketeer Aerial Variety",creator:"Community",code:"8330-8367-C58A-3DE0",category:"Aerials"},
-shotsYouShouldntMiss:{name:"Shots You Shouldn't Miss",creator:"Community",code:"42BF-686D-E047-574B",category:"Shooting"},
-uncomfortableSaves:{name:"Uncomfortable Saves",creator:"Community",code:"5CB2-6D82-1B54-47B7",category:"Defense"},
-powershots:{name:"Powershots",creator:"Yeeza",code:"7028-5E10-88EF-E83E",category:"Shooting"},
-ultimateWarmup:{name:"The Ultimate Warmup",creator:"Hinata",code:"FA24-B2B7-2E8E-193B",category:"All-Around"},
-deevo:{name:"Deevo",creator:"Torsos",code:"0CB0-16C8-DAAD-B578",category:"Backboard"},
-dribbleTraining:{name:"Dribble Training",creator:"Virge",code:"04C1-42C8-6E5D-6F75",category:"Ground Control"},
-passTraining:{name:"Pass Training",creator:"FLuuMP",code:"BFD6-DA9F-49A2-81B3",category:"Aerials"},
-shadowSaves:{name:"Shadow Saves",creator:"Wayprotein",code:"6A8C-7B90-2AAA-B6B5",category:"Defense"},
-selfDoubleTouchPro:{name:"Self Double Touch: Pro",creator:"Plasmid",code:"E8EB-C454-38AF-9637",category:"Double Touches"},
-shadowDefense:{name:"[Why You Suck] Shadow Defense",creator:"OrangePie",code:"5CCE-FB29-7B05-A0B1",category:"Defense"}
-};
-
-const rankProfiles={
-bronze:{label:"Bronze",level:0,target:"Aim for 5 of 10 clean attempts.",style:"Control first. Slow down if needed."},
-silver:{label:"Silver",level:1,target:"Aim for 6 of 10 clean attempts.",style:"Add some speed while keeping control."},
-gold:{label:"Gold",level:2,target:"Aim for 7 of 10 useful attempts.",style:"Demand intentional placement and cleaner recoveries."},
-platinum:{label:"Platinum",level:3,target:"Aim for 7 of 10 at realistic pace.",style:"Reduce hesitation and make each touch deliberate."},
-diamond:{label:"Diamond",level:4,target:"Aim for 8 of 10 controlled attempts.",style:"Train near match speed and recover immediately."},
-champion:{label:"Champion",level:5,target:"Aim for 8 of 10 repeatable attempts at game speed.",style:"Every touch should have a purpose."},
-grandchampion:{label:"Grand Champion",level:6,target:"Aim for 9 of 10 without slowing the drill down.",style:"Prioritize speed, boost efficiency, and useful follow-ups."},
-ssl:{label:"Supersonic Legend",level:7,target:"Aim for 9 of 10 or better with precise placement.",style:"Increase difficulty with speed, variation, and consistency."}
-};
-
-const rankGuides={
-bronze:{priorities:["Reliable car movement and ball contact","Basic shots on target","Simple saves and clean landings"],avoid:"Do not make advanced mechanics the center of your training yet."},
-silver:{priorities:["Strong contact and basic shot placement","Safe clears and recoveries","Reading ground and low-air balls"],avoid:"Do not trade basic consistency for flashy mechanics you cannot reproduce in matches."},
-gold:{priorities:["Powerful, placed shots","Useful clears and wall comfort","Simple aerial launches and recoveries"],avoid:"Fundamentals should still take most of your practice time."},
-platinum:{priorities:["Shooting consistency at higher pace","Aerial fundamentals and shadow defense","Wall play and recoveries"],avoid:"Do not confuse playing faster with rushing every touch."},
-diamond:{priorities:["Fast aerials and backboard defense","First-touch quality and recovery speed","Consistent shooting under pressure"],avoid:"Do not let advanced mechanics replace basic consistency."},
-champion:{priorities:["Game-speed shooting and first touches","Backboard reads and useful aerial touches","Possession after contact and fast recoveries"],avoid:"A mechanic that only works with a perfect setup is not match-ready."},
-grandchampion:{priorities:["Mechanical consistency at full speed","Threatening first touches and possession","Boost efficiency and adaptable recoveries"],avoid:"Do not autopilot training; target what is actually costing possessions or goals."},
-ssl:{priorities:["Pinpoint weakness-specific training","Repeatable mechanics under pressure","Adaptability, first touches, and efficiency"],avoid:"Do not chase novelty for its own sake."}
-};
-
-const focusLabels={
-allaround:"All-Around Improvement",shootingAccuracy:"Shooting Accuracy",powerShots:"Power Shots",groundControl:"Ground Control",saves:"Saves",clears:"Clears",shadowDefense:"Shadow Defense",basicAerials:"Basic Aerials",fastAerials:"Fast Aerials",aerialAccuracy:"Aerial Accuracy",redirects:"Redirects",wallPlay:"Wall Play",backboardReads:"Backboard Reads",doubleTouches:"Double Touches",recoveries:"Recoveries / Car Control",freeplaySpeed:"Free Play / Speed"
-};
-
-const focusCoaching={
-allaround:{
-instructions:"Treat this block as balanced training. Use the assigned pack or Free Play task to sharpen the named skill, then recover as if the play were continuing.",
-success:"Complete the block with deliberate touches and clean recoveries.",
-why:"All-Around sessions keep several high-value mechanics active without over-specializing.",
-tip:"If one weakness clearly stands out, use a strict-focus session next."
-},
-shootingAccuracy:{
-instructions:"Pick a scoring target before every attempt: left, right, high, low, or far post. Do not count a goal that misses your chosen target. Reduce power if needed to regain placement, then rebuild speed.",
-success:"Hit your called target consistently; lucky goals do not count.",
-why:"Accuracy turns ordinary chances into shots defenders cannot cover comfortably.",
-tip:"Call the target out loud or in your head before you move."
-},
-powerShots:{
-instructions:"Use the assigned pack only as a ball setup. Your job is power: approach with space, strike through the center or slightly below center, time your dodge through contact, and keep the shot on target. When possible, hit shortly after the bounce.",
-success:"Produce hard, on-target shots repeatedly without sacrificing clean contact.",
-why:"Power reduces the defender's reaction time and makes rebounds more dangerous.",
-tip:"Do not confuse more boost with more power. Contact timing and where you strike the ball matter more."
-},
-groundControl:{
-instructions:"Use soft touches, catches, cuts, and controlled direction changes. Keep the ball close enough that you can make the next touch intentionally instead of chasing it.",
-success:"Maintain possession through several intentional touches without booming the ball away.",
-why:"Ground control gives you time, options, and the ability to punish early challenges.",
-tip:"Small inputs beat frantic inputs. Slow the ball down before trying to speed yourself up."
-},
-saves:{
-instructions:"Prioritize reading the shot, getting your car behind the ball, and directing the save toward a safe side. Recover immediately after contact.",
-success:"Make repeatable saves that do not hand the opponent an easy second shot.",
-why:"A controlled save ends pressure; a random block often extends it.",
-tip:"The safest touch is usually better than the most impressive touch."
-},
-clears:{
-instructions:"Use each setup to practice removing danger with purpose. Aim high or toward a side wall/corner when appropriate, and avoid serving the ball into midfield.",
-success:"Create clears that actually relieve pressure and give your team time.",
-why:"A clear is valuable only if it changes the possession or field position.",
-tip:"Think about where the opponent cannot immediately shoot from."
-},
-shadowDefense:{
-instructions:"Stay goal-side, match the attacker's path, and delay your challenge until the touch becomes readable. Use the assigned pack to practice patience, then direct the save toward safety.",
-success:"Avoid panic challenges and make controlled defensive touches from a shadow position.",
-why:"Shadow defense buys time and forces the attacker to show their plan first.",
-tip:"Your job is not to steal the ball instantly; your job is to protect the dangerous line."
-},
-basicAerials:{
-instructions:"Set your car's nose toward the ball before committing boost. Take a simple, controlled path and focus on useful contact instead of spinning.",
-success:"Reach aerial balls cleanly and direct the touch somewhere intentional.",
-why:"Reliable aerial fundamentals create the base for every advanced airborne mechanic.",
-tip:"Simple aerials done early and cleanly beat fancy aerials done late."
-},
-fastAerials:{
-instructions:"Practice the fast-aerial launch itself: jump, tilt, second jump, and boost with minimal wasted motion. Then use the assigned pack to reach the ball sooner without losing control.",
-success:"Launch quickly and arrive with enough control to make a useful touch.",
-why:"Fast aerials win contested balls only when speed and control happen together.",
-tip:"If your launch is inconsistent, slow the inputs down until the sequence is repeatable."
-},
-aerialAccuracy:{
-instructions:"Choose where you want the aerial touch to go before takeoff. Approach on a line that lets your final contact send the ball toward that target, using only small air-roll corrections.",
-success:"Put repeated aerial touches on your intended target or into useful space.",
-why:"Aerial accuracy converts aerial ability into actual offense and controlled defense.",
-tip:"Your approach angle determines more than your last-second correction."
-},
-redirects:{
-instructions:"Read the incoming ball early and build an approach line that intersects it at a useful angle. Focus on the final contact angle rather than chasing directly behind the ball.",
-success:"Create controlled redirect touches toward goal or dangerous space.",
-why:"Redirects train anticipation, aerial pathing, and precise contact on moving passes.",
-tip:"If you need a huge last-second correction, your approach was probably wrong earlier."
-},
-wallPlay:{
-instructions:"Use the wall as a controlled surface. Match the ball's speed, choose your exit point, and make one intentional touch before worrying about advanced follow-ups.",
-success:"Create clean wall contacts and recover smoothly back to the field or into the air.",
-why:"Comfort on the wall expands your options while reducing awkward recoveries.",
-tip:"Practice both walls; do not let one side become your permanent weak side."
-},
-backboardReads:{
-instructions:"Read the ball's approach angle before it hits the backboard. Move early toward where the rebound will be, then choose a controlled clear, shot, or setup.",
-success:"Arrive at backboard rebounds early enough to make an intentional touch.",
-why:"Strong backboard reads create time that late reactions cannot recover.",
-tip:"Watch the incoming angle, not just the bounce after it happens."
-},
-doubleTouches:{
-instructions:"Judge the first touch first. Use the assigned pack to create a rebound you can realistically reach, then finish only when the setup is good. Reset bad setups instead of practicing miracle saves.",
-success:"Create repeatable first-touch setups and convert a growing percentage of the playable rebounds.",
-why:"Double touches become practical only when the setup is intentional and repeatable.",
-tip:"A great first touch is more important than a lucky second touch."
-},
-recoveries:{
-instructions:"Every rep ends with a recovery goal: land wheels-first, preserve momentum, use powerslide when needed, and choose the fastest route back into the play.",
-success:"Recover cleanly without long stops, awkward spins, or unnecessary boost waste.",
-why:"Recovery speed determines how often you can participate in the next play.",
-tip:"Practice recovering from bad positions, not just perfect landings."
-},
-freeplaySpeed:{
-instructions:"Play continuously without resetting. Chain touches, recoveries, wall play, shots, and catches at a pace you can still control. Increase speed only when the quality survives.",
-success:"Maintain purposeful movement and possession for long stretches without stopping.",
-why:"Game-speed Free Play connects isolated mechanics into realistic sequences.",
-tip:"Speed is useful only if your next touch is still intentional."
-}
-};
-
-const free={
-ballContact:{name:"Ball Contact Fundamentals",category:"Ground Control"},
-recovery:{name:"Recovery Circuit",category:"Recoveries"},
-power:{name:"Power Contact Free Play",category:"Power Shots"},
-dribble:{name:"Ground Control Circuit",category:"Ground Control"},
-shadow:{name:"Shadow Defense Simulation",category:"Shadow Defense"},
-aerial:{name:"Aerial Launch Repetitions",category:"Aerials"},
-fastAerial:{name:"Fast-Aerial Launch Drill",category:"Fast Aerials"},
-redirect:{name:"Redirect Read Free Play",category:"Redirects"},
-wall:{name:"Wall Movement and Recovery",category:"Wall Play"},
-backboard:{name:"Backboard Read Simulation",category:"Backboard Reads"},
-pressure:{name:"Pressure Free Play",category:"Game Transfer"},
-integrated:{name:"Integrated Free Play",category:"Game Transfer"}
-};
-
-const focusResources={
-shootingAccuracy:[{pack:"groundShots"},{pack:"shootingConsistency"},{pack:"angledShots"},{pack:"shotsYouShouldntMiss"},{free:"pressure"}],
-powerShots:[{free:"power"},{pack:"powershots"},{pack:"groundShots"},{pack:"warmupShotsClears"},{free:"pressure"}],
-groundControl:[{free:"ballContact"},{pack:"dribbleTraining"},{free:"dribble"},{pack:"groundShots"},{free:"integrated"}],
-saves:[{pack:"saves"},{pack:"shadowSaves"},{pack:"uncomfortableSaves"},{pack:"defensiveBackboardReads"},{free:"shadow"}],
-clears:[{pack:"clears"},{pack:"sideWallClears"},{pack:"warmupShotsClears"},{pack:"defensiveBackboardReads"},{free:"pressure"}],
-shadowDefense:[{free:"shadow"},{pack:"shadowDefense"},{pack:"shadowSaves"},{pack:"uncomfortableSaves"},{pack:"defensiveBackboardReads"}],
-basicAerials:[{free:"aerial"},{pack:"aerialPass"},{pack:"passTraining"},{pack:"doubleJumpAerials"},{free:"pressure"}],
-fastAerials:[{free:"fastAerial"},{pack:"doubleJumpAerials"},{pack:"aerialPass"},{pack:"rocketeerAerialVariety"},{free:"pressure"}],
-aerialAccuracy:[{pack:"aerialPass"},{pack:"aerialRedirects"},{pack:"aerialRebounds"},{pack:"rocketeerAerialVariety"},{free:"pressure"}],
-redirects:[{free:"redirect"},{pack:"aerialRedirects"},{pack:"shotsWallsRedirects"},{pack:"aerialRebounds"},{free:"pressure"}],
-wallPlay:[{free:"wall"},{pack:"wallShots"},{pack:"sideWallClears"},{pack:"shotsWallsRedirects"},{free:"pressure"}],
-backboardReads:[{free:"backboard"},{pack:"backboardTherapy"},{pack:"deevo"},{pack:"defensiveBackboardReads"},{pack:"backboardConsistency"}],
-doubleTouches:[{free:"backboard"},{pack:"selfSetBackboard"},{pack:"selfDoubleTouchPro"},{pack:"doubleTapPlayground"},{pack:"deevo"}],
-recoveries:[{free:"recovery"},{free:"wall"},{free:"pressure"},{free:"integrated"},{free:"ballContact"}],
-freeplaySpeed:[{free:"ballContact"},{free:"power"},{free:"recovery"},{free:"pressure"},{free:"integrated"}],
-allaround:[{pack:"ultimateWarmup"},{pack:"shootingConsistency"},{pack:"saves"},{pack:"aerialPass"},{pack:"wallShots"},{pack:"consistencyPack"},{pack:"uncomfortableSaves"},{free:"pressure"},{free:"integrated"}]
-};
-
-const programBanks={
-15:[
-{name:"Quick Fix",desc:"One narrow weakness, high-value reps, immediate transfer.",steps:[{label:"Diagnostic",min:4,slot:0},{label:"Main Fix",min:7,slot:1},{label:"Game Transfer",min:4,slot:4}]},
-{name:"Pressure Sprint",desc:"Train execution under pressure without spending half the session warming up.",steps:[{label:"Technique",min:5,slot:2},{label:"Pressure Reps",min:6,slot:3},{label:"Finish",min:4,slot:4}]},
-{name:"Two-Tool Tune-Up",desc:"Two complementary tools plus a short transfer block.",steps:[{label:"Tool A",min:5,slot:1},{label:"Tool B",min:5,slot:2},{label:"Transfer",min:5,slot:4}]}
-],
-30:[
-{name:"Consistency Builder",desc:"Longer quality reps with one variation and a closing test.",steps:[{label:"Core Work",min:10,slot:1},{label:"Variation",min:8,slot:2},{label:"Pressure Test",min:7,slot:3},{label:"Transfer",min:5,slot:4}]},
-{name:"Weakness Repair",desc:"Diagnose, rebuild the mechanic, then test it at speed.",steps:[{label:"Diagnostic",min:5,slot:0},{label:"Rebuild",min:10,slot:1},{label:"Speed Test",min:10,slot:3},{label:"Transfer",min:5,slot:4}]},
-{name:"Match Prep",desc:"A practical session built around realistic execution.",steps:[{label:"Activation",min:5,slot:0},{label:"Game-Speed Technique",min:8,slot:2},{label:"Pressure",min:9,slot:3},{label:"Application",min:8,slot:4}]}
-],
-45:[
-{name:"Skill Lab",desc:"Deep technical work with a separate variation block and longer application.",steps:[{label:"Technical Reset",min:7,slot:0},{label:"Deep Work",min:12,slot:1},{label:"Variation Lab",min:10,slot:3},{label:"Transfer",min:16,slot:4}]},
-{name:"Variety Day",desc:"Broader exposure inside the chosen skill without turning into an all-around session.",steps:[{label:"Foundation",min:8,slot:1},{label:"Alternate Tool",min:9,slot:2},{label:"Different Look",min:9,slot:3},{label:"Application",min:19,slot:4}]},
-{name:"Pressure Development",desc:"More of the session is spent on difficult execution and repeatability.",steps:[{label:"Prep",min:6,slot:0},{label:"Technique",min:9,slot:2},{label:"Pressure Block",min:15,slot:3},{label:"Game Transfer",min:15,slot:4}]}
-],
-60:[
-{name:"Full Practice Day",desc:"A complete focused practice with fundamentals, variation, pressure, and long game transfer.",steps:[{label:"Foundation",min:12,slot:1},{label:"Technical Work",min:12,slot:2},{label:"Variation",min:10,slot:3},{label:"Pressure",min:10,slot:0},{label:"Game Transfer",min:16,slot:4}]},
-{name:"Mastery Block",desc:"Spend most of the hour on two demanding forms of the skill, then prove it in application.",steps:[{label:"Primary Tool",min:18,slot:1},{label:"Secondary Tool",min:14,slot:3},{label:"Control Check",min:10,slot:2},{label:"Transfer",min:18,slot:4}]},
-{name:"Competition Prep",desc:"A match-oriented hour with less isolated warm-up and more realistic pressure.",steps:[{label:"Activation",min:8,slot:0},{label:"Match-Speed Work",min:14,slot:2},{label:"Pressure Reps",min:14,slot:3},{label:"Extended Application",min:24,slot:4}]}
-]
-};
-
-function rankAdjustment(focus,rankKey){
-const level=rankProfiles[rankKey].level;
-const advanced=["redirects","doubleTouches","backboardReads","fastAerials"];
-
-if(advanced.includes(focus)&&level<=2)
-return"For this rank, judge success mainly by the setup, read, and clean first touch. Finishing the advanced mechanic is optional.";
-
-if(advanced.includes(focus)&&level<=4)
-return"Prioritize controlled setups and repeatable contact before maximum speed.";
-
-return rankProfiles[rankKey].style;
-}
-
-function resourceAt(focus,index){
-const list=focusResources[focus];
-return list[index%list.length];
-}
-
-function materializeResource(resource,focus,rankKey){
-
-const coach=focusCoaching[focus];
-
-if(resource.free){
-
-const t=free[resource.free];
-
-return{
-name:t.name,
-category:focusLabels[focus],
-instructions:coach.instructions,
-success:`${coach.success} ${rankProfiles[rankKey].target}`,
-why:coach.why,
-tip:`${coach.tip} ${rankAdjustment(focus,rankKey)}`,
-freePlay:true,
-freeKey:resource.free
-};
-
-}
-
-const p=packs[resource.pack];
-
-return{
-name:`${focusLabels[focus]} — ${p.name}`,
-category:focusLabels[focus],
-instructions:coach.instructions,
-success:`${coach.success} ${rankProfiles[rankKey].target}`,
-why:coach.why,
-tip:`${coach.tip} ${rankAdjustment(focus,rankKey)}`,
-freePlay:false,
-packKey:resource.pack
-};
-
-}
-
-function lastProgramKey(rank,focus,time){
-return`rl_program_${rank}_${focus}_${time}`;
-}
-
-function chooseProgram(rank,focus,time){
-
-const bank=programBanks[time];
-const key=lastProgramKey(rank,focus,time);
-const last=Number(localStorage.getItem(key));
-
-let choices=bank.map((_,i)=>i).filter(i=>i!==last);
-
-if(!choices.length)
-choices=bank.map((_,i)=>i);
-
-const pick=choices[Math.floor(Math.random()*choices.length)];
-
-localStorage.setItem(key,String(pick));
-
-return bank[pick];
-}
-
-function buildSession(rank,focus,time){
-
-const program=chooseProgram(rank,focus,time);
-
-const session=program.steps.map(step=>({
-...step,
-drill:materializeResource(
-resourceAt(focus,step.slot),
-focus,
-rank
-)
-}));
-
-return{program,session};
-}
-
-const masterPackLibrary=Object.values(packs);
-
-document.getElementById("libraryCount").textContent=
-`${masterPackLibrary.length} unique custom training packs currently in the RL Trainer library.`;
-
-function randomPack(){
-
-const p=masterPackLibrary[
-Math.floor(Math.random()*masterPackLibrary.length)
-];
-
-const box=document.getElementById("randomResult");
-
-box.innerHTML=`
-<div class="random-title">${p.name}</div>
-<div class="random-meta">Creator: ${p.creator}</div>
-<div class="random-meta">Category: ${p.category}</div>
-<div class="code">${p.code}</div>
-<button onclick="copyCode('${p.code}')">
-Copy Training Code
-</button>
-`;
-
-box.style.display="block";
-
-}
-
-function buildPlan(){
-
-const rank=document.getElementById("rankSelect").value;
-const time=Number(document.getElementById("timeSelect").value);
-const focus=document.getElementById("focusSelect").value;
-const results=document.getElementById("planResults");
-
-if(!rank||!time||!focus){
-
-alert(
-"Choose your rank, available time, and training focus."
-);
-
-return;
-
-}
-
-const built=buildSession(
-rank,
-focus,
-time
-);
-
-let html=`
-
-<div class="rank-header">
-
-<div class="rank-title">
-${rankProfiles[rank].label}
-—
-${time}-Minute Session
-</div>
-
-<div class="total-time">
-Today's planned time:
-${time} minutes
-</div>
-
-<div class="badge focus-badge">
-${focusLabels[focus]}
-</div>
-
-<div class="badge program-badge">
-${built.program.name}
-</div>
-
-<div class="badge mode-badge">
-${focus==="allaround"?"BALANCED":"STRICT FOCUS"}
-</div>
-
-<div class="rank-focus">
-${rankAdjustment(focus,rank)}
-</div>
-
-<div class="rank-guide">
-
-<strong>
-WHAT MATTERS MOST AT
-${rankProfiles[rank].label.toUpperCase()}:
-</strong>
-
-<ul>
-
-${rankGuides[rank].priorities
-.map(x=>`<li>${x}</li>`)
-.join("")}
-
-</ul>
-
-<div class="avoid">
-
-<strong>
-DON’T OVER-PRIORITIZE:
-</strong>
-
-${rankGuides[rank].avoid}
-
-</div>
-
-</div>
-
-<div class="session-note">
-
-<strong>
-${built.program.name}:
-</strong>
-
-${built.program.desc}
-
-<br><br>
-
-Every block below is coached specifically as
-<strong>${focusLabels[focus]}</strong>.
-
-A pack may contain other shot types,
-but the instructions tell you exactly how to use that pack
-for your selected focus.
-
-</div>
-
-</div>
-
-`;
-
-for(const block of built.session){
-
-const d=block.drill;
-
-html+=`
-
-<div class="block-title">
-${block.label}
-—
-${block.min} min
-</div>
-
-<div class="drill">
-
-<div class="drill-top">
-
-<div class="drill-name">
-${d.name}
-</div>
-
-<div class="time">
-⏱ ${block.min} minutes
-</div>
-
-</div>
-
-<div class="category">
-${d.category}
-</div>
-
-`;
-
-if(d.freePlay){
-
-html+=`
-
-<div class="pack-name">
-Training Tool:
-Free Play
-</div>
-
-<div class="creator">
-No custom training code required.
-</div>
-
-`;
-
-}else{
-
-const p=packs[d.packKey];
-
-html+=`
-
-<div class="pack-name">
-Training Tool:
-${p.name}
-</div>
-
-<div class="creator">
-Creator:
-${p.creator}
-</div>
-
-<div class="code">
-${p.code}
-</div>
-
-<button
-onclick="copyCode('${p.code}')">
-
-Copy Training Code
-
-</button>
-
-`;
-
-}
-
-html+=`
-
-<div class="section-label">
-HOW TO TRAIN THIS FOCUS
-</div>
-
-<div class="instructions">
-${d.instructions}
-</div>
-
-<div class="success">
-
-<strong>
-SUCCESS TARGET:
-</strong>
-
-<br>
-
-${d.success}
-
-</div>
-
-<div class="rank-standard">
-
-<strong>
-${rankProfiles[rank].label.toUpperCase()}
-STANDARD:
-</strong>
-
-<br>
-
-${rankAdjustment(focus,rank)}
-
-</div>
-
-<div class="section-label">
-WHY THIS MATTERS
-</div>
-
-<div class="why">
-${d.why}
-</div>
-
-<div class="tip">
-
-<strong>
-COACHING TIP:
-</strong>
-
-<br>
-
-${d.tip}
-
-</div>
-
-</div>
-
-`;
-
-}
-
-html+=`
-
-<div class="warning">
-
-<strong>
-Training note:
-</strong>
-
-The selected custom pack is the practice environment,
-not the coaching category.
-
-In STRICT FOCUS mode,
-every block is instructed and scored specifically for
-${focusLabels[focus]}.
-
-</div>
-
-<button
-class="regen"
-onclick="buildPlan()">
-
-Give Me Another
-${time}-Minute
-${focusLabels[focus]}
-Session
-
-</button>
-
-`;
-
-results.innerHTML=html;
-
-results.style.display="block";
-
-results.scrollIntoView({
-behavior:"smooth",
-block:"start"
-});
-
-}
-
-function copyCode(code){
-
-navigator.clipboard
-.writeText(code)
-
-.then(()=>{
-
-alert(
-"Training pack code copied!"
-);
-
-})
-
-.catch(()=>{
-
-prompt(
-"Copy this training code:",
-code
-);
-
-});
-
-}
-
-(function validateDatabase(){
-
-const errors=[];
-const codes=new Set();
-
-for(const[id,p]of Object.entries(packs)){
-
-if(
-!p.name||
-!p.creator||
-!p.code||
-!p.category
-){
-
-errors.push(
-`Incomplete pack ${id}`
-);
-
-}
-
-if(
-codes.has(p.code)
-){
-
-errors.push(
-`Duplicate code ${p.code}`
-);
-
-}
-
-codes.add(p.code);
-
-}
-
-for(const focus of Object.keys(focusLabels)){
-
-if(!focusCoaching[focus]){
-
-errors.push(
-`Missing coaching for ${focus}`
-);
-
-}
-
-if(
-!focusResources[focus]||
-focusResources[focus].length<5
-){
-
-errors.push(
-`Missing resources for ${focus}`
-);
-
-}
-
-}
-
-for(const[f,list]of Object.entries(focusResources)){
-
-for(const r of list){
-
-if(
-r.pack &&
-!packs[r.pack]
-){
-
-errors.push(
-`${f} missing pack ${r.pack}`
-);
-
-}
-
-if(
-r.free &&
-!free[r.free]
-){
-
-errors.push(
-`${f} missing free drill ${r.free}`
-);
-
-}
-
-}
-
-}
-
-for(const[t,bank]of Object.entries(programBanks)){
-
-for(const program of bank){
-
-const total=
-program.steps.reduce(
-(s,x)=>s+x.min,
-0
-);
-
-if(
-total!==Number(t)
-){
-
-errors.push(
-`${t}/${program.name} totals ${total}`
-);
-
-}
-
-for(const step of program.steps){
-
-if(
-step.slot<0||
-step.slot>8
-){
-
-errors.push(
-`${t}/${program.name} bad slot`
-);
-
-}
-
-}
-
-}
-
-}
-
-const ranks=
-Object.keys(rankProfiles);
-
-const focuses=
-Object.keys(focusLabels);
-
-const times=[
-15,
-30,
-45,
-60
-];
-
-for(const rank of ranks)
-
-for(const focus of focuses)
-
-for(const time of times){
-
-const built=
-buildSession(
-rank,
-focus,
-time
-);
-
-const total=
-built.session.reduce(
-(s,x)=>s+x.min,
-0
-);
-
-if(
-total!==time
-){
-
-errors.push(
-`${rank}/${focus}/${time} totals ${total}`
-);
-
-}
-
-for(const block of built.session){
-
-if(
-!block.drill||
-!block.drill.name
-){
-
-errors.push(
-`${rank}/${focus}/${time} missing drill`
-);
-
-}
-
-if(
-focus!=="allaround" &&
-block.drill.category!==focusLabels[focus]
-){
-
-errors.push(
-`${rank}/${focus}/${time} leaked category ${block.drill.category}`
-);
-
-}
-
-}
-
-}
-
-if(errors.length){
-
-console.error(
-"RL Trainer validation errors:",
-errors
-);
-
-}else{
-
-console.log(
-`RL Trainer validation passed:
-${Object.keys(packs).length} packs,
-${ranks.length} ranks,
-${focuses.length} focus modes,
-and ${ranks.length*focuses.length*times.length} strict-focus combinations.`
-);
-
-}
-
-})();
-
-</script>
-</body>
-</html>
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>RL Trainer</title> <style> *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#0d1320;color:#fff}.container{max-width:1120px;margin:auto;padding:35px 20px 70px}header{text-align:center;margin-bottom:35px}h1{font-size:48px;margin:0 0 8px}.subtitle{color:#aab7cf;font-size:18px;line-height:1.55}.card{background:#172033;padding:25px;border-radius:14px;margin-top:25px}.card h2{margin-top:0}.controls{display:grid;grid-template-columns:repeat(4,minmax(160px,1fr));gap:10px;align-items:center}select,button{padding:13px 15px;border:0;border-radius:8px;font-size:16px}select{background:#fff;color:#111827}button{background:#168cff;color:#fff;cursor:pointer}button:hover{background:#0672d8}.library-count{color:#75bdff;margin-top:12px;font-weight:bold}.results,.random-result{display:none}.random-result{background:#101827;margin-top:20px;padding:22px;border-radius:10px}.random-title{font-size:26px;font-weight:bold}.random-meta{color:#9fb1c9;margin-top:8px}.rank-header{text-align:center;margin-bottom:25px}.rank-title{font-size:32px;font-weight:bold}.total-time{color:#62b4ff;margin-top:7px;font-weight:bold}.badge{display:inline-block;padding:7px 12px;border-radius:20px;margin:10px 4px 0;font-size:14px;font-weight:bold}.focus-badge{background:#203653;color:#9bd1ff}.program-badge{background:#3a2d1f;color:#ffd69a}.mode-badge{background:#18382a;color:#86efac}.rank-focus{color:#b8c4d8;max-width:860px;margin:15px auto;line-height:1.65}.rank-guide{max-width:860px;margin:15px auto;background:#151f31;border:1px solid #2b3b56;border-radius:10px;padding:15px;text-align:left}.rank-guide strong{color:#a8d8ff}.rank-guide ul{margin:8px 0 0 20px;padding:0}.rank-guide li{margin:6px 0;color:#c7d0df}.avoid{color:#f3c98b;margin-top:10px}.session-note{background:#122238;color:#cde7ff;padding:12px;border-radius:8px;margin:15px auto;max-width:860px;line-height:1.55}.block-title{font-size:18px;font-weight:bold;color:#a8d8ff;margin:26px 0 8px}.drill{background:#101827;border-left:4px solid #54d98c;padding:20px;margin:12px 0;border-radius:8px}.drill-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.drill-name{font-size:22px;font-weight:bold}.time{color:#67b7ff;font-weight:bold}.category{color:#67d99a;font-size:14px;margin-top:8px;font-weight:bold}.pack-name{margin-top:15px;font-size:18px;font-weight:bold}.creator{color:#8fa3bd;font-size:14px;margin-top:5px}.code{color:#70c0ff;font-family:monospace;font-size:19px;font-weight:bold;margin:12px 0}.section-label{font-weight:bold;margin-top:17px}.instructions,.why{line-height:1.65;margin-top:5px}.instructions{color:#c7d0df}.why{color:#aebbd0;font-style:italic}.success,.tip,.rank-standard{padding:13px;margin-top:14px;border-radius:7px;line-height:1.55}.success{background:#16263a;color:#cde7ff}.tip{background:#182a22;color:#c8f1d9}.rank-standard{background:#2a2135;color:#e8d5ff}.warning{background:#252013;color:#f5dda0;padding:15px;border-radius:8px;margin-top:22px;line-height:1.55}.regen{margin-top:16px;background:#30415e}footer{text-align:center;color:#71809a;margin-top:50px;font-size:14px}@media(max-width:850px){.controls{grid-template-columns:1fr 1fr}}@media(max-width:650px){h1{font-size:38px}.controls{grid-template-columns:1fr}select,button{width:100%}} /* ===== ACCOUNT / DASHBOARD ===== */
+.account-status{margin-top:12px;padding:11px 13px;border-radius:8px;display:none;line-height:1.45} .account-status.info{display:block;background:#122238;color:#cde7ff} .account-status.success{display:block;background:#182a22;color:#c8f1d9} .account-status.error{display:block;background:#3a1f24;color:#ffc3c9} .auth-grid,.profile-grid,.stat-grid{display:grid;gap:10px} .auth-grid{grid-template-columns:1fr 1fr 1fr auto auto;align-items:end} .profile-grid{grid-template-columns:repeat(3,minmax(160px,1fr));margin-top:16px} .stat-grid{grid-template-columns:repeat(4,minmax(140px,1fr));margin:18px 0} .field label{display:block;color:#aab7cf;font-size:13px;margin-bottom:6px}
+.field-help{color:#7f90aa;font-size:12px;line-height:1.4;margin-top:6px} .password-requirements{color:#f3c98b;font-size:12px;line-height:1.45;margin-top:6px} .password-requirements.valid{color:#86efac} .field input,.field select{width:100%;margin:0;padding:12px 13px;border:0;border-radius:8px;font-size:15px;background:#fff;color:#111827} .account-panel{display:none} .account-head{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap} .account-email{color:#9fb1c9} .stat{background:#101827;border-radius:10px;padding:16px} .stat-number{font-size:28px;font-weight:bold;color:#75bdff}
+.stat-label{color:#9fb1c9;font-size:13px;margin-top:5px} .profile-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px} .logout-button{background:#7d3441} .logout-button:hover{background:#963e4d} .account-note{color:#9fb1c9;line-height:1.55;margin-top:12px} @media(max-width:950px){.auth-grid{grid-template-columns:1fr 1fr}.profile-grid{grid-template-columns:1fr 1fr}.stat-grid{grid-template-columns:1fr 1fr}} @media(max-width:650px){.auth-grid,.profile-grid,.stat-grid{grid-template-columns:1fr}.profile-actions button{width:100%}} </style> </head>
+<body> <div class="container"> <header><h1>🚀 RL Trainer</h1><div class="subtitle">Purpose-built Rocket League sessions where every block teaches the exact skill you selected.</div></header> <div class="card" id="accountCard"> <h2>👤 Player Account</h2> <div id="authForms"> <p>Create a free RL Trainer account to save your profile and, next, your training history, goals, schedules, and progress.</p> <div class="auth-grid"> <div class="field"><label for="authDisplayName">In-Game Name</label><input id="authDisplayName" type="text" maxlength="40" autocomplete="nickname" placeholder="Your Rocket League name"><div class="field-help">Use the name players can find you by in Rocket League.</div></div>
+<div class="field"><label for="authEmail">Email</label><input id="authEmail" type="email" autocomplete="email" placeholder="you@example.com"></div> <div class="field"><label for="authPassword">Password</label><input id="authPassword" type="password" minlength="12" autocomplete="current-password" placeholder="12+ characters" oninput="updatePasswordRequirements()"><div id="passwordRequirements" class="password-requirements">12+ characters • uppercase • lowercase • number • special character</div></div> <button onclick="signUpUser()">Sign Up</button> <button onclick="logInUser()">Log In</button> </div> <div class="account-note">Your trainer still works without an account. Logging in will let us save progress to your private profile.</div> </div> <div id="accountPanel" class="account-panel"> <div class="account-head">
+<div> <strong id="accountDisplayName">Player Dashboard</strong> <div id="accountEmail" class="account-email"></div> </div> <button class="logout-button" onclick="logOutUser()">Log Out</button> </div> <div class="stat-grid"> <div class="stat"><div id="statSessions" class="stat-number">0</div><div class="stat-label">Completed Sessions</div></div> <div class="stat"><div id="statMinutes" class="stat-number">0</div><div class="stat-label">Training Minutes</div></div>
+<div class="stat"><div id="statGoals" class="stat-number">0</div><div class="stat-label">Active Goals</div></div> <div class="stat"><div id="statSchedules" class="stat-number">0</div><div class="stat-label">Active Schedules</div></div> </div> <h3>Rocket League Profile</h3> <div class="profile-grid"> <div class="field"><label for="profileDisplayName">In-Game Name</label><input id="profileDisplayName" type="text" maxlength="40" autocomplete="nickname" placeholder="Your Rocket League name"></div> <div class="field"><label for="profilePlatform">Platform</label><select id="profilePlatform"><option value="">Choose Platform</option><option value="Epic">Epic</option><option value="Steam">Steam</option><option value="Xbox">Xbox</option><option value="PlayStation">PlayStation</option><option value="Switch">Switch</option></select></div> <div class="field"><label for="profilePlayerId">Rocket League Player ID</label><input id="profilePlayerId" type="text" maxlength="100" placeholder="Epic / Steam / console ID"></div> <div class="field"><label for="profileTrackerUrl">RL Tracker Profile URL</label><input id="profileTrackerUrl" type="url" maxlength="500" placeholder="https://rocketleague.tracker.network/..."></div>
+<div class="field"><label for="profileRank">Current Rank</label><select id="profileRank"><option value="">Choose Rank</option><option value="Bronze">Bronze</option><option value="Silver">Silver</option><option value="Gold">Gold</option><option value="Platinum">Platinum</option><option value="Diamond">Diamond</option><option value="Champion">Champion</option><option value="Grand Champion">Grand Champion</option><option value="Supersonic Legend">Supersonic Legend</option></select></div> <div class="field"><label for="profileDailyMinutes">Daily Training Target (minutes)</label><input id="profileDailyMinutes" type="number" min="0" max="480" step="5" value="30"></div> </div> <div class="profile-actions"> <button onclick="saveProfile()">Save Profile</button> <button class="regen" onclick="refreshDashboard()">Refresh Dashboard</button> </div> <div class="account-note">Automatic Rocket League Tracker syncing comes later. For now, this saves the identity we will connect to Tracker Network.</div> </div>
+<div id="accountStatus" class="account-status"></div> </div> <div class="card"> <h2>🎲 Give Me a Random Pack</h2> <p>Pull a random custom training pack from the complete RL Trainer library.</p> <button onclick="randomPack()">Give Me a Random Pack</button> <div id="libraryCount" class="library-count"></div> <div id="randomResult" class="random-result"></div> </div>
+<div class="card"> <h2>🎯 Build Today's Training Session</h2> <p>Choose your rank, available time, and exact focus. The pack is the training tool; the instructions always stay locked to your selected skill.</p> <div class="controls"> <select id="rankSelect"><option value="">Choose Your Rank</option><option value="bronze">Bronze</option><option value="silver">Silver</option><option value="gold">Gold</option><option value="platinum">Platinum</option><option value="diamond">Diamond</option><option value="champion">Champion</option><option value="grandchampion">Grand Champion</option><option value="ssl">Supersonic Legend</option></select> <select id="timeSelect"><option value="">How Much Time?</option><option value="15">15 Minutes</option><option value="30">30 Minutes</option><option value="45">45 Minutes</option><option value="60">60 Minutes</option></select> <select id="focusSelect"><option value="">Choose Training Focus</option><option value="allaround">All-Around Improvement</option><option value="shootingAccuracy">Shooting Accuracy</option><option value="powerShots">Power Shots</option><option value="groundControl">Ground Control</option><option value="saves">Saves</option><option value="clears">Clears</option><option value="shadowDefense">Shadow Defense</option><option value="basicAerials">Basic Aerials</option><option value="fastAerials">Fast Aerials</option><option value="aerialAccuracy">Aerial Accuracy</option><option value="redirects">Redirects</option><option value="wallPlay">Wall Play</option><option value="backboardReads">Backboard Reads</option><option value="doubleTouches">Double Touches</option><option value="recoveries">Recoveries / Car Control</option><option value="freeplaySpeed">Free Play / Speed</option></select> <button onclick="buildPlan()">Build My Session</button> </div>
+<div id="planResults" class="results"></div> </div> <footer>RL Trainer — Train with purpose. Improve with consistency.</footer> </div> <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> <script> /* ===================================================== SUPABASE AUTH + STARTER DASHBOARD ===================================================== */
+const SUPABASE_URL="https://swyeowcjcinmqqdhywma.supabase.co"; const SUPABASE_PUBLISHABLE_KEY="sb_publishable_JWsXjqui4WTVHm0xTWu5UQ_M0EBamz9"; const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}); let currentUser=null; function setAccountStatus(message,type="info"){ const el=document.getElementById("accountStatus"); el.textContent=message||""; el.className=`account-status ${message?type:""}`; }
+function setAuthBusy(isBusy){ ["authDisplayName","authEmail","authPassword"].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=isBusy;}); } function passwordChecks(password){ return{ length:password.length>=12, upper:/[A-Z]/.test(password), lower:/[a-z]/.test(password), number:/[0-9]/.test(password),
+special:/[^A-Za-z0-9]/.test(password) }; } function isStrongPassword(password){ const checks=passwordChecks(password); return Object.values(checks).every(Boolean); } function updatePasswordRequirements(){ const input=document.getElementById("authPassword");
+const el=document.getElementById("passwordRequirements"); if(!input||!el)return; const checks=passwordChecks(input.value); const allGood=Object.values(checks).every(Boolean); el.classList.toggle("valid",allGood); el.textContent=allGood ?"Strong password requirements met." :`${checks.length?"✓":"○"} 12+ characters  •  ${checks.upper?"✓":"○"} uppercase  •  ${checks.lower?"✓":"○"} lowercase  •  ${checks.number?"✓":"○"} number  •  ${checks.special?"✓":"○"} special character`; }
+async function signUpUser(){ const displayName=document.getElementById("authDisplayName").value.trim(); const email=document.getElementById("authEmail").value.trim(); const password=document.getElementById("authPassword").value; if(!displayName){setAccountStatus("Enter your Rocket League in-game name first.","error");return;} if(!email||!password){setAccountStatus("Enter an email and password first.","error");return;} if(!isStrongPassword(password)){setAccountStatus("Password must be at least 12 characters and include uppercase, lowercase, a number, and a special character.","error");updatePasswordRequirements();return;} setAuthBusy(true);setAccountStatus("Creating account…","info"); const {data,error}=await supabaseClient.auth.signUp({email,password,options:{data:{display_name:displayName}}});
+setAuthBusy(false); if(error){setAccountStatus(error.message,"error");return;} if(data.session){setAccountStatus("Account created and signed in.","success");await renderAuth(data.session);} else{setAccountStatus("Account created. Check your email for the confirmation link, then come back and log in.","success");} } async function logInUser(){ const email=document.getElementById("authEmail").value.trim(); const password=document.getElementById("authPassword").value; if(!email||!password){setAccountStatus("Enter your email and password.","error");return;}
+setAuthBusy(true);setAccountStatus("Logging in…","info"); const {data,error}=await supabaseClient.auth.signInWithPassword({email,password}); setAuthBusy(false); if(error){setAccountStatus(error.message,"error");return;} setAccountStatus("Logged in.","success"); await renderAuth(data.session); } async function logOutUser(){ const {error}=await supabaseClient.auth.signOut();
+if(error){setAccountStatus(error.message,"error");return;} setAccountStatus("Logged out.","success"); await renderAuth(null); } async function ensureProfile(user){ let {data,error}=await supabaseClient.from("profiles").select("*").eq("user_id",user.id).maybeSingle(); if(error){console.error("Profile read error",error);return null;} if(data)return data; const fallback={user_id:user.id,display_name:user.user_metadata?.display_name||user.email?.split("@")[0]||"Player",timezone:Intl.DateTimeFormat().resolvedOptions().timeZone||"UTC"};
+const created=await supabaseClient.from("profiles").insert(fallback).select("*").single(); if(created.error){console.error("Profile fallback create error",created.error);return null;} return created.data; } function populateProfile(profile){ if(!profile)return; document.getElementById("profileDisplayName").value=profile.display_name||""; document.getElementById("profilePlatform").value=profile.rl_platform||""; document.getElementById("profilePlayerId").value=profile.rl_player_id||"";
+document.getElementById("profileTrackerUrl").value=profile.tracker_profile_url||""; document.getElementById("profileRank").value=profile.current_rank||""; document.getElementById("profileDailyMinutes").value=profile.daily_minutes_target??30; document.getElementById("accountDisplayName").textContent=profile.display_name||"Player Dashboard"; } async function loadDashboardStats(userId){ const [sessionsResult,goalsResult,schedulesResult]=await Promise.all([ supabaseClient.from("training_sessions").select("completed_minutes,completed").eq("user_id",userId), supabaseClient.from("goals").select("id",{count:"exact",head:true}).eq("user_id",userId).eq("completed",false),
+supabaseClient.from("training_schedules").select("id",{count:"exact",head:true}).eq("user_id",userId).eq("enabled",true) ]); if(sessionsResult.error)console.error("Sessions stats error",sessionsResult.error); if(goalsResult.error)console.error("Goals stats error",goalsResult.error); if(schedulesResult.error)console.error("Schedules stats error",schedulesResult.error); const rows=sessionsResult.data||[]; const completed=rows.filter(x=>x.completed).length; const minutes=rows.reduce((sum,x)=>sum+(Number(x.completed_minutes)||0),0); document.getElementById("statSessions").textContent=completed;
+document.getElementById("statMinutes").textContent=minutes; document.getElementById("statGoals").textContent=goalsResult.count||0; document.getElementById("statSchedules").textContent=schedulesResult.count||0; } async function refreshDashboard(){ if(!currentUser)return; const profile=await ensureProfile(currentUser); populateProfile(profile); await loadDashboardStats(currentUser.id);
+setAccountStatus("Dashboard refreshed.","success"); } async function saveProfile(){ if(!currentUser){setAccountStatus("Log in before saving your profile.","error");return;} const dailyMinutes=Math.max(0,Math.min(480,Number(document.getElementById("profileDailyMinutes").value)||0)); const updates={ display_name:document.getElementById("profileDisplayName").value.trim()||null, rl_platform:document.getElementById("profilePlatform").value||null, rl_player_id:document.getElementById("profilePlayerId").value.trim()||null,
+tracker_profile_url:document.getElementById("profileTrackerUrl").value.trim()||null, current_rank:document.getElementById("profileRank").value||null, daily_minutes_target:dailyMinutes, timezone:Intl.DateTimeFormat().resolvedOptions().timeZone||"UTC" }; const {data,error}=await supabaseClient.from("profiles").update(updates).eq("user_id",currentUser.id).select("*").single(); if(error){setAccountStatus(error.message,"error");return;} populateProfile(data); setAccountStatus("Profile saved.","success");
+} async function renderAuth(session){ currentUser=session?.user||null; const forms=document.getElementById("authForms"); const panel=document.getElementById("accountPanel"); if(!currentUser){forms.style.display="block";panel.style.display="none";document.getElementById("accountEmail").textContent="";return;} forms.style.display="none";panel.style.display="block";document.getElementById("accountEmail").textContent=currentUser.email||""; const profile=await ensureProfile(currentUser); populateProfile(profile);
+await loadDashboardStats(currentUser.id); } async function initializeAuth(){ const {data,error}=await supabaseClient.auth.getSession(); if(error)console.error("Session load error",error); await renderAuth(data?.session||null); supabaseClient.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>renderAuth(session),0);}); } initializeAuth();
+const packs={ groundShots:{name:"Ground Shots",creator:"Poquito",code:"6EB1-79B2-33B8-681C",category:"Shooting"}, saves:{name:"Saves",creator:"Poquito",code:"2E23-ABD5-20C6-DBD4",category:"Defense"}, clears:{name:"Clears",creator:"Poquito",code:"5DA1-EA21-5EF9-EA21",category:"Defense"}, wallShots:{name:"Wall Shots",creator:"Poquito",code:"9F6D-4387-4C57-2E4B",category:"Wall Play"}, aerialPass:{name:"Aerial Shots - Pass",creator:"Poquito",code:"C7E0-9E0B-B739-A899",category:"Aerials"}, aerialRedirects:{name:"Aerial Shots - Redirects",creator:"Poquito",code:"8D93-C997-0ACD-8416",category:"Redirects"}, aerialRebounds:{name:"Aerial Shots - Rebounds",creator:"Poquito",code:"E94F-C04B-434D-7FE6",category:"Backboard"}, shootingConsistency:{name:"Shooting Consistency",creator:"Wayprotein",code:"4912-A5C9-9A56-555D",category:"Shooting"},
+doubleJumpAerials:{name:"Double Jump Aerials",creator:"Doomsee",code:"F269-B159-0BAC-AC2E",category:"Aerials"}, backboardTherapy:{name:"Backboard Therapy",creator:"Wayprotein",code:"D7F8-FD53-98D1-DAFE",category:"Backboard"}, doubleTapPlayground:{name:"Double Tap Playground",creator:"Wayprotein",code:"CAFC-FB3E-3C0F-B8F1",category:"Double Touches"}, selfSetBackboard:{name:"Self-Set Backboard Consistency",creator:"Community",code:"23BC-0377-C228-A338",category:"Double Touches"}, backboardShotsLachinio:{name:"Backboard Shots",creator:"Lachinio",code:"AFFD-5023-BD4F-D320",category:"Backboard"}, backboardShotsSquishy:{name:"Backboard Shots",creator:"Squishy",code:"2486-EEA6-B887-A040",category:"Backboard"}, backboardConsistency:{name:"Backboard Shots - Consistency",creator:"Noir1992",code:"FDC7-3073-501D-0054",category:"Backboard"}, defensiveBackboardReads:{name:"Defensive Backboard Reads",creator:"Torment",code:"9F09-E4D3-EAB0-69AD",category:"Defense"}, sideWallClears:{name:"Side Wall Clears",creator:"NRG Jacob",code:"A9B9-16DF-1975-53F0",category:"Wall Play"},
+angledShots:{name:"Angled Shots",creator:"G2 Kronovi",code:"04CC-0655-E7D1-99CD",category:"Shooting"}, consistencyPack:{name:"Consistency Pack #1",creator:"GarrettG",code:"65A3-8CEB-9B57-EC16",category:"All-Around"}, shotsWallsRedirects:{name:"Shots, Walls and Redirects",creator:"Sir Pancake III",code:"DB16-B097-6181-F26A",category:"All-Around"}, warmupShotsClears:{name:"Warm Up Shots/Clears",creator:"Mr Jokerer",code:"21F1-B6A9-2525-C0C8",category:"All-Around"}, backboardReads:{name:"Backboard Reads",creator:"Community",code:"07E1-81BC-DD2E-BF8C",category:"Defense"}, rocketeerAerialVariety:{name:"Rocketeer Aerial Variety",creator:"Community",code:"8330-8367-C58A-3DE0",category:"Aerials"}, shotsYouShouldntMiss:{name:"Shots You Shouldn't Miss",creator:"Community",code:"42BF-686D-E047-574B",category:"Shooting"}, uncomfortableSaves:{name:"Uncomfortable Saves",creator:"Community",code:"5CB2-6D82-1B54-47B7",category:"Defense"}, powershots:{name:"Powershots",creator:"Yeeza",code:"7028-5E10-88EF-E83E",category:"Shooting"},
+ultimateWarmup:{name:"The Ultimate Warmup",creator:"Hinata",code:"FA24-B2B7-2E8E-193B",category:"All-Around"}, deevo:{name:"Deevo",creator:"Torsos",code:"0CB0-16C8-DAAD-B578",category:"Backboard"}, dribbleTraining:{name:"Dribble Training",creator:"Virge",code:"04C1-42C8-6E5D-6F75",category:"Ground Control"}, passTraining:{name:"Pass Training",creator:"FLuuMP",code:"BFD6-DA9F-49A2-81B3",category:"Aerials"}, shadowSaves:{name:"Shadow Saves",creator:"Wayprotein",code:"6A8C-7B90-2AAA-B6B5",category:"Defense"}, selfDoubleTouchPro:{name:"Self Double Touch: Pro",creator:"Plasmid",code:"E8EB-C454-38AF-9637",category:"Double Touches"}, shadowDefense:{name:"[Why You Suck] Shadow Defense",creator:"OrangePie",code:"5CCE-FB29-7B05-A0B1",category:"Defense"} }; const rankProfiles={
+bronze:{label:"Bronze",level:0,target:"Aim for 5 of 10 clean attempts.",style:"Control first. Slow down if needed."}, silver:{label:"Silver",level:1,target:"Aim for 6 of 10 clean attempts.",style:"Add some speed while keeping control."}, gold:{label:"Gold",level:2,target:"Aim for 7 of 10 useful attempts.",style:"Demand intentional placement and cleaner recoveries."}, platinum:{label:"Platinum",level:3,target:"Aim for 7 of 10 at realistic pace.",style:"Reduce hesitation and make each touch deliberate."}, diamond:{label:"Diamond",level:4,target:"Aim for 8 of 10 controlled attempts.",style:"Train near match speed and recover immediately."}, champion:{label:"Champion",level:5,target:"Aim for 8 of 10 repeatable attempts at game speed.",style:"Every touch should have a purpose."}, grandchampion:{label:"Grand Champion",level:6,target:"Aim for 9 of 10 without slowing the drill down.",style:"Prioritize speed, boost efficiency, and useful follow-ups."}, ssl:{label:"Supersonic Legend",level:7,target:"Aim for 9 of 10 or better with precise placement.",style:"Increase difficulty with speed, variation, and consistency."} };
+const rankGuides={ bronze:{priorities:["Reliable car movement and ball contact","Basic shots on target","Simple saves and clean landings"],avoid:"Do not make advanced mechanics the center of your training yet."}, silver:{priorities:["Strong contact and basic shot placement","Safe clears and recoveries","Reading ground and low-air balls"],avoid:"Do not trade basic consistency for flashy mechanics you cannot reproduce in matches."}, gold:{priorities:["Powerful, placed shots","Useful clears and wall comfort","Simple aerial launches and recoveries"],avoid:"Fundamentals should still take most of your practice time."}, platinum:{priorities:["Shooting consistency at higher pace","Aerial fundamentals and shadow defense","Wall play and recoveries"],avoid:"Do not confuse playing faster with rushing every touch."}, diamond:{priorities:["Fast aerials and backboard defense","First-touch quality and recovery speed","Consistent shooting under pressure"],avoid:"Do not let advanced mechanics replace basic consistency."}, champion:{priorities:["Game-speed shooting and first touches","Backboard reads and useful aerial touches","Possession after contact and fast recoveries"],avoid:"A mechanic that only works with a perfect setup is not match-ready."}, grandchampion:{priorities:["Mechanical consistency at full speed","Threatening first touches and possession","Boost efficiency and adaptable recoveries"],avoid:"Do not autopilot training; target what is actually costing possessions or goals."}, ssl:{priorities:["Pinpoint weakness-specific training","Repeatable mechanics under pressure","Adaptability, first touches, and efficiency"],avoid:"Do not chase novelty for its own sake."}
+}; const focusLabels={ allaround:"All-Around Improvement",shootingAccuracy:"Shooting Accuracy",powerShots:"Power Shots",groundControl:"Ground Control",saves:"Saves",clears:"Clears",shadowDefense:"Shadow Defense",basicAerials:"Basic Aerials",fastAerials:"Fast Aerials",aerialAccuracy:"Aerial Accuracy",redirects:"Redirects",wallPlay:"Wall Play",backboardReads:"Backboard Reads",doubleTouches:"Double Touches",recoveries:"Recoveries / Car Control",freeplaySpeed:"Free Play / Speed" }; const focusCoaching={ allaround:{ instructions:"Treat this block as balanced training. Use the assigned pack or Free Play task to sharpen the named skill, then recover as if the play were continuing.", success:"Complete the block with deliberate touches and clean recoveries.", why:"All-Around sessions keep several high-value mechanics active without over-specializing.",
+tip:"If one weakness clearly stands out, use a strict-focus session next." }, shootingAccuracy:{ instructions:"Pick a scoring target before every attempt: left, right, high, low, or far post. Do not count a goal that misses your chosen target. Reduce power if needed to regain placement, then rebuild speed.", success:"Hit your called target consistently; lucky goals do not count.", why:"Accuracy turns ordinary chances into shots defenders cannot cover comfortably.", tip:"Call the target out loud or in your head before you move." }, powerShots:{
+instructions:"Use the assigned pack only as a ball setup. Your job is power: approach with space, strike through the center or slightly below center, time your dodge through contact, and keep the shot on target. When possible, hit shortly after the bounce.", success:"Produce hard, on-target shots repeatedly without sacrificing clean contact.", why:"Power reduces the defender's reaction time and makes rebounds more dangerous.", tip:"Do not confuse more boost with more power. Contact timing and where you strike the ball matter more." }, groundControl:{ instructions:"Use soft touches, catches, cuts, and controlled direction changes. Keep the ball close enough that you can make the next touch intentionally instead of chasing it.", success:"Maintain possession through several intentional touches without booming the ball away.", why:"Ground control gives you time, options, and the ability to punish early challenges.",
+tip:"Small inputs beat frantic inputs. Slow the ball down before trying to speed yourself up." }, saves:{ instructions:"Prioritize reading the shot, getting your car behind the ball, and directing the save toward a safe side. Recover immediately after contact.", success:"Make repeatable saves that do not hand the opponent an easy second shot.", why:"A controlled save ends pressure; a random block often extends it.", tip:"The safest touch is usually better than the most impressive touch." }, clears:{
+instructions:"Use each setup to practice removing danger with purpose. Aim high or toward a side wall/corner when appropriate, and avoid serving the ball into midfield.", success:"Create clears that actually relieve pressure and give your team time.", why:"A clear is valuable only if it changes the possession or field position.", tip:"Think about where the opponent cannot immediately shoot from." }, shadowDefense:{ instructions:"Stay goal-side, match the attacker's path, and delay your challenge until the touch becomes readable. Use the assigned pack to practice patience, then direct the save toward safety.", success:"Avoid panic challenges and make controlled defensive touches from a shadow position.", why:"Shadow defense buys time and forces the attacker to show their plan first.",
+tip:"Your job is not to steal the ball instantly; your job is to protect the dangerous line." }, basicAerials:{ instructions:"Set your car's nose toward the ball before committing boost. Take a simple, controlled path and focus on useful contact instead of spinning.", success:"Reach aerial balls cleanly and direct the touch somewhere intentional.", why:"Reliable aerial fundamentals create the base for every advanced airborne mechanic.", tip:"Simple aerials done early and cleanly beat fancy aerials done late." }, fastAerials:{
+instructions:"Practice the fast-aerial launch itself: jump, tilt, second jump, and boost with minimal wasted motion. Then use the assigned pack to reach the ball sooner without losing control.", success:"Launch quickly and arrive with enough control to make a useful touch.", why:"Fast aerials win contested balls only when speed and control happen together.", tip:"If your launch is inconsistent, slow the inputs down until the sequence is repeatable." }, aerialAccuracy:{ instructions:"Choose where you want the aerial touch to go before takeoff. Approach on a line that lets your final contact send the ball toward that target, using only small air-roll corrections.", success:"Put repeated aerial touches on your intended target or into useful space.", why:"Aerial accuracy converts aerial ability into actual offense and controlled defense.",
+tip:"Your approach angle determines more than your last-second correction." }, redirects:{ instructions:"Read the incoming ball early and build an approach line that intersects it at a useful angle. Focus on the final contact angle rather than chasing directly behind the ball.", success:"Create controlled redirect touches toward goal or dangerous space.", why:"Redirects train anticipation, aerial pathing, and precise contact on moving passes.", tip:"If you need a huge last-second correction, your approach was probably wrong earlier." }, wallPlay:{
+instructions:"Use the wall as a controlled surface. Match the ball's speed, choose your exit point, and make one intentional touch before worrying about advanced follow-ups.", success:"Create clean wall contacts and recover smoothly back to the field or into the air.", why:"Comfort on the wall expands your options while reducing awkward recoveries.", tip:"Practice both walls; do not let one side become your permanent weak side." }, backboardReads:{ instructions:"Read the ball's approach angle before it hits the backboard. Move early toward where the rebound will be, then choose a controlled clear, shot, or setup.", success:"Arrive at backboard rebounds early enough to make an intentional touch.", why:"Strong backboard reads create time that late reactions cannot recover.",
+tip:"Watch the incoming angle, not just the bounce after it happens." }, doubleTouches:{ instructions:"Judge the first touch first. Use the assigned pack to create a rebound you can realistically reach, then finish only when the setup is good. Reset bad setups instead of practicing miracle saves.", success:"Create repeatable first-touch setups and convert a growing percentage of the playable rebounds.", why:"Double touches become practical only when the setup is intentional and repeatable.", tip:"A great first touch is more important than a lucky second touch." }, recoveries:{
+instructions:"Every rep ends with a recovery goal: land wheels-first, preserve momentum, use powerslide when needed, and choose the fastest route back into the play.", success:"Recover cleanly without long stops, awkward spins, or unnecessary boost waste.", why:"Recovery speed determines how often you can participate in the next play.", tip:"Practice recovering from bad positions, not just perfect landings." }, freeplaySpeed:{ instructions:"Play continuously without resetting. Chain touches, recoveries, wall play, shots, and catches at a pace you can still control. Increase speed only when the quality survives.", success:"Maintain purposeful movement and possession for long stretches without stopping.", why:"Game-speed Free Play connects isolated mechanics into realistic sequences.",
+tip:"Speed is useful only if your next touch is still intentional." } }; const free={ ballContact:{name:"Ball Contact Fundamentals",category:"Ground Control"}, recovery:{name:"Recovery Circuit",category:"Recoveries"}, power:{name:"Power Contact Free Play",category:"Power Shots"}, dribble:{name:"Ground Control Circuit",category:"Ground Control"}, shadow:{name:"Shadow Defense Simulation",category:"Shadow Defense"},
+aerial:{name:"Aerial Launch Repetitions",category:"Aerials"}, fastAerial:{name:"Fast-Aerial Launch Drill",category:"Fast Aerials"}, redirect:{name:"Redirect Read Free Play",category:"Redirects"}, wall:{name:"Wall Movement and Recovery",category:"Wall Play"}, backboard:{name:"Backboard Read Simulation",category:"Backboard Reads"}, pressure:{name:"Pressure Free Play",category:"Game Transfer"}, integrated:{name:"Integrated Free Play",category:"Game Transfer"} }; const focusResources={
+shootingAccuracy:[{pack:"groundShots"},{pack:"shootingConsistency"},{pack:"angledShots"},{pack:"shotsYouShouldntMiss"},{free:"pressure"}], powerShots:[{free:"power"},{pack:"powershots"},{pack:"groundShots"},{pack:"warmupShotsClears"},{free:"pressure"}], groundControl:[{free:"ballContact"},{pack:"dribbleTraining"},{free:"dribble"},{pack:"groundShots"},{free:"integrated"}], saves:[{pack:"saves"},{pack:"shadowSaves"},{pack:"uncomfortableSaves"},{pack:"defensiveBackboardReads"},{free:"shadow"}], clears:[{pack:"clears"},{pack:"sideWallClears"},{pack:"warmupShotsClears"},{pack:"defensiveBackboardReads"},{free:"pressure"}], shadowDefense:[{free:"shadow"},{pack:"shadowDefense"},{pack:"shadowSaves"},{pack:"uncomfortableSaves"},{pack:"defensiveBackboardReads"}], basicAerials:[{free:"aerial"},{pack:"aerialPass"},{pack:"passTraining"},{pack:"doubleJumpAerials"},{free:"pressure"}], fastAerials:[{free:"fastAerial"},{pack:"doubleJumpAerials"},{pack:"aerialPass"},{pack:"rocketeerAerialVariety"},{free:"pressure"}], aerialAccuracy:[{pack:"aerialPass"},{pack:"aerialRedirects"},{pack:"aerialRebounds"},{pack:"rocketeerAerialVariety"},{free:"pressure"}],
+redirects:[{free:"redirect"},{pack:"aerialRedirects"},{pack:"shotsWallsRedirects"},{pack:"aerialRebounds"},{free:"pressure"}], wallPlay:[{free:"wall"},{pack:"wallShots"},{pack:"sideWallClears"},{pack:"shotsWallsRedirects"},{free:"pressure"}], backboardReads:[{free:"backboard"},{pack:"backboardTherapy"},{pack:"deevo"},{pack:"defensiveBackboardReads"},{pack:"backboardConsistency"}], doubleTouches:[{free:"backboard"},{pack:"selfSetBackboard"},{pack:"selfDoubleTouchPro"},{pack:"doubleTapPlayground"},{pack:"deevo"}], recoveries:[{free:"recovery"},{free:"wall"},{free:"pressure"},{free:"integrated"},{free:"ballContact"}], freeplaySpeed:[{free:"ballContact"},{free:"power"},{free:"recovery"},{free:"pressure"},{free:"integrated"}], allaround:[{pack:"ultimateWarmup"},{pack:"shootingConsistency"},{pack:"saves"},{pack:"aerialPass"},{pack:"wallShots"},{pack:"consistencyPack"},{pack:"uncomfortableSaves"},{free:"pressure"},{free:"integrated"}] }; const programBanks={
+15:[ {name:"Quick Fix",desc:"One narrow weakness, high-value reps, immediate transfer.",steps:[{label:"Diagnostic",min:4,slot:0},{label:"Main Fix",min:7,slot:1},{label:"Game Transfer",min:4,slot:4}]}, {name:"Pressure Sprint",desc:"Train execution under pressure without spending half the session warming up.",steps:[{label:"Technique",min:5,slot:2},{label:"Pressure Reps",min:6,slot:3},{label:"Finish",min:4,slot:4}]}, {name:"Two-Tool Tune-Up",desc:"Two complementary tools plus a short transfer block.",steps:[{label:"Tool A",min:5,slot:1},{label:"Tool B",min:5,slot:2},{label:"Transfer",min:5,slot:4}]} ], 30:[ {name:"Consistency Builder",desc:"Longer quality reps with one variation and a closing test.",steps:[{label:"Core Work",min:10,slot:1},{label:"Variation",min:8,slot:2},{label:"Pressure Test",min:7,slot:3},{label:"Transfer",min:5,slot:4}]}, {name:"Weakness Repair",desc:"Diagnose, rebuild the mechanic, then test it at speed.",steps:[{label:"Diagnostic",min:5,slot:0},{label:"Rebuild",min:10,slot:1},{label:"Speed Test",min:10,slot:3},{label:"Transfer",min:5,slot:4}]}, {name:"Match Prep",desc:"A practical session built around realistic execution.",steps:[{label:"Activation",min:5,slot:0},{label:"Game-Speed Technique",min:8,slot:2},{label:"Pressure",min:9,slot:3},{label:"Application",min:8,slot:4}]}
+], 45:[ {name:"Skill Lab",desc:"Deep technical work with a separate variation block and longer application.",steps:[{label:"Technical Reset",min:7,slot:0},{label:"Deep Work",min:12,slot:1},{label:"Variation Lab",min:10,slot:3},{label:"Transfer",min:16,slot:4}]}, {name:"Variety Day",desc:"Broader exposure inside the chosen skill without turning into an all-around session.",steps:[{label:"Foundation",min:8,slot:1},{label:"Alternate Tool",min:9,slot:2},{label:"Different Look",min:9,slot:3},{label:"Application",min:19,slot:4}]}, {name:"Pressure Development",desc:"More of the session is spent on difficult execution and repeatability.",steps:[{label:"Prep",min:6,slot:0},{label:"Technique",min:9,slot:2},{label:"Pressure Block",min:15,slot:3},{label:"Game Transfer",min:15,slot:4}]} ], 60:[ {name:"Full Practice Day",desc:"A complete focused practice with fundamentals, variation, pressure, and long game transfer.",steps:[{label:"Foundation",min:12,slot:1},{label:"Technical Work",min:12,slot:2},{label:"Variation",min:10,slot:3},{label:"Pressure",min:10,slot:0},{label:"Game Transfer",min:16,slot:4}]}, {name:"Mastery Block",desc:"Spend most of the hour on two demanding forms of the skill, then prove it in application.",steps:[{label:"Primary Tool",min:18,slot:1},{label:"Secondary Tool",min:14,slot:3},{label:"Control Check",min:10,slot:2},{label:"Transfer",min:18,slot:4}]},
+{name:"Competition Prep",desc:"A match-oriented hour with less isolated warm-up and more realistic pressure.",steps:[{label:"Activation",min:8,slot:0},{label:"Match-Speed Work",min:14,slot:2},{label:"Pressure Reps",min:14,slot:3},{label:"Extended Application",min:24,slot:4}]} ] }; function rankAdjustment(focus,rankKey){ const level=rankProfiles[rankKey].level; const advanced=["redirects","doubleTouches","backboardReads","fastAerials"]; if(advanced.includes(focus)&&level<=2) return"For this rank, judge success mainly by the setup, read, and clean first touch. Finishing the advanced mechanic is optional."; if(advanced.includes(focus)&&level<=4)
+return"Prioritize controlled setups and repeatable contact before maximum speed."; return rankProfiles[rankKey].style; } function resourceAt(focus,index){ const list=focusResources[focus]; return list[index%list.length]; } function materializeResource(resource,focus,rankKey){ const coach=focusCoaching[focus];
+if(resource.free){ const t=free[resource.free]; return{ name:t.name, category:focusLabels[focus], instructions:coach.instructions, success:`${coach.success} ${rankProfiles[rankKey].target}`, why:coach.why, tip:`${coach.tip} ${rankAdjustment(focus,rankKey)}`,
+freePlay:true, freeKey:resource.free }; } const p=packs[resource.pack]; return{ name:`${focusLabels[focus]} — ${p.name}`, category:focusLabels[focus], instructions:coach.instructions,
+success:`${coach.success} ${rankProfiles[rankKey].target}`, why:coach.why, tip:`${coach.tip} ${rankAdjustment(focus,rankKey)}`, freePlay:false, packKey:resource.pack }; } function lastProgramKey(rank,focus,time){ return`rl_program_${rank}_${focus}_${time}`;
+} function chooseProgram(rank,focus,time){ const bank=programBanks[time]; const key=lastProgramKey(rank,focus,time); const last=Number(localStorage.getItem(key)); let choices=bank.map((_,i)=>i).filter(i=>i!==last); if(!choices.length) choices=bank.map((_,i)=>i); const pick=choices[Math.floor(Math.random()*choices.length)];
+localStorage.setItem(key,String(pick)); return bank[pick]; } function buildSession(rank,focus,time){ const program=chooseProgram(rank,focus,time); const session=program.steps.map(step=>({ ...step, drill:materializeResource( resourceAt(focus,step.slot),
+focus, rank ) })); return{program,session}; } const masterPackLibrary=Object.values(packs); document.getElementById("libraryCount").textContent= `${masterPackLibrary.length} unique custom training packs currently in the RL Trainer library.`;
+function randomPack(){ const p=masterPackLibrary[ Math.floor(Math.random()*masterPackLibrary.length) ]; const box=document.getElementById("randomResult"); box.innerHTML=` <div class="random-title">${p.name}</div> <div class="random-meta">Creator: ${p.creator}</div> <div class="random-meta">Category: ${p.category}</div>
+<div class="code">${p.code}</div> <button onclick="copyCode('${p.code}')"> Copy Training Code </button> `; box.style.display="block"; } function buildPlan(){ const rank=document.getElementById("rankSelect").value;
+const time=Number(document.getElementById("timeSelect").value); const focus=document.getElementById("focusSelect").value; const results=document.getElementById("planResults"); if(!rank||!time||!focus){ alert( "Choose your rank, available time, and training focus." ); return; }
+const built=buildSession( rank, focus, time ); let html=` <div class="rank-header"> <div class="rank-title"> ${rankProfiles[rank].label}
+— ${time}-Minute Session </div> <div class="total-time"> Today's planned time: ${time} minutes </div> <div class="badge focus-badge"> ${focusLabels[focus]}
+</div> <div class="badge program-badge"> ${built.program.name} </div> <div class="badge mode-badge"> ${focus==="allaround"?"BALANCED":"STRICT FOCUS"} </div> <div class="rank-focus"> ${rankAdjustment(focus,rank)}
+</div> <div class="rank-guide"> <strong> WHAT MATTERS MOST AT ${rankProfiles[rank].label.toUpperCase()}: </strong> <ul> ${rankGuides[rank].priorities .map(x=>`<li>${x}</li>`)
+.join("")} </ul> <div class="avoid"> <strong> DON’T OVER-PRIORITIZE: </strong> ${rankGuides[rank].avoid} </div> </div>
+<div class="session-note"> <strong> ${built.program.name}: </strong> ${built.program.desc} <br><br> Every block below is coached specifically as <strong>${focusLabels[focus]}</strong>. A pack may contain other shot types,
+but the instructions tell you exactly how to use that pack for your selected focus. </div> </div> `; for(const block of built.session){ const d=block.drill; html+=` <div class="block-title">
+${block.label} — ${block.min} min </div> <div class="drill"> <div class="drill-top"> <div class="drill-name"> ${d.name} </div>
+<div class="time"> ⏱ ${block.min} minutes </div> </div> <div class="category"> ${d.category} </div> `; if(d.freePlay){
+html+=` <div class="pack-name"> Training Tool: Free Play </div> <div class="creator"> No custom training code required. </div> `;
+}else{ const p=packs[d.packKey]; html+=` <div class="pack-name"> Training Tool: ${p.name} </div> <div class="creator"> Creator:
+${p.creator} </div> <div class="code"> ${p.code} </div> <button onclick="copyCode('${p.code}')"> Copy Training Code </button>
+`; } html+=` <div class="section-label"> HOW TO TRAIN THIS FOCUS </div> <div class="instructions"> ${d.instructions} </div>
+<div class="success"> <strong> SUCCESS TARGET: </strong> <br> ${d.success} </div> <div class="rank-standard"> <strong>
+${rankProfiles[rank].label.toUpperCase()} STANDARD: </strong> <br> ${rankAdjustment(focus,rank)} </div> <div class="section-label"> WHY THIS MATTERS </div>
+<div class="why"> ${d.why} </div> <div class="tip"> <strong> COACHING TIP: </strong> <br> ${d.tip}
+</div> </div> `; } html+=` <div class="warning"> <strong> Training note: </strong>
+The selected custom pack is the practice environment, not the coaching category. In STRICT FOCUS mode, every block is instructed and scored specifically for ${focusLabels[focus]}. </div> <button class="regen" onclick="buildPlan()">
+Give Me Another ${time}-Minute ${focusLabels[focus]} Session </button> `; results.innerHTML=html; results.style.display="block"; results.scrollIntoView({
+behavior:"smooth", block:"start" }); } function copyCode(code){ navigator.clipboard .writeText(code) .then(()=>{ alert(
+"Training pack code copied!" ); }) .catch(()=>{ prompt( "Copy this training code:", code ); });
+} (function validateDatabase(){ const errors=[]; const codes=new Set(); for(const[id,p]of Object.entries(packs)){ if( !p.name|| !p.creator|| !p.code||
+!p.category ){ errors.push( `Incomplete pack ${id}` ); } if( codes.has(p.code) ){
+errors.push( `Duplicate code ${p.code}` ); } codes.add(p.code); } for(const focus of Object.keys(focusLabels)){ if(!focusCoaching[focus]){ errors.push(
+`Missing coaching for ${focus}` ); } if( !focusResources[focus]|| focusResources[focus].length<5 ){ errors.push( `Missing resources for ${focus}`
+); } } for(const[f,list]of Object.entries(focusResources)){ for(const r of list){ if( r.pack && !packs[r.pack] ){
+errors.push( `${f} missing pack ${r.pack}` ); } if( r.free && !free[r.free] ){ errors.push(
+`${f} missing free drill ${r.free}` ); } } } for(const[t,bank]of Object.entries(programBanks)){ for(const program of bank){ const total= program.steps.reduce(
+(s,x)=>s+x.min, 0 ); if( total!==Number(t) ){ errors.push( `${t}/${program.name} totals ${total}` );
+} for(const step of program.steps){ if( step.slot<0|| step.slot>8 ){ errors.push( `${t}/${program.name} bad slot` );
+} } } } const ranks= Object.keys(rankProfiles); const focuses= Object.keys(focusLabels); const times=[
+15, 30, 45, 60 ]; for(const rank of ranks) for(const focus of focuses) for(const time of times){ const built=
+buildSession( rank, focus, time ); const total= built.session.reduce( (s,x)=>s+x.min, 0
+); if( total!==time ){ errors.push( `${rank}/${focus}/${time} totals ${total}` ); } for(const block of built.session){
+if( !block.drill|| !block.drill.name ){ errors.push( `${rank}/${focus}/${time} missing drill` ); } if(
+focus!=="allaround" && block.drill.category!==focusLabels[focus] ){ errors.push( `${rank}/${focus}/${time} leaked category ${block.drill.category}` ); } } }
+if(errors.length){ console.error( "RL Trainer validation errors:", errors ); }else{ console.log( `RL Trainer validation passed: ${Object.keys(packs).length} packs,
+${ranks.length} ranks, ${focuses.length} focus modes, and ${ranks.length*focuses.length*times.length} strict-focus combinations.` ); } })(); </script> </body> </html>
