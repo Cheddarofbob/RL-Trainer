@@ -32,6 +32,15 @@
 .account-note{color:#9fb1c9;line-height:1.55;margin-top:12px}
 @media(max-width:950px){.auth-grid{grid-template-columns:1fr 1fr}.profile-grid{grid-template-columns:1fr 1fr}.stat-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:650px){.auth-grid,.profile-grid,.stat-grid{grid-template-columns:1fr}.profile-actions button{width:100%}}
+
+/* ===== SESSION COMPLETION TRACKING ===== */
+.session-save-panel{margin-top:22px;padding:16px;border-radius:10px;background:#102033;border:1px solid #28425f;line-height:1.55}
+.session-save-panel strong{color:#a8d8ff}
+.session-progress{margin-top:10px;color:#cde7ff;font-weight:bold}
+.completion-controls{margin-top:16px;padding:14px;border-radius:8px;background:#13241d;border:1px solid #2f5942}
+.completion-controls label{display:flex;gap:9px;align-items:center;margin:7px 0;color:#d4f5df;cursor:pointer}
+.completion-controls input{width:auto;accent-color:#54d98c}
+.saved-badge{display:inline-block;margin-top:8px;padding:6px 10px;border-radius:18px;background:#1b3a2a;color:#9af0b9;font-size:13px;font-weight:bold}
 </style>
 </head>
 <body>
@@ -111,6 +120,8 @@ const SUPABASE_URL="https://swyeowcjcinmqqdhywma.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_JWsXjqui4WTVHm0xTWu5UQ_M0EBamz9";
 const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 let currentUser=null;
+let currentBuiltSession=null;
+let activeSavedSession=null;
 function setAccountStatus(message,type="info"){
 const el=document.getElementById("accountStatus");
 el.textContent=message||"";
@@ -177,6 +188,8 @@ async function logOutUser(){
 const {error}=await supabaseClient.auth.signOut();
 if(error){setAccountStatus(error.message,"error");return;}
 setAccountStatus("Logged out.","success");
+activeSavedSession=null;
+currentBuiltSession=null;
 await renderAuth(null);
 }
 async function ensureProfile(user){
@@ -256,6 +269,119 @@ await renderAuth(data?.session||null);
 supabaseClient.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>renderAuth(session),0);});
 }
 initializeAuth();
+
+/* =====================================================
+   SESSION SAVING + DRILL CHECK-OFFS
+===================================================== */
+async function saveCurrentSession(){
+if(!currentUser){setAccountStatus("Log in before saving a training session.","error");return;}
+if(!currentBuiltSession){setAccountStatus("Build a training session first.","error");return;}
+if(activeSavedSession){setAccountStatus("This generated session is already saved.","info");return;}
+const {rank,time,focus,built}=currentBuiltSession;
+setAccountStatus("Saving training session…","info");
+const sessionInsert={
+user_id:currentUser.id,
+rank:rankProfiles[rank].label,
+focus:focusLabels[focus],
+program_name:built.program.name,
+planned_minutes:time,
+completed_minutes:0,
+completed:false,
+started_at:new Date().toISOString()
+};
+const {data:sessionRow,error:sessionError}=await supabaseClient.from("training_sessions").insert(sessionInsert).select("*").single();
+if(sessionError){setAccountStatus(sessionError.message,"error");return;}
+const drillRows=built.session.map((block,index)=>{
+const d=block.drill;
+const pack=d.freePlay?null:packs[d.packKey];
+return{
+session_id:sessionRow.id,
+user_id:currentUser.id,
+drill_order:index+1,
+drill_name:d.name,
+category:d.category,
+training_tool:d.freePlay?"Free Play":pack.name,
+pack_creator:d.freePlay?null:pack.creator,
+pack_code:d.freePlay?null:pack.code,
+planned_minutes:block.min,
+completed:false,
+success_target:d.success,
+success_target_met:false
+};
+});
+const {data:savedDrills,error:drillError}=await supabaseClient.from("training_drills").insert(drillRows).select("*").order("drill_order");
+if(drillError){
+await supabaseClient.from("training_sessions").delete().eq("id",sessionRow.id);
+setAccountStatus(drillError.message,"error");
+return;
+}
+activeSavedSession={session:sessionRow,drills:savedDrills};
+renderCompletionControls();
+await loadDashboardStats(currentUser.id);
+setAccountStatus("Session saved. Check off each training block as you complete it.","success");
+}
+
+function renderCompletionControls(){
+if(!activeSavedSession)return;
+const drills=activeSavedSession.drills;
+drills.forEach((row,index)=>{
+const host=document.getElementById(`completionHost-${index}`);
+if(!host)return;
+host.innerHTML=`<div class="completion-controls">
+<div class="saved-badge">SAVED TO YOUR ACCOUNT</div>
+<label><input type="checkbox" ${row.completed?"checked":""} onchange="toggleDrillComplete('${row.id}',this.checked)"> Drill complete</label>
+<label><input type="checkbox" ${row.success_target_met?"checked":""} onchange="toggleSuccessTarget('${row.id}',this.checked)"> I hit the success target</label>
+</div>`;
+});
+updateSavedSessionProgress();
+const saveButton=document.getElementById("saveSessionButton");
+if(saveButton){saveButton.disabled=true;saveButton.textContent="Session Saved";}
+}
+
+async function toggleDrillComplete(drillId,checked){
+if(!activeSavedSession||!currentUser)return;
+const row=activeSavedSession.drills.find(x=>x.id===drillId);
+if(!row)return;
+const {error}=await supabaseClient.from("training_drills").update({completed:checked}).eq("id",drillId).eq("user_id",currentUser.id);
+if(error){setAccountStatus(error.message,"error");renderCompletionControls();return;}
+row.completed=checked;
+await syncSavedSessionTotals();
+}
+
+async function toggleSuccessTarget(drillId,checked){
+if(!activeSavedSession||!currentUser)return;
+const row=activeSavedSession.drills.find(x=>x.id===drillId);
+if(!row)return;
+const {error}=await supabaseClient.from("training_drills").update({success_target_met:checked}).eq("id",drillId).eq("user_id",currentUser.id);
+if(error){setAccountStatus(error.message,"error");renderCompletionControls();return;}
+row.success_target_met=checked;
+updateSavedSessionProgress();
+}
+
+async function syncSavedSessionTotals(){
+if(!activeSavedSession||!currentUser)return;
+const drills=activeSavedSession.drills;
+const completedMinutes=drills.filter(x=>x.completed).reduce((sum,x)=>sum+Number(x.planned_minutes||0),0);
+const completed=drills.length>0&&drills.every(x=>x.completed);
+const updates={completed_minutes:completedMinutes,completed,completed_at:completed?new Date().toISOString():null};
+const {error}=await supabaseClient.from("training_sessions").update(updates).eq("id",activeSavedSession.session.id).eq("user_id",currentUser.id);
+if(error){setAccountStatus(error.message,"error");return;}
+Object.assign(activeSavedSession.session,updates);
+updateSavedSessionProgress();
+await loadDashboardStats(currentUser.id);
+if(completed)setAccountStatus("Training session complete — nice work.","success");
+}
+
+function updateSavedSessionProgress(){
+if(!activeSavedSession)return;
+const drills=activeSavedSession.drills;
+const done=drills.filter(x=>x.completed).length;
+const targetHits=drills.filter(x=>x.success_target_met).length;
+const minutes=drills.filter(x=>x.completed).reduce((sum,x)=>sum+Number(x.planned_minutes||0),0);
+const el=document.getElementById("savedSessionProgress");
+if(el)el.textContent=`${done}/${drills.length} blocks complete • ${minutes}/${activeSavedSession.session.planned_minutes} minutes • ${targetHits}/${drills.length} success targets hit`;
+}
+
 const packs={
 groundShots:{name:"Ground Shots",creator:"Poquito",code:"6EB1-79B2-33B8-681C",category:"Shooting"},
 saves:{name:"Saves",creator:"Poquito",code:"2E23-ABD5-20C6-DBD4",category:"Defense"},
@@ -567,6 +693,8 @@ rank,
 focus,
 time
 );
+currentBuiltSession={rank,time,focus,built};
+activeSavedSession=null;
 let html=`
 <div class="rank-header">
 <div class="rank-title">
@@ -621,7 +749,7 @@ for your selected focus.
 </div>
 </div>
 `;
-for(const block of built.session){
+for(const [blockIndex,block] of built.session.entries()){
 const d=block.drill;
 html+=`
 <div class="block-title">
@@ -707,10 +835,18 @@ COACHING TIP:
 <br>
 ${d.tip}
 </div>
+<div id="completionHost-${blockIndex}"></div>
 </div>
 `;
 }
 html+=`
+<div class="session-save-panel">
+<strong>Track this workout:</strong><br>
+${currentUser?"Save this generated session to your account, then check off each block as you finish it.":"Log in to save this workout, track completed minutes, and check off training blocks."}
+<br>
+<button id="saveSessionButton" style="margin-top:12px" onclick="saveCurrentSession()" ${currentUser?"":"disabled"}>${currentUser?"Save & Start This Session":"Log In to Track Session"}</button>
+<div id="savedSessionProgress" class="session-progress"></div>
+</div>
 <div class="warning">
 <strong>
 Training note:
