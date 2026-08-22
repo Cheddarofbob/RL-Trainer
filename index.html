@@ -80,6 +80,22 @@
 @media(max-width:950px){.schedule-grid{grid-template-columns:1fr 1fr 1fr}}
 @media(max-width:650px){.schedule-grid{grid-template-columns:1fr}}
 
+/* ===== MATCH PERFORMANCE ===== */
+.performance-stats{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:10px;margin:14px 0}
+.performance-builder{margin-top:16px;padding:16px;background:#101827;border-radius:10px}
+.performance-grid{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:9px;align-items:end}
+.performance-list{display:grid;gap:10px;margin-top:14px}
+.performance-item{background:#101827;border:1px solid #2b3b56;border-radius:10px;padding:14px}
+.performance-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.performance-title{font-weight:bold;color:#cde7ff}
+.performance-meta{color:#8fa3bd;font-size:13px;margin-top:5px;line-height:1.5}
+.performance-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.performance-pill{background:#17283a;color:#cde7ff;border-radius:18px;padding:6px 9px;font-size:12px}
+.performance-delete{background:#6b3440;padding:8px 10px;font-size:13px}
+.performance-win{border-color:#356d4c}.performance-loss{border-color:#6b3440}.performance-draw{border-color:#5c5874}
+@media(max-width:950px){.performance-stats,.performance-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:650px){.performance-stats,.performance-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -118,7 +134,7 @@
 <h3>Goals</h3>
 <div class="goal-builder">
 <div class="goal-grid">
-<div class="field"><label for="goalMetric">Goal Type</label><select id="goalMetric"><option value="training_minutes">Training Minutes</option><option value="sessions_completed">Sessions Completed</option><option value="training_days">Training Days</option><option value="success_targets">Success Targets Hit</option></select></div>
+<div class="field"><label for="goalMetric">Goal Type</label><select id="goalMetric" onchange="updateGoalMetricUI()"><option value="training_minutes">Training Minutes</option><option value="sessions_completed">Sessions Completed</option><option value="training_days">Training Days</option><option value="success_targets">Success Targets Hit</option><option value="matches_played">Matches Played</option><option value="wins">Wins</option><option value="goals">Match Goals</option><option value="assists">Match Assists</option><option value="saves">Match Saves</option><option value="shots">Match Shots</option><option value="shooting_percentage">Shooting Percentage</option><option value="win_rate">Win Rate</option></select></div>
 <div class="field"><label for="goalTarget">Target</label><input id="goalTarget" type="number" min="1" step="1" value="120"></div>
 <div class="field"><label for="goalFocus">Focus</label><select id="goalFocus"><option value="">Any Focus</option><option value="All-Around Improvement">All-Around Improvement</option><option value="Shooting Accuracy">Shooting Accuracy</option><option value="Power Shots">Power Shots</option><option value="Ground Control">Ground Control</option><option value="Saves">Saves</option><option value="Clears">Clears</option><option value="Shadow Defense">Shadow Defense</option><option value="Basic Aerials">Basic Aerials</option><option value="Fast Aerials">Fast Aerials</option><option value="Aerial Accuracy">Aerial Accuracy</option><option value="Redirects">Redirects</option><option value="Wall Play">Wall Play</option><option value="Backboard Reads">Backboard Reads</option><option value="Double Touches">Double Touches</option><option value="Recoveries / Car Control">Recoveries / Car Control</option><option value="Free Play / Speed">Free Play / Speed</option></select></div>
 <div class="field"><label for="goalPeriod">Period</label><select id="goalPeriod" onchange="updateGoalDeadlineVisibility()"><option value="weekly">Weekly</option><option value="daily">Daily</option><option value="monthly">Monthly</option><option value="custom">Custom</option></select></div>
@@ -150,6 +166,37 @@
 <h3>Training History</h3>
 <div class="account-note">Your latest saved sessions, actual timer minutes, completion status, and success-target results.</div>
 <div id="historyList" class="history-list"></div>
+
+<h3>Match Performance</h3>
+<div class="account-note">For now, match results can be entered manually. This is the same dashboard the future RL Trainer PC companion can feed automatically from supported Rocket League telemetry.</div>
+<div class="performance-stats">
+<div class="stat"><div id="perfMatches" class="stat-number">0</div><div class="stat-label">Matches</div></div>
+<div class="stat"><div id="perfWins" class="stat-number">0</div><div class="stat-label">Wins</div></div>
+<div class="stat"><div id="perfWinRate" class="stat-number">0%</div><div class="stat-label">Win Rate</div></div>
+<div class="stat"><div id="perfShooting" class="stat-number">0%</div><div class="stat-label">Shooting %</div></div>
+<div class="stat"><div id="perfGoals" class="stat-number">0</div><div class="stat-label">Goals</div></div>
+<div class="stat"><div id="perfAssists" class="stat-number">0</div><div class="stat-label">Assists</div></div>
+<div class="stat"><div id="perfSaves" class="stat-number">0</div><div class="stat-label">Saves</div></div>
+<div class="stat"><div id="perfShots" class="stat-number">0</div><div class="stat-label">Shots</div></div>
+</div>
+<div class="performance-builder">
+<div class="performance-grid">
+<div class="field"><label for="perfPlaylist">Playlist</label><select id="perfPlaylist"><option value="2v2 Doubles">2v2 Doubles</option><option value="3v3 Standard">3v3 Standard</option><option value="1v1 Duel">1v1 Duel</option><option value="Casual">Casual</option><option value="Tournament">Tournament</option><option value="Other">Other</option></select></div>
+<div class="field"><label for="perfResult">Result</label><select id="perfResult"><option value="win">Win</option><option value="loss">Loss</option><option value="draw">Draw</option></select></div>
+<div class="field"><label for="perfScore">Score</label><input id="perfScore" type="number" min="0" value="0"></div>
+<div class="field"><label for="perfPlayedAt">Played At</label><input id="perfPlayedAt" type="datetime-local"></div>
+<div class="field"><label for="perfGoalsInput">Goals</label><input id="perfGoalsInput" type="number" min="0" value="0"></div>
+<div class="field"><label for="perfAssistsInput">Assists</label><input id="perfAssistsInput" type="number" min="0" value="0"></div>
+<div class="field"><label for="perfSavesInput">Saves</label><input id="perfSavesInput" type="number" min="0" value="0"></div>
+<div class="field"><label for="perfShotsInput">Shots</label><input id="perfShotsInput" type="number" min="0" value="0"></div>
+<div class="field"><label for="perfTeamScore">Team Score</label><input id="perfTeamScore" type="number" min="0" placeholder="Optional"></div>
+<div class="field"><label for="perfOpponentScore">Opponent Score</label><input id="perfOpponentScore" type="number" min="0" placeholder="Optional"></div>
+<div class="field"><label for="perfNotes">Notes</label><input id="perfNotes" type="text" maxlength="300" placeholder="Optional"></div>
+<button onclick="saveManualMatch()">Save Match</button>
+</div>
+<div class="field-help">These entries are labeled manual. When a supported automatic source is connected later, imported matches will use a different source label.</div>
+</div>
+<div id="performanceList" class="performance-list"></div>
 
 <h3>Rocket League Profile</h3>
 <div class="profile-grid">
@@ -338,7 +385,7 @@ async function renderAuth(session){
 currentUser=session?.user||null;
 const forms=document.getElementById("authForms");
 const panel=document.getElementById("accountPanel");
-if(!currentUser){forms.style.display="block";panel.style.display="none";document.getElementById("accountEmail").textContent="";const goalList=document.getElementById("goalList");if(goalList)goalList.innerHTML="";const scheduleList=document.getElementById("scheduleList");if(scheduleList)scheduleList.innerHTML="";const historyList=document.getElementById("historyList");if(historyList)historyList.innerHTML="";return;}
+if(!currentUser){forms.style.display="block";panel.style.display="none";document.getElementById("accountEmail").textContent="";const goalList=document.getElementById("goalList");if(goalList)goalList.innerHTML="";const scheduleList=document.getElementById("scheduleList");if(scheduleList)scheduleList.innerHTML="";const historyList=document.getElementById("historyList");if(historyList)historyList.innerHTML="";const performanceList=document.getElementById("performanceList");if(performanceList)performanceList.innerHTML="";return;}
 forms.style.display="none";panel.style.display="block";document.getElementById("accountEmail").textContent=currentUser.email||"";
 const profile=await ensureProfile(currentUser);
 populateProfile(profile);
@@ -346,6 +393,7 @@ await loadDashboardStats(currentUser.id);
 await loadGoals();
 await loadSchedules();
 await loadHistory();
+await loadPerformance();
 }
 async function initializeAuth(){
 const {data,error}=await supabaseClient.auth.getSession();
@@ -354,6 +402,8 @@ await renderAuth(data?.session||null);
 supabaseClient.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>renderAuth(session),0);});
 }
 initializeAuth();
+setPerformanceDateDefault();
+updateGoalMetricUI();
 
 /* =====================================================
    SESSION SAVING + DRILL CHECK-OFFS
@@ -581,8 +631,27 @@ return{
 training_minutes:"Training Minutes",
 sessions_completed:"Sessions Completed",
 training_days:"Training Days",
-success_targets:"Success Targets Hit"
+success_targets:"Success Targets Hit",
+matches_played:"Matches Played",
+wins:"Wins",
+goals:"Match Goals",
+assists:"Match Assists",
+saves:"Match Saves",
+shots:"Match Shots",
+shooting_percentage:"Shooting Percentage",
+win_rate:"Win Rate"
 }[metric]||metric;
+}
+function isPerformanceGoalMetric(metric){
+return["matches_played","wins","goals","assists","saves","shots","shooting_percentage","win_rate"].includes(metric);
+}
+function updateGoalMetricUI(){
+const metric=document.getElementById("goalMetric")?.value;
+const focus=document.getElementById("goalFocus");
+if(!focus)return;
+const performance=isPerformanceGoalMetric(metric);
+focus.disabled=performance;
+if(performance)focus.value="";
 }
 
 function localDateString(date=new Date()){
@@ -619,7 +688,7 @@ async function createGoal(){
 if(!currentUser){setAccountStatus("Log in before creating a goal.","error");return;}
 const metric=document.getElementById("goalMetric").value;
 const target=Number(document.getElementById("goalTarget").value);
-const focus=document.getElementById("goalFocus").value||null;
+const focus=isPerformanceGoalMetric(metric)?null:(document.getElementById("goalFocus").value||null);
 const period=document.getElementById("goalPeriod").value;
 const deadline=document.getElementById("goalDeadline").value||null;
 if(!Number.isFinite(target)||target<=0){setAccountStatus("Enter a goal target greater than zero.","error");return;}
@@ -634,7 +703,7 @@ focus,
 period,
 target_value:target,
 current_value:0,
-unit:metric==="training_minutes"?"minutes":metric==="training_days"?"days":metric==="sessions_completed"?"sessions":"targets",
+unit:metric==="training_minutes"?"minutes":metric==="training_days"?"days":metric==="sessions_completed"?"sessions":metric==="success_targets"?"targets":metric==="matches_played"?"matches":metric==="shooting_percentage"||metric==="win_rate"?"%":metric,
 start_date:localDateString(),
 target_date:period==="custom"?deadline:null,
 completed:false
@@ -655,9 +724,17 @@ await loadGoals();
 await loadDashboardStats(currentUser.id);
 }
 
-function calculateGoalProgress(goal,sessions,drills){
+function calculateGoalProgress(goal,sessions,drills,matches){
 const start=goal.start_date||"0000-01-01";
 const end=goalEndDate(goal);
+if(isPerformanceGoalMetric(goal.metric)){
+const matchingMatches=(matches||[]).filter(m=>{const date=String(m.played_at||"").slice(0,10);return date>=start&&date<=end;});
+if(goal.metric==="matches_played")return matchingMatches.length;
+if(goal.metric==="wins")return matchingMatches.filter(m=>m.result==="win").length;
+if(["goals","assists","saves","shots"].includes(goal.metric))return matchingMatches.reduce((sum,m)=>sum+(Number(m[goal.metric])||0),0);
+if(goal.metric==="shooting_percentage"){const goals=matchingMatches.reduce((sum,m)=>sum+(Number(m.goals)||0),0);const shots=matchingMatches.reduce((sum,m)=>sum+(Number(m.shots)||0),0);return shots?Math.round((goals/shots)*1000)/10:0;}
+if(goal.metric==="win_rate")return matchingMatches.length?Math.round((matchingMatches.filter(m=>m.result==="win").length/matchingMatches.length)*1000)/10:0;
+}
 const matchingSessions=sessions.filter(s=>{
 const inDate=s.session_date>=start&&s.session_date<=end;
 const inFocus=!goal.focus||s.focus===goal.focus;
@@ -686,22 +763,24 @@ async function loadGoals(){
 const list=document.getElementById("goalList");
 if(!list)return;
 if(!currentUser){list.innerHTML="";return;}
-const [goalsResult,sessionsResult,drillsResult]=await Promise.all([
+const [goalsResult,sessionsResult,drillsResult,matchesResult]=await Promise.all([
 supabaseClient.from("goals").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false}),
 supabaseClient.from("training_sessions").select("id,session_date,focus,completed,completed_minutes").eq("user_id",currentUser.id),
-supabaseClient.from("training_drills").select("session_id,elapsed_seconds,success_target_met").eq("user_id",currentUser.id)
+supabaseClient.from("training_drills").select("session_id,elapsed_seconds,success_target_met").eq("user_id",currentUser.id),
+supabaseClient.from("match_performance").select("played_at,result,goals,assists,saves,shots").eq("user_id",currentUser.id)
 ]);
-if(goalsResult.error||sessionsResult.error||drillsResult.error){
-console.error("Goal load error",goalsResult.error||sessionsResult.error||drillsResult.error);
+if(goalsResult.error||sessionsResult.error||drillsResult.error||matchesResult.error){
+console.error("Goal load error",goalsResult.error||sessionsResult.error||drillsResult.error||matchesResult.error);
 return;
 }
 const goals=goalsResult.data||[];
 const sessions=sessionsResult.data||[];
 const drills=drillsResult.data||[];
+const matches=matchesResult.data||[];
 if(!goals.length){list.innerHTML=`<div class="account-note">No goals yet. Add one above and RL Trainer will track it automatically.</div>`;return;}
 const writes=[];
 list.innerHTML=goals.map(goal=>{
-const current=calculateGoalProgress(goal,sessions,drills);
+const current=calculateGoalProgress(goal,sessions,drills,matches);
 const target=Number(goal.target_value)||1;
 const complete=current>=target;
 if(Number(goal.current_value)!==Number(current)||Boolean(goal.completed)!==complete){
@@ -812,6 +891,95 @@ const actualMinutes=actualSeconds>0?Math.round(actualSeconds/6)/10:Number(s.comp
 const completedDrills=ds.filter(d=>d.completed).length;
 const successHits=ds.filter(d=>d.success_target_met).length;
 return`<div class="history-item"><div class="history-head"><div><div class="history-title">${s.focus} • ${s.program_name||"Training Session"}</div><div class="history-meta">${s.session_date} • ${s.rank} • Planned ${s.planned_minutes} min${s.completed?" • COMPLETE":" • IN PROGRESS"}</div></div></div><div class="history-stats"><span class="history-pill">⏱ ${actualMinutes} actual min</span><span class="history-pill">✓ ${completedDrills}/${ds.length} drills</span><span class="history-pill">🎯 ${successHits} targets hit</span></div></div>`;
+}).join("");
+}
+
+/* =====================================================
+   MATCH PERFORMANCE
+===================================================== */
+function performanceNumber(id){
+const value=Number(document.getElementById(id)?.value);
+return Number.isFinite(value)&&value>=0?Math.floor(value):0;
+}
+function setPerformanceDateDefault(){
+const input=document.getElementById("perfPlayedAt");
+if(!input||input.value)return;
+const now=new Date();
+const offset=now.getTimezoneOffset()*60000;
+input.value=new Date(now.getTime()-offset).toISOString().slice(0,16);
+}
+function performanceSourceLabel(source){
+return source==="rocket_league_stats_api"?"Rocket League Stats API":source==="replay"?"Replay Import":"Manual Entry";
+}
+async function saveManualMatch(){
+if(!currentUser){setAccountStatus("Log in before saving match performance.","error");return;}
+const playlist=document.getElementById("perfPlaylist").value||"Other";
+const result=document.getElementById("perfResult").value;
+const score=performanceNumber("perfScore");
+const goals=performanceNumber("perfGoalsInput");
+const assists=performanceNumber("perfAssistsInput");
+const saves=performanceNumber("perfSavesInput");
+const shots=performanceNumber("perfShotsInput");
+const teamRaw=document.getElementById("perfTeamScore").value;
+const opponentRaw=document.getElementById("perfOpponentScore").value;
+const team_score=teamRaw===""?null:performanceNumber("perfTeamScore");
+const opponent_score=opponentRaw===""?null:performanceNumber("perfOpponentScore");
+const notes=document.getElementById("perfNotes").value.trim()||null;
+const playedRaw=document.getElementById("perfPlayedAt").value;
+const played_at=playedRaw?new Date(playedRaw).toISOString():new Date().toISOString();
+if(goals>shots){setAccountStatus("Goals cannot be greater than shots. Check the match numbers.","error");return;}
+const shooting_percentage=shots?Math.round((goals/shots)*10000)/100:null;
+const {error}=await supabaseClient.from("match_performance").insert({user_id:currentUser.id,source:"manual",playlist,played_at,result,score,goals,assists,saves,shots,shooting_percentage,team_score,opponent_score,notes});
+if(error){setAccountStatus(error.message,"error");return;}
+setAccountStatus("Match performance saved.","success");
+["perfScore","perfGoalsInput","perfAssistsInput","perfSavesInput","perfShotsInput"].forEach(id=>document.getElementById(id).value="0");
+document.getElementById("perfTeamScore").value="";
+document.getElementById("perfOpponentScore").value="";
+document.getElementById("perfNotes").value="";
+document.getElementById("perfPlayedAt").value="";
+setPerformanceDateDefault();
+await loadPerformance();
+await loadGoals();
+}
+async function deletePerformanceMatch(matchId){
+if(!currentUser)return;
+if(!confirm("Delete this match entry?"))return;
+const {error}=await supabaseClient.from("match_performance").delete().eq("id",matchId).eq("user_id",currentUser.id);
+if(error){setAccountStatus(error.message,"error");return;}
+setAccountStatus("Match entry deleted.","success");
+await loadPerformance();
+await loadGoals();
+}
+async function loadPerformance(){
+const list=document.getElementById("performanceList");
+if(!list)return;
+setPerformanceDateDefault();
+if(!currentUser){list.innerHTML="";return;}
+const {data,error}=await supabaseClient.from("match_performance").select("id,source,playlist,played_at,result,score,goals,assists,saves,shots,shooting_percentage,team_score,opponent_score,notes").eq("user_id",currentUser.id).order("played_at",{ascending:false}).limit(100);
+if(error){console.error("Performance load error",error);return;}
+const rows=data||[];
+const wins=rows.filter(r=>r.result==="win").length;
+const goals=rows.reduce((s,r)=>s+(Number(r.goals)||0),0);
+const assists=rows.reduce((s,r)=>s+(Number(r.assists)||0),0);
+const saves=rows.reduce((s,r)=>s+(Number(r.saves)||0),0);
+const shots=rows.reduce((s,r)=>s+(Number(r.shots)||0),0);
+const winRate=rows.length?(wins/rows.length)*100:0;
+const shooting=shots?(goals/shots)*100:0;
+document.getElementById("perfMatches").textContent=rows.length;
+document.getElementById("perfWins").textContent=wins;
+document.getElementById("perfWinRate").textContent=`${winRate.toFixed(1)}%`;
+document.getElementById("perfShooting").textContent=`${shooting.toFixed(1)}%`;
+document.getElementById("perfGoals").textContent=goals;
+document.getElementById("perfAssists").textContent=assists;
+document.getElementById("perfSaves").textContent=saves;
+document.getElementById("perfShots").textContent=shots;
+if(!rows.length){list.innerHTML=`<div class="account-note">No match performance saved yet. Add one match above to start the performance timeline.</div>`;return;}
+list.innerHTML=rows.slice(0,20).map(r=>{
+const resultLabel=(r.result||"unknown").toUpperCase();
+const date=r.played_at?new Date(r.played_at).toLocaleString():"Unknown time";
+const scoreLine=r.team_score!==null&&r.team_score!==undefined&&r.opponent_score!==null&&r.opponent_score!==undefined?` • ${r.team_score}-${r.opponent_score}`:"";
+const shootingPct=Number(r.shots)>0?`${((Number(r.goals)||0)/Number(r.shots)*100).toFixed(1)}% shooting`:"No shots";
+return`<div class="performance-item performance-${r.result||"draw"}"><div class="performance-head"><div><div class="performance-title">${resultLabel} • ${r.playlist||"Rocket League Match"}${scoreLine}</div><div class="performance-meta">${date} • ${performanceSourceLabel(r.source)} • Score ${Number(r.score)||0}${r.notes?`<br>${r.notes}`:""}</div></div><button class="performance-delete" onclick="deletePerformanceMatch('${r.id}')">Delete</button></div><div class="performance-pills"><span class="performance-pill">⚽ ${Number(r.goals)||0} goals</span><span class="performance-pill">🤝 ${Number(r.assists)||0} assists</span><span class="performance-pill">🛡 ${Number(r.saves)||0} saves</span><span class="performance-pill">🎯 ${Number(r.shots)||0} shots</span><span class="performance-pill">${shootingPct}</span></div></div>`;
 }).join("");
 }
 
