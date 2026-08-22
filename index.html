@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RL Trainer</title>
 <style>
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#0d1320;color:#fff}.container{max-width:1120px;margin:auto;padding:35px 20px 70px}header{text-align:center;margin-bottom:35px}h1{font-size:48px;margin:0 0 8px}.subtitle{color:#aab7cf;font-size:18px;line-height:1.55}.card{background:#172033;padding:25px;border-radius:14px;margin-top:25px}.card h2{margin-top:0}.controls{display:grid;grid-template-columns:repeat(4,minmax(160px,1fr));gap:10px;align-items:center}select,button{padding:13px 15px;border:0;border-radius:8px;font-size:16px}select{background:#fff;color:#111827}button{background:#168cff;color:#fff;cursor:pointer}button:hover{background:#0672d8}.library-count{color:#75bdff;margin-top:12px;font-weight:bold}.results,.random-result{display:none}.random-result{background:#101827;margin-top:20px;padding:22px;border-radius:10px}.random-title{font-size:26px;font-weight:bold}.random-meta{color:#9fb1c9;margin-top:8px}.rank-header{text-align:center;margin-bottom:25px}.rank-title{font-size:32px;font-weight:bold}.total-time{color:#62b4ff;margin-top:7px;font-weight:bold}.badge{display:inline-block;padding:7px 12px;border-radius:20px;margin:10px 4px 0;font-size:14px;font-weight:bold}.focus-badge{background:#203653;color:#9bd1ff}.program-badge{background:#3a2d1f;color:#ffd69a}.mode-badge{background:#18382a;color:#86efac}.rank-focus{color:#b8c4d8;max-width:860px;margin:15px auto;line-height:1.65}.session-note{background:#122238;color:#cde7ff;padding:12px;border-radius:8px;margin:15px auto;max-width:860px;line-height:1.55}.block-title{font-size:18px;font-weight:bold;color:#a8d8ff;margin:26px 0 8px}.drill{background:#101827;border-left:4px solid #54d98c;padding:20px;margin:12px 0;border-radius:8px}.drill-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.drill-name{font-size:22px;font-weight:bold}.time{color:#67b7ff;font-weight:bold}.category{color:#67d99a;font-size:14px;margin-top:8px;font-weight:bold}.pack-name{margin-top:15px;font-size:18px;font-weight:bold}.creator{color:#8fa3bd;font-size:14px;margin-top:5px}.code{color:#70c0ff;font-family:monospace;font-size:19px;font-weight:bold;margin:12px 0}.section-label{font-weight:bold;margin-top:17px}.instructions,.why{line-height:1.65;margin-top:5px}.instructions{color:#c7d0df}.why{color:#aebbd0;font-style:italic}.success,.tip,.rank-standard{padding:13px;margin-top:14px;border-radius:7px;line-height:1.55}.success{background:#16263a;color:#cde7ff}.tip{background:#182a22;color:#c8f1d9}.rank-standard{background:#2a2135;color:#e8d5ff}.warning{background:#252013;color:#f5dda0;padding:15px;border-radius:8px;margin-top:22px;line-height:1.55}.regen{margin-top:16px;background:#30415e}footer{text-align:center;color:#71809a;margin-top:50px;font-size:14px}@media(max-width:850px){.controls{grid-template-columns:1fr 1fr}}@media(max-width:650px){h1{font-size:38px}.controls{grid-template-columns:1fr}select,button{width:100%}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#0d1320;color:#fff}.container{max-width:1120px;margin:auto;padding:35px 20px 70px}header{text-align:center;margin-bottom:35px}h1{font-size:48px;margin:0 0 8px}.subtitle{color:#aab7cf;font-size:18px;line-height:1.55}.card{background:#172033;padding:25px;border-radius:14px;margin-top:25px}.card h2{margin-top:0}.controls{display:grid;grid-template-columns:repeat(4,minmax(160px,1fr));gap:10px;align-items:center}select,button{padding:13px 15px;border:0;border-radius:8px;font-size:16px}select{background:#fff;color:#111827}button{background:#168cff;color:#fff;cursor:pointer}button:hover{background:#0672d8}.library-count{color:#75bdff;margin-top:12px;font-weight:bold}.results,.random-result{display:none}.random-result{background:#101827;margin-top:20px;padding:22px;border-radius:10px}.random-title{font-size:26px;font-weight:bold}.random-meta{color:#9fb1c9;margin-top:8px}.rank-header{text-align:center;margin-bottom:25px}.rank-title{font-size:32px;font-weight:bold}.total-time{color:#62b4ff;margin-top:7px;font-weight:bold}.badge{display:inline-block;padding:7px 12px;border-radius:20px;margin:10px 4px 0;font-size:14px;font-weight:bold}.focus-badge{background:#203653;color:#9bd1ff}.program-badge{background:#3a2d1f;color:#ffd69a}.mode-badge{background:#18382a;color:#86efac}.rank-focus{color:#b8c4d8;max-width:860px;margin:15px auto;line-height:1.65}.rank-guide{max-width:860px;margin:15px auto;background:#151f31;border:1px solid #2b3b56;border-radius:10px;padding:15px;text-align:left}.rank-guide strong{color:#a8d8ff}.rank-guide ul{margin:8px 0 0 20px;padding:0}.rank-guide li{margin:6px 0;color:#c7d0df}.avoid{color:#f3c98b;margin-top:10px}.session-note{background:#122238;color:#cde7ff;padding:12px;border-radius:8px;margin:15px auto;max-width:860px;line-height:1.55}.block-title{font-size:18px;font-weight:bold;color:#a8d8ff;margin:26px 0 8px}.drill{background:#101827;border-left:4px solid #54d98c;padding:20px;margin:12px 0;border-radius:8px}.drill-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.drill-name{font-size:22px;font-weight:bold}.time{color:#67b7ff;font-weight:bold}.category{color:#67d99a;font-size:14px;margin-top:8px;font-weight:bold}.pack-name{margin-top:15px;font-size:18px;font-weight:bold}.creator{color:#8fa3bd;font-size:14px;margin-top:5px}.code{color:#70c0ff;font-family:monospace;font-size:19px;font-weight:bold;margin:12px 0}.section-label{font-weight:bold;margin-top:17px}.instructions,.why{line-height:1.65;margin-top:5px}.instructions{color:#c7d0df}.why{color:#aebbd0;font-style:italic}.success,.tip,.rank-standard{padding:13px;margin-top:14px;border-radius:7px;line-height:1.55}.success{background:#16263a;color:#cde7ff}.tip{background:#182a22;color:#c8f1d9}.rank-standard{background:#2a2135;color:#e8d5ff}.warning{background:#252013;color:#f5dda0;padding:15px;border-radius:8px;margin-top:22px;line-height:1.55}.regen{margin-top:16px;background:#30415e}footer{text-align:center;color:#71809a;margin-top:50px;font-size:14px}@media(max-width:850px){.controls{grid-template-columns:1fr 1fr}}@media(max-width:650px){h1{font-size:38px}.controls{grid-template-columns:1fr}select,button{width:100%}}
 </style>
 </head>
 <body>
@@ -35,33 +35,116 @@
 </div>
 
 <script>
+
 const packs={
-groundShots:{name:"Ground Shots",creator:"Poquito",code:"6EB1-79B2-33B8-681C",category:"Shooting"},saves:{name:"Saves",creator:"Poquito",code:"2E23-ABD5-20C6-DBD4",category:"Defense"},clears:{name:"Clears",creator:"Poquito",code:"5DA1-EA21-5EF9-EA21",category:"Defense"},wallShots:{name:"Wall Shots",creator:"Poquito",code:"9F6D-4387-4C57-2E4B",category:"Wall Play"},aerialPass:{name:"Aerial Shots - Pass",creator:"Poquito",code:"C7E0-9E0B-B739-A899",category:"Aerials"},aerialRedirects:{name:"Aerial Shots - Redirects",creator:"Poquito",code:"8D93-C997-0ACD-8416",category:"Redirects"},aerialRebounds:{name:"Aerial Shots - Rebounds",creator:"Poquito",code:"E94F-C04B-434D-7FE6",category:"Backboard"},shootingConsistency:{name:"Shooting Consistency",creator:"Wayprotein",code:"4912-A5C9-9A56-555D",category:"Shooting"},doubleJumpAerials:{name:"Double Jump Aerials",creator:"Doomsee",code:"F269-B159-0BAC-AC2E",category:"Aerials"},backboardTherapy:{name:"Backboard Therapy",creator:"Wayprotein",code:"D7F8-FD53-98D1-DAFE",category:"Backboard"},doubleTapPlayground:{name:"Double Tap Playground",creator:"Wayprotein",code:"CAFC-FB3E-3C0F-B8F1",category:"Double Touches"},selfSetBackboard:{name:"Self-Set Backboard Consistency",creator:"Community",code:"23BC-0377-C228-A338",category:"Double Touches"},backboardShotsLachinio:{name:"Backboard Shots",creator:"Lachinio",code:"AFFD-5023-BD4F-D320",category:"Backboard"},backboardShotsSquishy:{name:"Backboard Shots",creator:"Squishy",code:"2486-EEA6-B887-A040",category:"Backboard"},backboardConsistency:{name:"Backboard Shots - Consistency",creator:"Noir1992",code:"FDC7-3073-501D-0054",category:"Backboard"},defensiveBackboardReads:{name:"Defensive Backboard Reads",creator:"Torment",code:"9F09-E4D3-EAB0-69AD",category:"Defense"},sideWallClears:{name:"Side Wall Clears",creator:"NRG Jacob",code:"A9B9-16DF-1975-53F0",category:"Wall Play"},angledShots:{name:"Angled Shots",creator:"G2 Kronovi",code:"04CC-0655-E7D1-99CD",category:"Shooting"},consistencyPack:{name:"Consistency Pack #1",creator:"GarrettG",code:"65A3-8CEB-9B57-EC16",category:"All-Around"},shotsWallsRedirects:{name:"Shots, Walls and Redirects",creator:"Sir Pancake III",code:"DB16-B097-6181-F26A",category:"All-Around"},warmupShotsClears:{name:"Warm Up Shots/Clears",creator:"Mr Jokerer",code:"21F1-B6A9-2525-C0C8",category:"All-Around"},backboardReads:{name:"Backboard Reads",creator:"Community",code:"07E1-81BC-DD2E-BF8C",category:"Defense"},rocketeerAerialVariety:{name:"Rocketeer Aerial Variety",creator:"Community",code:"8330-8367-C58A-3DE0",category:"Aerials"},shotsYouShouldntMiss:{name:"Shots You Shouldn't Miss",creator:"Community",code:"42BF-686D-E047-574B",category:"Shooting"},uncomfortableSaves:{name:"Uncomfortable Saves",creator:"Community",code:"5CB2-6D82-1B54-47B7",category:"Defense"},powershots:{name:"Powershots",creator:"Yeeza",code:"7028-5E10-88EF-E83E",category:"Shooting"},shadowDefense:{name:"[Why You Suck] Shadow Defense",creator:"OrangePie",code:"5CCE-FB29-7B05-A0B1",category:"Defense"}
+groundShots:{name:"Ground Shots",creator:"Poquito",code:"6EB1-79B2-33B8-681C",category:"Shooting"},
+saves:{name:"Saves",creator:"Poquito",code:"2E23-ABD5-20C6-DBD4",category:"Defense"},
+clears:{name:"Clears",creator:"Poquito",code:"5DA1-EA21-5EF9-EA21",category:"Defense"},
+wallShots:{name:"Wall Shots",creator:"Poquito",code:"9F6D-4387-4C57-2E4B",category:"Wall Play"},
+aerialPass:{name:"Aerial Shots - Pass",creator:"Poquito",code:"C7E0-9E0B-B739-A899",category:"Aerials"},
+aerialRedirects:{name:"Aerial Shots - Redirects",creator:"Poquito",code:"8D93-C997-0ACD-8416",category:"Redirects"},
+aerialRebounds:{name:"Aerial Shots - Rebounds",creator:"Poquito",code:"E94F-C04B-434D-7FE6",category:"Backboard"},
+shootingConsistency:{name:"Shooting Consistency",creator:"Wayprotein",code:"4912-A5C9-9A56-555D",category:"Shooting"},
+doubleJumpAerials:{name:"Double Jump Aerials",creator:"Doomsee",code:"F269-B159-0BAC-AC2E",category:"Aerials"},
+backboardTherapy:{name:"Backboard Therapy",creator:"Wayprotein",code:"D7F8-FD53-98D1-DAFE",category:"Backboard"},
+doubleTapPlayground:{name:"Double Tap Playground",creator:"Wayprotein",code:"CAFC-FB3E-3C0F-B8F1",category:"Double Touches"},
+selfSetBackboard:{name:"Self-Set Backboard Consistency",creator:"Community",code:"23BC-0377-C228-A338",category:"Double Touches"},
+backboardShotsLachinio:{name:"Backboard Shots",creator:"Lachinio",code:"AFFD-5023-BD4F-D320",category:"Backboard"},
+backboardShotsSquishy:{name:"Backboard Shots",creator:"Squishy",code:"2486-EEA6-B887-A040",category:"Backboard"},
+backboardConsistency:{name:"Backboard Shots - Consistency",creator:"Noir1992",code:"FDC7-3073-501D-0054",category:"Backboard"},
+defensiveBackboardReads:{name:"Defensive Backboard Reads",creator:"Torment",code:"9F09-E4D3-EAB0-69AD",category:"Defense"},
+sideWallClears:{name:"Side Wall Clears",creator:"NRG Jacob",code:"A9B9-16DF-1975-53F0",category:"Wall Play"},
+angledShots:{name:"Angled Shots",creator:"G2 Kronovi",code:"04CC-0655-E7D1-99CD",category:"Shooting"},
+consistencyPack:{name:"Consistency Pack #1",creator:"GarrettG",code:"65A3-8CEB-9B57-EC16",category:"All-Around"},
+shotsWallsRedirects:{name:"Shots, Walls and Redirects",creator:"Sir Pancake III",code:"DB16-B097-6181-F26A",category:"All-Around"},
+warmupShotsClears:{name:"Warm Up Shots/Clears",creator:"Mr Jokerer",code:"21F1-B6A9-2525-C0C8",category:"All-Around"},
+backboardReads:{name:"Backboard Reads",creator:"Community",code:"07E1-81BC-DD2E-BF8C",category:"Defense"},
+rocketeerAerialVariety:{name:"Rocketeer Aerial Variety",creator:"Community",code:"8330-8367-C58A-3DE0",category:"Aerials"},
+shotsYouShouldntMiss:{name:"Shots You Shouldn't Miss",creator:"Community",code:"42BF-686D-E047-574B",category:"Shooting"},
+uncomfortableSaves:{name:"Uncomfortable Saves",creator:"Community",code:"5CB2-6D82-1B54-47B7",category:"Defense"},
+powershots:{name:"Powershots",creator:"Yeeza",code:"7028-5E10-88EF-E83E",category:"Shooting"},
+ultimateWarmup:{name:"The ultimate warm-up",creator:"Hinata",code:"FA24-B2B7-2E8E-193B",category:"All-Around"},
+deevo:{name:"deevo",creator:"Torsos",code:"0CB0-16C8-DAAD-B578",category:"Backboard"},
+dribbleTraining:{name:"Dribble Training",creator:"Virge",code:"04C1-42C8-6E5D-6F75",category:"Ground Control"},
+passTraining:{name:"Pass Training",creator:"FLuuMP",code:"BFD6-DA9F-49A2-81B3",category:"Aerials"},
+shadowSaves:{name:"Shadow Saves",creator:"Wayprotein",code:"6A8C-7B90-2AAA-B6B5",category:"Defense"},
+selfDoubleTouchPro:{name:"Self Double Touch: Pro",creator:"Plasmid",code:"E8EB-C454-38AF-9637",category:"Double Touches"},
+shadowDefense:{name:"[Why You Suck] Shadow Defense",creator:"OrangePie",code:"5CCE-FB29-7B05-A0B1",category:"Defense"}
 };
 
-const rankProfiles={bronze:{label:"Bronze",level:0,target:"Aim for 5 of 10 clean attempts.",style:"Control first. Slow down if needed."},silver:{label:"Silver",level:1,target:"Aim for 6 of 10 clean attempts.",style:"Add some speed while keeping control."},gold:{label:"Gold",level:2,target:"Aim for 7 of 10 useful attempts.",style:"Demand intentional placement and cleaner recoveries."},platinum:{label:"Platinum",level:3,target:"Aim for 7 of 10 at realistic pace.",style:"Reduce hesitation and make each touch deliberate."},diamond:{label:"Diamond",level:4,target:"Aim for 8 of 10 controlled attempts.",style:"Train near match speed and recover immediately."},champion:{label:"Champion",level:5,target:"Aim for 8 of 10 repeatable attempts at game speed.",style:"Every touch should have a purpose."},grandchampion:{label:"Grand Champion",level:6,target:"Aim for 9 of 10 without slowing the drill down.",style:"Prioritize speed, boost efficiency, and useful follow-ups."},ssl:{label:"Supersonic Legend",level:7,target:"Aim for 9 of 10 or better with precise placement.",style:"Increase difficulty with speed, variation, and consistency."}};
+const rankProfiles={
+bronze:{label:"Bronze",level:0,target:"Aim for 5 of 10 clean attempts.",style:"Control first. Slow down if needed."},
+silver:{label:"Silver",level:1,target:"Aim for 6 of 10 clean attempts.",style:"Add some speed while keeping control."},
+gold:{label:"Gold",level:2,target:"Aim for 7 of 10 useful attempts.",style:"Demand intentional placement and cleaner recoveries."},
+platinum:{label:"Platinum",level:3,target:"Aim for 7 of 10 at realistic pace.",style:"Reduce hesitation and make each touch deliberate."},
+diamond:{label:"Diamond",level:4,target:"Aim for 8 of 10 controlled attempts.",style:"Train near match speed and recover immediately."},
+champion:{label:"Champion",level:5,target:"Aim for 8 of 10 repeatable attempts at game speed.",style:"Every touch should have a purpose."},
+grandchampion:{label:"Grand Champion",level:6,target:"Aim for 9 of 10 without slowing the drill down.",style:"Prioritize speed, boost efficiency, and useful follow-ups."},
+ssl:{label:"Supersonic Legend",level:7,target:"Aim for 9 of 10 or better with precise placement.",style:"Increase difficulty with speed, variation, and consistency."}
+};
 
-const focusLabels={allaround:"All-Around Improvement",shootingAccuracy:"Shooting Accuracy",powerShots:"Power Shots",groundControl:"Ground Control",saves:"Saves",clears:"Clears",shadowDefense:"Shadow Defense",basicAerials:"Basic Aerials",fastAerials:"Fast Aerials",aerialAccuracy:"Aerial Accuracy",redirects:"Redirects",wallPlay:"Wall Play",backboardReads:"Backboard Reads",doubleTouches:"Double Touches",recoveries:"Recoveries / Car Control",freeplaySpeed:"Free Play / Speed"};
+const rankGuides={
+bronze:{priorities:["Reliable car movement and ball contact","Basic shots on target","Simple saves and clean landings"],avoid:"Do not make flip resets, air dribbles, or constant air roll the center of your training yet."},
+silver:{priorities:["Strong contact and basic shot placement","Safe clears and recoveries","Reading ground and low-air balls"],avoid:"Do not trade basic consistency for flashy mechanics you cannot reproduce in matches."},
+gold:{priorities:["Powerful, placed shots","Useful clears and basic wall comfort","Simple aerial launches and recoveries"],avoid:"Advanced mechanics are optional; fundamentals should still take most of the session."},
+platinum:{priorities:["Shooting consistency at higher pace","Aerial fundamentals and shadow defense","Wall play, recoveries, and boost-efficient movement"],avoid:"Do not confuse playing faster with rushing every touch."},
+diamond:{priorities:["Fast aerials and backboard defense","First-touch quality and recovery speed","Consistent shooting under pressure"],avoid:"Do not let double taps or other advanced mechanics replace basic consistency and positioning."},
+champion:{priorities:["Game-speed shooting and first touches","Backboard reads and useful aerial touches","Possession after contact and fast recoveries"],avoid:"A mechanic that only works with perfect setup is not yet match-ready."},
+grandchampion:{priorities:["Mechanical consistency at full speed","Threatening first touches and possession","Boost efficiency, 50s, and adaptable recoveries"],avoid:"Do not autopilot training; target the weakness that is actually costing possessions or goals."},
+ssl:{priorities:["Pinpoint weakness-specific training","Repeatable mechanics under pressure","Adaptability, first touches, and efficiency"],avoid:"Do not chase novelty for its own sake; high-level improvement is often consistency and decision quality."}
+};
 
-const free={ballContact:{name:"Ball Contact Fundamentals",category:"Ground Control",instructions:"Chase the ball continuously and make controlled contact. Recover immediately after every touch.",why:"Reliable contact is the base skill behind every other mechanic.",tip:"Clean contact first, speed second."},recovery:{name:"Recovery Circuit",category:"Recoveries",instructions:"Chain half-flips, wavedashes, wall exits, and powerslide landings while staying in motion.",why:"Fast recovery keeps you active in the play.",tip:"Use the recovery that fits the landing."},power:{name:"Power Contact Free Play",category:"Power Shots",instructions:"Strike the ball shortly after the bounce and drive through the center of it.",why:"Powerful contact creates harder saves and stronger clears.",tip:"Give yourself space to read the bounce."},dribble:{name:"Ground Control Circuit",category:"Ground Control",instructions:"Carry the ball slowly, make cuts, catch bounces, and keep the ball close.",why:"Ground control gives you options instead of giving possession away.",tip:"Use small throttle and steering inputs."},shadow:{name:"Shadow Defense Simulation",category:"Shadow Defense",instructions:"Retreat between the ball and goal, match the attack, then challenge late enough to make a controlled save.",why:"Shadowing buys time and improves challenge timing.",tip:"Stay between the ball and the center of your goal."},aerial:{name:"Aerial Launch Repetitions",category:"Aerials",instructions:"Pop the ball upward and practice controlled aerial takeoffs with a clean line to the ball.",why:"A clean launch makes every aerial mechanic easier.",tip:"Aim first, then boost."},fastAerial:{name:"Fast-Aerial Launch Drill",category:"Fast Aerials",instructions:"Repeat fast-aerial takeoffs from stationary and moving positions while minimizing wasted boost.",why:"Efficient launches reach contested balls sooner.",tip:"Repeat the input sequence consistently."},redirect:{name:"Redirect Read Free Play",category:"Redirects",instructions:"Bang the ball off walls, reposition, and meet the next touch from an angle.",why:"Redirects depend on early reads and approach lines.",tip:"Adjust before the final second."},wall:{name:"Wall Movement and Recovery",category:"Wall Play",instructions:"Drive both walls, jump off at different heights, rotate, land cleanly, and continue moving.",why:"Wall comfort requires movement skill as much as ball contact.",tip:"Practice both walls equally."},backboard:{name:"Backboard Read Simulation",category:"Backboard Reads",instructions:"Hit the ball toward the backboard, reposition immediately, and read the rebound for a follow-up or clear.",why:"Early backboard reads create time and control.",tip:"Read the approach before the bounce."},pressure:{name:"Pressure Free Play",category:"Game Transfer",instructions:"Play continuously at high speed without resetting. Chain catches, wall touches, aerials, shots, and recoveries.",why:"This connects isolated mechanics into real-game sequences.",tip:"Treat bad touches as recovery problems instead of restarting."},integrated:{name:"Integrated Free Play",category:"Game Transfer",instructions:"Combine ground control, aerial attacks, wall play, recoveries, and boost management without resetting.",why:"Integrated practice connects mechanics under imperfect conditions.",tip:"Reduce wasted boost while keeping pace."}};
+const focusLabels={
+allaround:"All-Around Improvement",
+shootingAccuracy:"Shooting Accuracy",
+powerShots:"Power Shots",
+groundControl:"Ground Control",
+saves:"Saves",
+clears:"Clears",
+shadowDefense:"Shadow Defense",
+basicAerials:"Basic Aerials",
+fastAerials:"Fast Aerials",
+aerialAccuracy:"Aerial Accuracy",
+redirects:"Redirects",
+wallPlay:"Wall Play",
+backboardReads:"Backboard Reads",
+doubleTouches:"Double Touches",
+recoveries:"Recoveries / Car Control",
+freeplaySpeed:"Free Play / Speed"
+};
+
+const free={
+ballContact:{name:"Ball Contact Fundamentals",category:"Ground Control",instructions:"Chase the ball continuously and make controlled contact. Recover immediately after every touch.",why:"Reliable contact is the base skill behind every other mechanic.",tip:"Clean contact first, speed second."},
+recovery:{name:"Recovery Circuit",category:"Recoveries",instructions:"Chain half-flips, wavedashes, wall exits, and powerslide landings while staying in motion.",why:"Fast recovery keeps you active in the play.",tip:"Use the recovery that fits the landing."},
+power:{name:"Power Contact Free Play",category:"Power Shots",instructions:"Strike the ball shortly after the bounce and drive through the center of it.",why:"Powerful contact creates harder saves and stronger clears.",tip:"Give yourself space to read the bounce."},
+dribble:{name:"Ground Control Circuit",category:"Ground Control",instructions:"Carry the ball slowly, make cuts, catch bounces, and keep the ball close.",why:"Ground control gives you options instead of giving possession away.",tip:"Use small throttle and steering inputs."},
+shadow:{name:"Shadow Defense Simulation",category:"Shadow Defense",instructions:"Retreat between the ball and goal, match the attack, then challenge late enough to make a controlled save.",why:"Shadowing buys time and improves challenge timing.",tip:"Stay between the ball and the center of your goal."},
+aerial:{name:"Aerial Launch Repetitions",category:"Aerials",instructions:"Pop the ball upward and practice controlled aerial takeoffs with a clean line to the ball.",why:"A clean launch makes every aerial mechanic easier.",tip:"Aim first, then boost."},
+fastAerial:{name:"Fast-Aerial Launch Drill",category:"Fast Aerials",instructions:"Repeat fast-aerial takeoffs from stationary and moving positions while minimizing wasted boost.",why:"Efficient launches reach contested balls sooner.",tip:"Repeat the input sequence consistently."},
+redirect:{name:"Redirect Read Free Play",category:"Redirects",instructions:"Bang the ball off walls, reposition, and meet the next touch from an angle.",why:"Redirects depend on early reads and approach lines.",tip:"Adjust before the final second."},
+wall:{name:"Wall Movement and Recovery",category:"Wall Play",instructions:"Drive both walls, jump off at different heights, rotate, land cleanly, and continue moving.",why:"Wall comfort requires movement skill as much as ball contact.",tip:"Practice both walls equally."},
+backboard:{name:"Backboard Read Simulation",category:"Backboard Reads",instructions:"Hit the ball toward the backboard, reposition immediately, and read the rebound for a follow-up or clear.",why:"Early backboard reads create time and control.",tip:"Read the approach before the bounce."},
+pressure:{name:"Pressure Free Play",category:"Game Transfer",instructions:"Play continuously at high speed without resetting. Chain catches, wall touches, aerials, shots, and recoveries.",why:"This connects isolated mechanics into real-game sequences.",tip:"Treat bad touches as recovery problems instead of restarting."},
+integrated:{name:"Integrated Free Play",category:"Game Transfer",instructions:"Combine ground control, aerial attacks, wall play, recoveries, and boost management without resetting.",why:"Integrated practice connects mechanics under imperfect conditions.",tip:"Reduce wasted boost while keeping pace."}
+};
 
 const focusResources={
 shootingAccuracy:[{pack:"groundShots"},{pack:"shootingConsistency"},{pack:"angledShots"},{pack:"shotsYouShouldntMiss"},{free:"pressure"}],
 powerShots:[{pack:"powershots"},{pack:"groundShots"},{pack:"warmupShotsClears"},{free:"power"},{free:"pressure"}],
-groundControl:[{free:"ballContact"},{free:"dribble"},{pack:"groundShots"},{free:"pressure"},{free:"integrated"}],
-saves:[{pack:"saves"},{pack:"uncomfortableSaves"},{pack:"backboardReads"},{pack:"defensiveBackboardReads"},{free:"shadow"}],
+groundControl:[{free:"ballContact"},{pack:"dribbleTraining"},{free:"dribble"},{pack:"groundShots"},{free:"integrated"}],
+saves:[{pack:"saves"},{pack:"shadowSaves"},{pack:"uncomfortableSaves"},{pack:"defensiveBackboardReads"},{free:"shadow"}],
 clears:[{pack:"clears"},{pack:"sideWallClears"},{pack:"warmupShotsClears"},{pack:"defensiveBackboardReads"},{free:"pressure"}],
-shadowDefense:[{pack:"shadowDefense"},{pack:"uncomfortableSaves"},{pack:"saves"},{free:"shadow"},{pack:"defensiveBackboardReads"}],
-basicAerials:[{free:"aerial"},{pack:"aerialPass"},{pack:"doubleJumpAerials"},{pack:"rocketeerAerialVariety"},{free:"pressure"}],
+shadowDefense:[{pack:"shadowDefense"},{pack:"shadowSaves"},{pack:"uncomfortableSaves"},{free:"shadow"},{pack:"defensiveBackboardReads"}],
+basicAerials:[{free:"aerial"},{pack:"aerialPass"},{pack:"passTraining"},{pack:"doubleJumpAerials"},{free:"pressure"}],
 fastAerials:[{free:"fastAerial"},{pack:"doubleJumpAerials"},{pack:"aerialPass"},{pack:"rocketeerAerialVariety"},{free:"pressure"}],
 aerialAccuracy:[{pack:"aerialPass"},{pack:"aerialRedirects"},{pack:"aerialRebounds"},{pack:"rocketeerAerialVariety"},{free:"pressure"}],
 redirects:[{free:"redirect"},{pack:"aerialRedirects"},{pack:"shotsWallsRedirects"},{pack:"aerialRebounds"},{free:"pressure"}],
 wallPlay:[{free:"wall"},{pack:"wallShots"},{pack:"sideWallClears"},{pack:"shotsWallsRedirects"},{free:"pressure"}],
-backboardReads:[{free:"backboard"},{pack:"backboardTherapy"},{pack:"defensiveBackboardReads"},{pack:"backboardShotsLachinio"},{pack:"backboardConsistency"}],
-doubleTouches:[{free:"backboard"},{pack:"selfSetBackboard"},{pack:"doubleTapPlayground"},{pack:"backboardShotsSquishy"},{pack:"backboardConsistency"}],
+backboardReads:[{free:"backboard"},{pack:"backboardTherapy"},{pack:"deevo"},{pack:"defensiveBackboardReads"},{pack:"backboardConsistency"}],
+doubleTouches:[{free:"backboard"},{pack:"selfSetBackboard"},{pack:"selfDoubleTouchPro"},{pack:"doubleTapPlayground"},{pack:"deevo"}],
 recoveries:[{free:"recovery"},{free:"wall"},{free:"pressure"},{free:"integrated"},{free:"ballContact"}],
 freeplaySpeed:[{free:"ballContact"},{free:"power"},{free:"recovery"},{free:"pressure"},{free:"integrated"}],
-allaround:[{pack:"consistencyPack"},{pack:"shootingConsistency"},{pack:"saves"},{pack:"aerialPass"},{pack:"wallShots"},{pack:"shotsWallsRedirects"},{pack:"uncomfortableSaves"},{free:"pressure"},{free:"integrated"}]
+allaround:[{pack:"ultimateWarmup"},{pack:"shootingConsistency"},{pack:"saves"},{pack:"aerialPass"},{pack:"wallShots"},{pack:"consistencyPack"},{pack:"uncomfortableSaves"},{free:"pressure"},{free:"integrated"}]
 };
 
 const programBanks={
@@ -84,146 +167,453 @@ const programBanks={
 {name:"Full Practice Day",desc:"A complete focused practice with fundamentals, variation, pressure, and long game transfer.",steps:[{label:"Foundation",min:12,slot:1},{label:"Technical Work",min:12,slot:2},{label:"Variation",min:10,slot:3},{label:"Pressure",min:10,slot:0},{label:"Game Transfer",min:16,slot:4}]},
 {name:"Mastery Block",desc:"Spend most of the hour on two demanding forms of the skill, then prove it in application.",steps:[{label:"Primary Tool",min:18,slot:1},{label:"Secondary Tool",min:14,slot:3},{label:"Control Check",min:10,slot:2},{label:"Transfer",min:18,slot:4}]},
 {name:"Competition Prep",desc:"A match-oriented hour with less isolated warm-up and more realistic pressure.",steps:[{label:"Activation",min:8,slot:0},{label:"Match-Speed Work",min:14,slot:2},{label:"Pressure Reps",min:14,slot:3},{label:"Extended Application",min:24,slot:4}]}
-]};
+]
+};
 
-const packInstructions={Shooting:"Choose a target before each attempt. Focus on clean contact, placement, and a useful recovery.",Defense:"Read the shot before committing. Make the safest useful touch you can, then recover immediately.","Wall Play":"Approach the wall under control. Read the ball before jumping and prioritize clean contact.",Aerials:"Take the shortest controlled path to the ball. Minimize unnecessary air roll and wasted boost.",Redirects:"Focus on your approach line and the angle of your final touch. Make small corrections instead of oversteering.",Backboard:"Read the ball's approach before it hits the backboard. Position early and choose a controlled follow-up.","Double Touches":"Grade the setup first. Your first touch should create a second touch you can realistically reach.","All-Around":"Move through the drill at realistic pace. Prioritize clean execution and immediate recoveries."};
+const packInstructions={
+"Ground Control":"Keep the ball close and use small touches. Practice catches, controlled changes of direction, and possession rather than booming the ball away.",
+Shooting:"Choose a target before each attempt. Focus on clean contact, placement, and a useful recovery.",
+Defense:"Read the shot before committing. Make the safest useful touch you can, then recover immediately.",
+"Wall Play":"Approach the wall under control. Read the ball before jumping and prioritize clean contact.",
+Aerials:"Take the shortest controlled path to the ball. Minimize unnecessary air roll and wasted boost.",
+Redirects:"Focus on your approach line and the angle of your final touch. Make small corrections instead of oversteering.",
+Backboard:"Read the ball's approach before it hits the backboard. Position early and choose a controlled follow-up.",
+"Double Touches":"Grade the setup first. Your first touch should create a second touch you can realistically reach.",
+"All-Around":"Move through the drill at realistic pace. Prioritize clean execution and immediate recoveries."
+};
 
-const packWhy={Shooting:"Better shooting converts more of the chances you already create.",Defense:"Controlled defense prevents follow-up shots and can turn saves into possession.","Wall Play":"Wall comfort expands both offensive and defensive options.",Aerials:"Efficient aerial movement helps you reach contested balls earlier and with more control.",Redirects:"Redirect work develops aerial reading, approach angles, and precision.",Backboard:"Backboard reads become increasingly important as opponents use the walls more effectively.","Double Touches":"Repeatable setups make advanced mechanics useful in real matches.","All-Around":"Balanced repetition exposes weak areas while keeping several core mechanics active."};
+const packWhy={
+"Ground Control":"Better first touches and close control create time, options, and threatening possessions.",
+Shooting:"Better shooting converts more of the chances you already create.",
+Defense:"Controlled defense prevents follow-up shots and can turn saves into possession.",
+"Wall Play":"Wall comfort expands both offensive and defensive options.",
+Aerials:"Efficient aerial movement helps you reach contested balls earlier and with more control.",
+Redirects:"Redirect work develops aerial reading, approach angles, and precision.",
+Backboard:"Backboard reads become increasingly important as opponents use the walls more effectively.",
+"Double Touches":"Repeatable setups make advanced mechanics useful in real matches.",
+"All-Around":"Balanced repetition exposes weak areas while keeping several core mechanics active."
+};
 
-function rankAdjustment(focus,rankKey){const level=rankProfiles[rankKey].level;const advanced=["redirects","doubleTouches","backboardReads","fastAerials"];if(advanced.includes(focus)&&level<=2)return"For this rank, judge success mainly by the setup, read, and clean first touch. Finishing the advanced mechanic is optional.";if(advanced.includes(focus)&&level<=4)return"Prioritize controlled setups and repeatable contact before maximum speed.";return rankProfiles[rankKey].style;}
+function rankAdjustment(focus,rankKey){
+const level=rankProfiles[rankKey].level;
+const advanced=["redirects","doubleTouches","backboardReads","fastAerials"];
 
-function resourceAt(focus,index){const list=focusResources[focus];return list[index%list.length];}
+if(advanced.includes(focus)&&level<=2)
+return "For this rank, judge success mainly by the setup, read, and clean first touch. Finishing the advanced mechanic is optional.";
+
+if(advanced.includes(focus)&&level<=4)
+return "Prioritize controlled setups and repeatable contact before maximum speed.";
+
+return rankProfiles[rankKey].style;
+}
+
+function resourceAt(focus,index){
+const list=focusResources[focus];
+return list[index%list.length];
+}
 
 function materializeResource(resource,focus,rankKey){
+
 if(resource.free){
+
 const t=free[resource.free];
-return{name:t.name,category:t.category,instructions:t.instructions,success:`${rankProfiles[rankKey].target}`,why:t.why,tip:`${t.tip} ${rankAdjustment(focus,rankKey)}`,freePlay:true,freeKey:resource.free};
-}
-const p=packs[resource.pack];
-return{name:p.name,category:p.category,instructions:packInstructions[p.category]||packInstructions["All-Around"],success:`Complete the drill with intentional, controlled touches. ${rankProfiles[rankKey].target}`,why:packWhy[p.category]||packWhy["All-Around"],tip:rankAdjustment(focus,rankKey),freePlay:false,packKey:resource.pack};
+
+return{
+name:t.name,
+category:t.category,
+instructions:t.instructions,
+success:`${rankProfiles[rankKey].target}`,
+why:t.why,
+tip:`${t.tip} ${rankAdjustment(focus,rankKey)}`,
+freePlay:true,
+freeKey:resource.free
+};
+
 }
 
-function lastProgramKey(rank,focus,time){return`rl_program_${rank}_${focus}_${time}`;}
+const p=packs[resource.pack];
+
+return{
+name:p.name,
+category:p.category,
+instructions:packInstructions[p.category]||packInstructions["All-Around"],
+success:`Complete the drill with intentional, controlled touches. ${rankProfiles[rankKey].target}`,
+why:packWhy[p.category]||packWhy["All-Around"],
+tip:rankAdjustment(focus,rankKey),
+freePlay:false,
+packKey:resource.pack
+};
+
+}
+
+function lastProgramKey(rank,focus,time){
+return `rl_program_${rank}_${focus}_${time}`;
+}
 
 function chooseProgram(rank,focus,time){
+
 const bank=programBanks[time];
 const key=lastProgramKey(rank,focus,time);
 const last=Number(localStorage.getItem(key));
+
 let choices=bank.map((_,i)=>i).filter(i=>i!==last);
-if(!choices.length)choices=bank.map((_,i)=>i);
+
+if(!choices.length)
+choices=bank.map((_,i)=>i);
+
 const pick=choices[Math.floor(Math.random()*choices.length)];
+
 localStorage.setItem(key,String(pick));
+
 return bank[pick];
 }
 
 function buildSession(rank,focus,time){
+
 const program=chooseProgram(rank,focus,time);
-const session=program.steps.map(step=>({...step,drill:materializeResource(resourceAt(focus,step.slot),focus,rank)}));
+
+const session=program.steps.map(step=>({
+...step,
+drill:materializeResource(
+resourceAt(focus,step.slot),
+focus,
+rank
+)
+}));
+
 return{program,session};
 }
 
 const masterPackLibrary=Object.values(packs);
-document.getElementById("libraryCount").textContent=`${masterPackLibrary.length} unique custom training packs currently in the RL Trainer library.`;
+
+document.getElementById("libraryCount").textContent=
+`${masterPackLibrary.length} unique custom training packs currently in the RL Trainer library.`;
 
 function randomPack(){
-const p=masterPackLibrary[Math.floor(Math.random()*masterPackLibrary.length)];
+
+const p=masterPackLibrary[
+Math.floor(Math.random()*masterPackLibrary.length)
+];
+
 const box=document.getElementById("randomResult");
-box.innerHTML=`<div class="random-title">${p.name}</div><div class="random-meta">Creator: ${p.creator}</div><div class="random-meta">Category: ${p.category}</div><div class="code">${p.code}</div><button onclick="copyCode('${p.code}')">Copy Training Code</button>`;
+
+box.innerHTML=`
+<div class="random-title">${p.name}</div>
+<div class="random-meta">Creator: ${p.creator}</div>
+<div class="random-meta">Category: ${p.category}</div>
+<div class="code">${p.code}</div>
+<button onclick="copyCode('${p.code}')">
+Copy Training Code
+</button>
+`;
+
 box.style.display="block";
+
 }
 
 function buildPlan(){
+
 const rank=document.getElementById("rankSelect").value;
 const time=Number(document.getElementById("timeSelect").value);
 const focus=document.getElementById("focusSelect").value;
 const results=document.getElementById("planResults");
 
 if(!rank||!time||!focus){
-alert("Choose your rank, available time, and training focus.");
+
+alert(
+"Choose your rank, available time, and training focus."
+);
+
 return;
+
 }
 
-const built=buildSession(rank,focus,time);
+const built=buildSession(
+rank,
+focus,
+time
+);
 
-let html=`<div class="rank-header">
-<div class="rank-title">${rankProfiles[rank].label} — ${time}-Minute Session</div>
-<div class="total-time">Today's planned time: ${time} minutes</div>
-<div class="badge focus-badge">${focusLabels[focus]}</div>
-<div class="badge program-badge">${built.program.name}</div>
-<div class="badge mode-badge">${focus==="allaround"?"BALANCED":"STRICT FOCUS"}</div>
-<div class="rank-focus">${rankAdjustment(focus,rank)}</div>
-<div class="session-note"><strong>${built.program.name}:</strong> ${built.program.desc}<br><br>Choosing a different time uses a different program bank. It does not simply add stages onto this workout.</div>
-</div>`;
+let html=`
+
+<div class="rank-header">
+
+<div class="rank-title">
+${rankProfiles[rank].label}
+—
+${time}-Minute Session
+</div>
+
+<div class="total-time">
+Today's planned time:
+${time} minutes
+</div>
+
+<div class="badge focus-badge">
+${focusLabels[focus]}
+</div>
+
+<div class="badge program-badge">
+${built.program.name}
+</div>
+
+<div class="badge mode-badge">
+${focus==="allaround"?"BALANCED":"STRICT FOCUS"}
+</div>
+
+<div class="rank-focus">
+${rankAdjustment(focus,rank)}
+</div>
+
+<div class="rank-guide">
+
+<strong>
+WHAT MATTERS MOST AT
+${rankProfiles[rank].label.toUpperCase()}:
+</strong>
+
+<ul>
+
+${rankGuides[rank].priorities
+.map(x=>`<li>${x}</li>`)
+.join("")}
+
+</ul>
+
+<div class="avoid">
+
+<strong>
+DON’T OVER-PRIORITIZE:
+</strong>
+
+${rankGuides[rank].avoid}
+
+</div>
+
+</div>
+
+<div class="session-note">
+
+<strong>
+${built.program.name}:
+</strong>
+
+${built.program.desc}
+
+<br><br>
+
+Choosing a different time uses a different program bank.
+It does not simply add stages onto this workout.
+
+</div>
+
+</div>
+
+`;
 
 for(const block of built.session){
 
 const d=block.drill;
 
-html+=`<div class="block-title">${block.label} — ${block.min} min</div>
-<div class="drill">
-<div class="drill-top">
-<div class="drill-name">${d.name}</div>
-<div class="time">⏱ ${block.min} minutes</div>
+html+=`
+
+<div class="block-title">
+${block.label}
+—
+${block.min} min
 </div>
-<div class="category">${d.category}</div>`;
+
+<div class="drill">
+
+<div class="drill-top">
+
+<div class="drill-name">
+${d.name}
+</div>
+
+<div class="time">
+⏱ ${block.min} minutes
+</div>
+
+</div>
+
+<div class="category">
+${d.category}
+</div>
+
+`;
 
 if(d.freePlay){
 
-html+=`<div class="pack-name">Training: Free Play</div>
-<div class="creator">No custom training code required.</div>`;
+html+=`
+
+<div class="pack-name">
+Training:
+Free Play
+</div>
+
+<div class="creator">
+No custom training code required.
+</div>
+
+`;
 
 }else{
 
 const p=packs[d.packKey];
 
-html+=`<div class="pack-name">Training: ${p.name}</div>
-<div class="creator">Creator: ${p.creator}</div>
-<div class="code">${p.code}</div>
-<button onclick="copyCode('${p.code}')">Copy Training Code</button>`;
+html+=`
+
+<div class="pack-name">
+Training:
+${p.name}
+</div>
+
+<div class="creator">
+Creator:
+${p.creator}
+</div>
+
+<div class="code">
+${p.code}
+</div>
+
+<button
+onclick="copyCode('${p.code}')">
+
+Copy Training Code
+
+</button>
+
+`;
+
 }
 
-html+=`<div class="section-label">HOW TO TRAIN</div>
-<div class="instructions">${d.instructions}</div>
+html+=`
+
+<div class="section-label">
+HOW TO TRAIN
+</div>
+
+<div class="instructions">
+${d.instructions}
+</div>
 
 <div class="success">
-<strong>SUCCESS TARGET:</strong><br>
+
+<strong>
+SUCCESS TARGET:
+</strong>
+
+<br>
+
 ${d.success}
+
 </div>
 
 <div class="rank-standard">
-<strong>${rankProfiles[rank].label.toUpperCase()} STANDARD:</strong><br>
+
+<strong>
+${rankProfiles[rank].label.toUpperCase()}
+STANDARD:
+</strong>
+
+<br>
+
 ${rankAdjustment(focus,rank)}
+
 </div>
 
-<div class="section-label">WHY THIS MATTERS</div>
-<div class="why">${d.why}</div>
+<div class="section-label">
+WHY THIS MATTERS
+</div>
+
+<div class="why">
+${d.why}
+</div>
 
 <div class="tip">
-<strong>COACHING TIP:</strong><br>
+
+<strong>
+COACHING TIP:
+</strong>
+
+<br>
+
 ${d.tip}
+
 </div>
-</div>`;
+
+</div>
+
+`;
+
 }
 
-html+=`<div class="warning">
-<strong>Training note:</strong>
-This is an independent ${time}-minute program.
-Switching to 15, 30, 45, or 60 minutes selects from a different workout bank rather than extending or shortening this exact routine.
+html+=`
+
+<div class="warning">
+
+<strong>
+Training note:
+</strong>
+
+This is an independent
+${time}-minute program.
+
+Switching to 15, 30, 45, or 60 minutes
+selects from a different workout bank
+rather than extending or shortening
+this exact routine.
+
 </div>
 
-<button class="regen" onclick="buildPlan()">
-Give Me Another ${time}-Minute ${focusLabels[focus]} Session
-</button>`;
+<button
+class="regen"
+onclick="buildPlan()">
+
+Give Me Another
+${time}-Minute
+${focusLabels[focus]}
+Session
+
+</button>
+
+`;
 
 results.innerHTML=html;
+
 results.style.display="block";
-results.scrollIntoView({behavior:"smooth",block:"start"});
+
+results.scrollIntoView({
+behavior:"smooth",
+block:"start"
+});
+
 }
 
 function copyCode(code){
-navigator.clipboard.writeText(code)
-.then(()=>alert("Training pack code copied!"))
-.catch(()=>prompt("Copy this training code:",code));
+
+navigator.clipboard
+.writeText(code)
+
+.then(()=>{
+
+alert(
+"Training pack code copied!"
+);
+
+})
+
+.catch(()=>{
+
+prompt(
+"Copy this training code:",
+code
+);
+
+});
+
 }
 
 (function validateDatabase(){
@@ -232,52 +622,171 @@ const errors=[];
 const codes=new Set();
 
 for(const[id,p]of Object.entries(packs)){
-if(!p.name||!p.creator||!p.code||!p.category)errors.push(`Incomplete pack ${id}`);
-if(codes.has(p.code))errors.push(`Duplicate code ${p.code}`);
+
+if(
+!p.name||
+!p.creator||
+!p.code||
+!p.category
+){
+
+errors.push(
+`Incomplete pack ${id}`
+);
+
+}
+
+if(
+codes.has(p.code)
+){
+
+errors.push(
+`Duplicate code ${p.code}`
+);
+
+}
+
 codes.add(p.code);
+
 }
 
 for(const[f,list]of Object.entries(focusResources)){
-if(list.length<5)errors.push(`${f} has fewer than 5 resources`);
+
+if(list.length<5){
+
+errors.push(
+`${f} has fewer than 5 resources`
+);
+
+}
 
 for(const r of list){
-if(r.pack&&!packs[r.pack])errors.push(`${f} missing pack ${r.pack}`);
-if(r.free&&!free[r.free])errors.push(`${f} missing free drill ${r.free}`);
+
+if(
+r.pack &&
+!packs[r.pack]
+){
+
+errors.push(
+`${f} missing pack ${r.pack}`
+);
+
 }
+
+if(
+r.free &&
+!free[r.free]
+){
+
+errors.push(
+`${f} missing free drill ${r.free}`
+);
+
+}
+
+}
+
 }
 
 for(const[t,bank]of Object.entries(programBanks)){
 
 for(const program of bank){
 
-const total=program.steps.reduce((s,x)=>s+x.min,0);
+const total=
+program.steps.reduce(
+(s,x)=>s+x.min,
+0
+);
 
-if(total!==Number(t)){
-errors.push(`${t}/${program.name} totals ${total}`);
+if(
+total!==Number(t)
+){
+
+errors.push(
+`${t}/${program.name} totals ${total}`
+);
+
+}
+
+for(const step of program.steps){
+
+if(
+step.slot<0 ||
+step.slot>8
+){
+
+errors.push(
+`${t}/${program.name} bad slot`
+);
+
 }
 
 }
+
 }
 
-const ranks=Object.keys(rankProfiles);
-const focuses=Object.keys(focusLabels);
-const times=[15,30,45,60];
+}
+
+const ranks=
+Object.keys(rankProfiles);
+
+const focuses=
+Object.keys(focusLabels);
+
+const times=[
+15,
+30,
+45,
+60
+];
 
 for(const rank of ranks)
+
 for(const focus of focuses)
+
 for(const time of times){
 
-const built=buildSession(rank,focus,time);
+for(let i=0;i<3;i++){
 
-const total=built.session.reduce((s,x)=>s+x.min,0);
+const built=
+buildSession(
+rank,
+focus,
+time
+);
 
-if(total!==time){
-errors.push(`${rank}/${focus}/${time} totals ${total}`);
+const total=
+built.session.reduce(
+(s,x)=>s+x.min,
+0
+);
+
+if(
+total!==time
+){
+
+errors.push(
+`${rank}/${focus}/${time} totals ${total}`
+);
+
 }
 
-if(built.session.some(x=>!x.drill||!x.drill.name)){
-errors.push(`${rank}/${focus}/${time} missing drill`);
+if(
+built.session.some(
+x=>
+!x.drill ||
+!x.drill.name
+)
+){
+
+errors.push(
+`${rank}/${focus}/${time} missing drill`
+);
+
 }
+
+}
+
 }
 
 if(errors.length){
@@ -301,6 +810,7 @@ and ${ranks.length*focuses.length*times.length} combinations.`
 }
 
 })();
+
 </script>
 </body>
 </html>
