@@ -85,12 +85,11 @@
 
     .routine h2 {
       text-align: center;
-      margin-top: 0;
     }
 
     .routine-item {
       margin: 15px 0;
-      padding: 12px;
+      padding: 15px;
       background: #1f283b;
       border-radius: 8px;
     }
@@ -117,7 +116,7 @@
       <h2>Random Training Pack</h2>
 
       <div class="pack-name" id="packName">
-        Click the button to get a training pack
+        Click below to get a training pack
       </div>
 
       <div class="pack-code" id="packCode">
@@ -136,19 +135,22 @@
 
     <div class="card">
 
-      <h2>What should I train?</h2>
+      <h2>What Should I Train?</h2>
 
       <p>
-        Choose your rank and get a simple 30-minute training routine.
+        Choose your rank and get a 30-minute training routine.
       </p>
 
       <select id="rank">
         <option value="">Choose your rank</option>
+        <option value="bronze">Bronze</option>
+        <option value="silver">Silver</option>
         <option value="gold">Gold</option>
         <option value="platinum">Platinum</option>
         <option value="diamond">Diamond</option>
         <option value="champion">Champion</option>
         <option value="grandchampion">Grand Champion</option>
+        <option value="ssl">Supersonic Legend</option>
       </select>
 
       <button onclick="generateRoutine()">
@@ -165,44 +167,92 @@
 
     const trainingPacks = [
       {
-        name: "Aerial Practice",
-        code: "A3E1-92C2-8757-4195"
-      },
-      {
         name: "Shooting Consistency",
         code: "4912-A5C9-9A56-555D"
       },
       {
-        name: "Wall Shots",
-        code: "9F6D-4387-4C57-2E4B"
+        name: "Aerial Car Control",
+        code: "A3E1-92C2-8757-4195"
       },
       {
-        name: "Goalie Training",
-        code: "8D93-C997-0ACD-8416"
+        name: "Novice Aerials",
+        code: "0A40-E21D-61C1-49C6"
       },
       {
-        name: "Fast Aerials",
-        code: "F001-A333-AAEB-2786"
+        name: "Shadow Saves",
+        code: "6A8C-7B90-2AAA-B6B5"
+      },
+      {
+        name: "Ground Shots",
+        code: "7C94-D3A7-46A9-82DC"
+      },
+      {
+        name: "Powershots",
+        code: "7028-5E10-88EF-E83E"
+      },
+      {
+        name: "Backboard Shots",
+        code: "AFFD-5023-BD4F-D320"
+      },
+      {
+        name: "Fast Aerials / Redirects",
+        code: "24A2-849A-610E-C67C"
       }
     ];
 
     const routines = {
 
-      gold: [
+      bronze: [
         {
-          skill: "Basic Shooting",
+          skill: "Basic Saves",
           time: "10 minutes",
-          code: "4912-A5C9-9A56-555D"
+          code: "6AFE-E510-BAA3-CB43"
+        },
+        {
+          skill: "Ball Contact Practice",
+          time: "10 minutes",
+          code: "Use Free Play. Focus on simply making solid contact."
+        },
+        {
+          skill: "Driving & Recoveries",
+          time: "10 minutes",
+          code: "Practice powerslides, flips and landing on your wheels."
+        }
+      ],
+
+      silver: [
+        {
+          skill: "Ground Shots",
+          time: "10 minutes",
+          code: "729C-E297-873F-8579"
         },
         {
           skill: "Basic Aerials",
           time: "10 minutes",
+          code: "57AA-3994-71EC-7BCD"
+        },
+        {
+          skill: "Power Hits",
+          time: "10 minutes",
+          code: "DC62-FEEC-D575-1B6F"
+        }
+      ],
+
+      gold: [
+        {
+          skill: "Ground Shooting",
+          time: "10 minutes",
+          code: "7C94-D3A7-46A9-82DC"
+        },
+        {
+          skill: "Aerial Car Control",
+          time: "10 minutes",
           code: "A3E1-92C2-8757-4195"
         },
         {
-          skill: "Free Play",
+          skill: "Defense",
           time: "10 minutes",
-          code: "Focus on hitting the ball hard and recovering quickly."
+          code: "87E7-773A-CBE5-B2C3"
         }
       ],
 
@@ -213,83 +263,110 @@
           code: "4912-A5C9-9A56-555D"
         },
         {
-          skill: "Fast Aerials",
+          skill: "Shadow Saves",
           time: "10 minutes",
-          code: "F001-A333-AAEB-2786"
+          code: "6A8C-7B90-2AAA-B6B5"
         },
         {
-          skill: "Wall Shots",
+          skill: "Wall / Backboard Training",
           time: "10 minutes",
-          code: "9F6D-4387-4C57-2E4B"
+          code: "152C-2EAC-5269-4402"
         }
       ],
 
       diamond: [
         {
-          skill: "Advanced Shooting",
+          skill: "Powershots",
           time: "10 minutes",
-          code: "4912-A5C9-9A56-555D"
+          code: "7028-5E10-88EF-E83E"
         },
         {
-          skill: "Fast Aerial Control",
+          skill: "Backboard Reads",
           time: "10 minutes",
-          code: "F001-A333-AAEB-2786"
+          code: "DEE2-0629-B3A4-D717"
         },
         {
-          skill: "Wall Reads",
+          skill: "Double Touch Practice",
           time: "10 minutes",
-          code: "9F6D-4387-4C57-2E4B"
+          code: "E8EB-C454-38AF-9637"
         }
       ],
 
       champion: [
         {
-          skill: "Speed and Recoveries",
+          skill: "Backboard Shots",
           time: "10 minutes",
-          code: "Use Free Play and focus on wave dashes and fast recoveries."
+          code: "AFFD-5023-BD4F-D320"
         },
         {
-          skill: "Aerial Precision",
+          skill: "Redirects",
           time: "10 minutes",
-          code: "A3E1-92C2-8757-4195"
+          code: "4B34-668E-8D1B-05BC"
         },
         {
-          skill: "Shot Placement",
+          skill: "High-Speed Recoveries",
           time: "10 minutes",
-          code: "4912-A5C9-9A56-555D"
+          code: "Use Free Play. Practice wave dashes, half flips and fast recoveries."
         }
       ],
 
       grandchampion: [
         {
+          skill: "Fast Aerials / Redirects",
+          time: "10 minutes",
+          code: "24A2-849A-610E-C67C"
+        },
+        {
+          skill: "Advanced Redirects",
+          time: "10 minutes",
+          code: "BE27-2F2E-44FF-5A38"
+        },
+        {
           skill: "High-Speed Free Play",
           time: "10 minutes",
-          code: "Stay supersonic as much as possible while maintaining control."
+          code: "Play as fast as possible while maintaining possession and control."
+        }
+      ],
+
+      ssl: [
+        {
+          skill: "Advanced Mechanical Warmup",
+          time: "10 minutes",
+          code: "2186-5167-B7C8-C46F"
         },
         {
-          skill: "Advanced Aerial Control",
+          skill: "Elite Reads & Redirects",
           time: "10 minutes",
-          code: "F001-A333-AAEB-2786"
+          code: "24A2-849A-610E-C67C"
         },
         {
-          skill: "Consistency Under Pressure",
+          skill: "Match-Speed Free Play",
           time: "10 minutes",
-          code: "Practice difficult shots without resetting after mistakes."
+          code: "Train at full speed with minimal resets. Focus on efficiency and precision."
         }
       ]
 
     };
 
     function getRandomPack() {
-      const randomIndex = Math.floor(Math.random() * trainingPacks.length);
-      const pack = trainingPacks[randomIndex];
 
-      document.getElementById("packName").textContent = pack.name;
-      document.getElementById("packCode").textContent = pack.code;
+      const randomIndex =
+        Math.floor(Math.random() * trainingPacks.length);
+
+      const pack =
+        trainingPacks[randomIndex];
+
+      document.getElementById("packName").textContent =
+        pack.name;
+
+      document.getElementById("packCode").textContent =
+        pack.code;
     }
 
     function copyCode() {
-      const code = document.getElementById("packCode").textContent;
+
+      const code =
+        document.getElementById("packCode").textContent;
 
       if (code === "---- ---- ----") {
         alert("Get a training pack first.");
@@ -297,30 +374,39 @@
       }
 
       navigator.clipboard.writeText(code);
+
       alert("Training pack code copied!");
     }
 
     function generateRoutine() {
-      const rank = document.getElementById("rank").value;
-      const routineBox = document.getElementById("routine");
+
+      const rank =
+        document.getElementById("rank").value;
+
+      const routineBox =
+        document.getElementById("routine");
 
       if (!rank) {
         alert("Choose your rank first.");
         return;
       }
 
-      const selectedRoutine = routines[rank];
+      const selectedRoutine =
+        routines[rank];
 
-      let html = "<h2>Your 30-Minute Training Routine</h2>";
+      let html =
+        "<h2>Your 30-Minute Training Routine</h2>";
 
       selectedRoutine.forEach(item => {
+
         html += `
           <div class="routine-item">
-            <strong>${item.skill}</strong><br>
-            ${item.time}<br>
+            <strong>${item.skill}</strong><br><br>
+            ⏱ ${item.time}<br><br>
             <span class="code">${item.code}</span>
           </div>
         `;
+
       });
 
       routineBox.innerHTML = html;
