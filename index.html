@@ -41,6 +41,26 @@
 .completion-controls label{display:flex;gap:9px;align-items:center;margin:7px 0;color:#d4f5df;cursor:pointer}
 .completion-controls input{width:auto;accent-color:#54d98c}
 .saved-badge{display:inline-block;margin-top:8px;padding:6px 10px;border-radius:18px;background:#1b3a2a;color:#9af0b9;font-size:13px;font-weight:bold}
+
+/* ===== TIMERS + AUTOMATIC GOALS ===== */
+.timer-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0}
+.timer-display{font-family:monospace;font-size:22px;font-weight:bold;color:#75bdff;min-width:92px}
+.timer-button{padding:9px 12px;font-size:14px}
+.timer-button.pause{background:#a36b12}.timer-button.finish{background:#287d4b}
+.goal-builder{margin-top:18px;padding:16px;background:#101827;border-radius:10px}
+.goal-grid{display:grid;grid-template-columns:1.25fr 1fr 1fr 1fr 1fr auto;gap:9px;align-items:end}
+.goal-list{margin-top:15px;display:grid;gap:10px}
+.goal-item{background:#101827;border:1px solid #2b3b56;border-radius:10px;padding:14px}
+.goal-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.goal-title{font-weight:bold;color:#cde7ff}
+.goal-meta{color:#8fa3bd;font-size:13px;margin-top:5px}
+.goal-progress-track{height:9px;background:#202b3e;border-radius:10px;overflow:hidden;margin-top:12px}
+.goal-progress-fill{height:100%;background:#54d98c;width:0}
+.goal-progress-text{margin-top:7px;color:#b9c9de;font-size:13px}
+.goal-complete{border-color:#356d4c}
+.goal-delete{background:#6b3440;padding:8px 10px;font-size:13px}
+@media(max-width:950px){.goal-grid{grid-template-columns:1fr 1fr 1fr}}
+@media(max-width:650px){.goal-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -73,6 +93,20 @@
 <div class="stat"><div id="statMinutes" class="stat-number">0</div><div class="stat-label">Training Minutes</div></div>
 <div class="stat"><div id="statGoals" class="stat-number">0</div><div class="stat-label">Active Goals</div></div>
 <div class="stat"><div id="statSchedules" class="stat-number">0</div><div class="stat-label">Active Schedules</div></div>
+</div>
+
+<h3>Goals</h3>
+<div class="goal-builder">
+<div class="goal-grid">
+<div class="field"><label for="goalMetric">Goal Type</label><select id="goalMetric"><option value="training_minutes">Training Minutes</option><option value="sessions_completed">Sessions Completed</option><option value="training_days">Training Days</option><option value="success_targets">Success Targets Hit</option></select></div>
+<div class="field"><label for="goalTarget">Target</label><input id="goalTarget" type="number" min="1" step="1" value="120"></div>
+<div class="field"><label for="goalFocus">Focus</label><select id="goalFocus"><option value="">Any Focus</option><option value="All-Around Improvement">All-Around Improvement</option><option value="Shooting Accuracy">Shooting Accuracy</option><option value="Power Shots">Power Shots</option><option value="Ground Control">Ground Control</option><option value="Saves">Saves</option><option value="Clears">Clears</option><option value="Shadow Defense">Shadow Defense</option><option value="Basic Aerials">Basic Aerials</option><option value="Fast Aerials">Fast Aerials</option><option value="Aerial Accuracy">Aerial Accuracy</option><option value="Redirects">Redirects</option><option value="Wall Play">Wall Play</option><option value="Backboard Reads">Backboard Reads</option><option value="Double Touches">Double Touches</option><option value="Recoveries / Car Control">Recoveries / Car Control</option><option value="Free Play / Speed">Free Play / Speed</option></select></div>
+<div class="field"><label for="goalPeriod">Period</label><select id="goalPeriod" onchange="updateGoalDeadlineVisibility()"><option value="weekly">Weekly</option><option value="daily">Daily</option><option value="monthly">Monthly</option><option value="custom">Custom</option></select></div>
+<div class="field" id="goalDeadlineField" style="display:none"><label for="goalDeadline">Deadline</label><input id="goalDeadline" type="date"></div>
+<button onclick="createGoal()">Add Goal</button>
+</div>
+<div class="account-note">Goal progress is calculated automatically from saved sessions, drill timers, completed sessions, training days, and success-target check-offs.</div>
+<div id="goalList" class="goal-list"></div>
 </div>
 <h3>Rocket League Profile</h3>
 <div class="profile-grid">
@@ -122,6 +156,7 @@ const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY
 let currentUser=null;
 let currentBuiltSession=null;
 let activeSavedSession=null;
+let timerUiInterval=null;
 function setAccountStatus(message,type="info"){
 const el=document.getElementById("accountStatus");
 el.textContent=message||"";
@@ -233,6 +268,7 @@ if(!currentUser)return;
 const profile=await ensureProfile(currentUser);
 populateProfile(profile);
 await loadDashboardStats(currentUser.id);
+await loadGoals();
 setAccountStatus("Dashboard refreshed.","success");
 }
 async function saveProfile(){
@@ -256,11 +292,12 @@ async function renderAuth(session){
 currentUser=session?.user||null;
 const forms=document.getElementById("authForms");
 const panel=document.getElementById("accountPanel");
-if(!currentUser){forms.style.display="block";panel.style.display="none";document.getElementById("accountEmail").textContent="";return;}
+if(!currentUser){forms.style.display="block";panel.style.display="none";document.getElementById("accountEmail").textContent="";const goalList=document.getElementById("goalList");if(goalList)goalList.innerHTML="";return;}
 forms.style.display="none";panel.style.display="block";document.getElementById("accountEmail").textContent=currentUser.email||"";
 const profile=await ensureProfile(currentUser);
 populateProfile(profile);
 await loadDashboardStats(currentUser.id);
+await loadGoals();
 }
 async function initializeAuth(){
 const {data,error}=await supabaseClient.auth.getSession();
@@ -306,7 +343,10 @@ pack_code:d.freePlay?null:pack.code,
 planned_minutes:block.min,
 completed:false,
 success_target:d.success,
-success_target_met:false
+success_target_met:false,
+elapsed_seconds:0,
+timer_started_at:null,
+timer_running:false
 };
 });
 const {data:savedDrills,error:drillError}=await supabaseClient.from("training_drills").insert(drillRows).select("*").order("drill_order");
@@ -321,30 +361,120 @@ await loadDashboardStats(currentUser.id);
 setAccountStatus("Session saved. Check off each training block as you complete it.","success");
 }
 
+function formatTimer(seconds){
+const safe=Math.max(0,Math.floor(Number(seconds)||0));
+const hours=Math.floor(safe/3600);
+const mins=Math.floor((safe%3600)/60);
+const secs=safe%60;
+return hours>0
+?`${String(hours).padStart(2,"0")}:${String(mins).padStart(2,"0")}:${String(secs).padStart(2,"0")}`
+:`${String(mins).padStart(2,"0")}:${String(secs).padStart(2,"0")}`;
+}
+
+function drillElapsedSeconds(row){
+const stored=Number(row.elapsed_seconds)||0;
+if(!row.timer_running||!row.timer_started_at)return stored;
+const started=new Date(row.timer_started_at).getTime();
+if(!Number.isFinite(started))return stored;
+return stored+Math.max(0,Math.floor((Date.now()-started)/1000));
+}
+
+function startTimerUi(){
+if(timerUiInterval)clearInterval(timerUiInterval);
+timerUiInterval=setInterval(()=>{
+if(!activeSavedSession)return;
+activeSavedSession.drills.forEach(row=>{
+const el=document.getElementById(`timer-${row.id}`);
+if(el)el.textContent=formatTimer(drillElapsedSeconds(row));
+});
+updateSavedSessionProgress();
+},1000);
+}
+
 function renderCompletionControls(){
 if(!activeSavedSession)return;
 const drills=activeSavedSession.drills;
 drills.forEach((row,index)=>{
 const host=document.getElementById(`completionHost-${index}`);
 if(!host)return;
+const running=Boolean(row.timer_running);
 host.innerHTML=`<div class="completion-controls">
 <div class="saved-badge">SAVED TO YOUR ACCOUNT</div>
+<div class="timer-row">
+<span id="timer-${row.id}" class="timer-display">${formatTimer(drillElapsedSeconds(row))}</span>
+<button class="timer-button" onclick="startDrillTimer('${row.id}')" ${running?"disabled":""}>${Number(row.elapsed_seconds)>0?"Resume":"Start"}</button>
+<button class="timer-button pause" onclick="pauseDrillTimer('${row.id}')" ${running?"":"disabled"}>Pause</button>
+<button class="timer-button finish" onclick="finishDrillTimer('${row.id}')">Finish Drill</button>
+</div>
 <label><input type="checkbox" ${row.completed?"checked":""} onchange="toggleDrillComplete('${row.id}',this.checked)"> Drill complete</label>
 <label><input type="checkbox" ${row.success_target_met?"checked":""} onchange="toggleSuccessTarget('${row.id}',this.checked)"> I hit the success target</label>
 </div>`;
 });
 updateSavedSessionProgress();
+startTimerUi();
 const saveButton=document.getElementById("saveSessionButton");
 if(saveButton){saveButton.disabled=true;saveButton.textContent="Session Saved";}
+}
+
+async function persistDrillTimer(row,updates){
+const {data,error}=await supabaseClient.from("training_drills").update(updates).eq("id",row.id).eq("user_id",currentUser.id).select("*").single();
+if(error){setAccountStatus(error.message,"error");return null;}
+Object.assign(row,data);
+return data;
+}
+
+async function startDrillTimer(drillId){
+if(!activeSavedSession||!currentUser)return;
+const row=activeSavedSession.drills.find(x=>x.id===drillId);
+if(!row||row.timer_running)return;
+for(const other of activeSavedSession.drills){
+if(other.id!==drillId&&other.timer_running){
+const elapsed=drillElapsedSeconds(other);
+if(!await persistDrillTimer(other,{elapsed_seconds:elapsed,timer_running:false,timer_started_at:null}))return;
+}
+}
+const now=new Date().toISOString();
+if(!await persistDrillTimer(row,{timer_running:true,timer_started_at:now}))return;
+renderCompletionControls();
+await syncSavedSessionTotals();
+setAccountStatus(`Timer started for ${row.drill_name}.`,"success");
+}
+
+async function pauseDrillTimer(drillId){
+if(!activeSavedSession||!currentUser)return;
+const row=activeSavedSession.drills.find(x=>x.id===drillId);
+if(!row||!row.timer_running)return;
+const elapsed=drillElapsedSeconds(row);
+if(!await persistDrillTimer(row,{elapsed_seconds:elapsed,timer_running:false,timer_started_at:null}))return;
+renderCompletionControls();
+await syncSavedSessionTotals();
+setAccountStatus(`Timer paused at ${formatTimer(elapsed)}.`,"info");
+}
+
+async function finishDrillTimer(drillId){
+if(!activeSavedSession||!currentUser)return;
+const row=activeSavedSession.drills.find(x=>x.id===drillId);
+if(!row)return;
+const elapsed=drillElapsedSeconds(row);
+if(!await persistDrillTimer(row,{elapsed_seconds:elapsed,timer_running:false,timer_started_at:null,completed:true}))return;
+renderCompletionControls();
+await syncSavedSessionTotals();
+setAccountStatus(`${row.drill_name} finished — ${formatTimer(elapsed)} recorded.`,"success");
 }
 
 async function toggleDrillComplete(drillId,checked){
 if(!activeSavedSession||!currentUser)return;
 const row=activeSavedSession.drills.find(x=>x.id===drillId);
 if(!row)return;
-const {error}=await supabaseClient.from("training_drills").update({completed:checked}).eq("id",drillId).eq("user_id",currentUser.id);
-if(error){setAccountStatus(error.message,"error");renderCompletionControls();return;}
-row.completed=checked;
+let updates={completed:checked};
+if(checked&&row.timer_running){
+updates.elapsed_seconds=drillElapsedSeconds(row);
+updates.timer_running=false;
+updates.timer_started_at=null;
+}
+const saved=await persistDrillTimer(row,updates);
+if(!saved){renderCompletionControls();return;}
+renderCompletionControls();
 await syncSavedSessionTotals();
 }
 
@@ -356,12 +486,17 @@ const {error}=await supabaseClient.from("training_drills").update({success_targe
 if(error){setAccountStatus(error.message,"error");renderCompletionControls();return;}
 row.success_target_met=checked;
 updateSavedSessionProgress();
+await loadGoals();
 }
 
 async function syncSavedSessionTotals(){
 if(!activeSavedSession||!currentUser)return;
 const drills=activeSavedSession.drills;
-const completedMinutes=drills.filter(x=>x.completed).reduce((sum,x)=>sum+Number(x.planned_minutes||0),0);
+const actualSeconds=drills.reduce((sum,row)=>sum+drillElapsedSeconds(row),0);
+const hasTimerData=actualSeconds>0;
+const completedMinutes=hasTimerData
+?Math.round(actualSeconds/60)
+:drills.filter(x=>x.completed).reduce((sum,x)=>sum+Number(x.planned_minutes||0),0);
 const completed=drills.length>0&&drills.every(x=>x.completed);
 const updates={completed_minutes:completedMinutes,completed,completed_at:completed?new Date().toISOString():null};
 const {error}=await supabaseClient.from("training_sessions").update(updates).eq("id",activeSavedSession.session.id).eq("user_id",currentUser.id);
@@ -369,6 +504,7 @@ if(error){setAccountStatus(error.message,"error");return;}
 Object.assign(activeSavedSession.session,updates);
 updateSavedSessionProgress();
 await loadDashboardStats(currentUser.id);
+await loadGoals();
 if(completed)setAccountStatus("Training session complete — nice work.","success");
 }
 
@@ -377,9 +513,160 @@ if(!activeSavedSession)return;
 const drills=activeSavedSession.drills;
 const done=drills.filter(x=>x.completed).length;
 const targetHits=drills.filter(x=>x.success_target_met).length;
-const minutes=drills.filter(x=>x.completed).reduce((sum,x)=>sum+Number(x.planned_minutes||0),0);
+const seconds=drills.reduce((sum,row)=>sum+drillElapsedSeconds(row),0);
+const minutes=(seconds/60).toFixed(seconds>=600?0:1);
 const el=document.getElementById("savedSessionProgress");
-if(el)el.textContent=`${done}/${drills.length} blocks complete • ${minutes}/${activeSavedSession.session.planned_minutes} minutes • ${targetHits}/${drills.length} success targets hit`;
+if(el)el.textContent=`${done}/${drills.length} blocks complete • ${minutes} actual minutes • ${targetHits}/${drills.length} success targets hit`;
+}
+
+/* =====================================================
+   AUTOMATIC GOALS
+===================================================== */
+function updateGoalDeadlineVisibility(){
+const period=document.getElementById("goalPeriod")?.value;
+const field=document.getElementById("goalDeadlineField");
+if(field)field.style.display=period==="custom"?"block":"none";
+}
+
+function goalMetricLabel(metric){
+return{
+training_minutes:"Training Minutes",
+sessions_completed:"Sessions Completed",
+training_days:"Training Days",
+success_targets:"Success Targets Hit"
+}[metric]||metric;
+}
+
+function localDateString(date=new Date()){
+const y=date.getFullYear();
+const m=String(date.getMonth()+1).padStart(2,"0");
+const d=String(date.getDate()).padStart(2,"0");
+return`${y}-${m}-${d}`;
+}
+
+function addDays(dateString,days){
+const d=new Date(`${dateString}T12:00:00`);
+d.setDate(d.getDate()+days);
+return localDateString(d);
+}
+
+function addMonths(dateString,months){
+const d=new Date(`${dateString}T12:00:00`);
+const original=d.getDate();
+d.setDate(1);
+d.setMonth(d.getMonth()+months);
+d.setDate(Math.min(original,new Date(d.getFullYear(),d.getMonth()+1,0).getDate()));
+return localDateString(d);
+}
+
+function goalEndDate(goal){
+const start=goal.start_date||localDateString();
+if(goal.period==="daily")return start;
+if(goal.period==="weekly")return addDays(start,6);
+if(goal.period==="monthly")return addDays(addMonths(start,1),-1);
+return goal.target_date||"9999-12-31";
+}
+
+async function createGoal(){
+if(!currentUser){setAccountStatus("Log in before creating a goal.","error");return;}
+const metric=document.getElementById("goalMetric").value;
+const target=Number(document.getElementById("goalTarget").value);
+const focus=document.getElementById("goalFocus").value||null;
+const period=document.getElementById("goalPeriod").value;
+const deadline=document.getElementById("goalDeadline").value||null;
+if(!Number.isFinite(target)||target<=0){setAccountStatus("Enter a goal target greater than zero.","error");return;}
+if(period==="custom"&&!deadline){setAccountStatus("Choose a deadline for a custom goal.","error");return;}
+const periodLabel=period.charAt(0).toUpperCase()+period.slice(1);
+const title=`${target} ${goalMetricLabel(metric)}${focus?` • ${focus}`:""} • ${periodLabel}`;
+const insert={
+user_id:currentUser.id,
+title,
+metric,
+focus,
+period,
+target_value:target,
+current_value:0,
+unit:metric==="training_minutes"?"minutes":metric==="training_days"?"days":metric==="sessions_completed"?"sessions":"targets",
+start_date:localDateString(),
+target_date:period==="custom"?deadline:null,
+completed:false
+};
+const {error}=await supabaseClient.from("goals").insert(insert);
+if(error){setAccountStatus(error.message,"error");return;}
+setAccountStatus("Goal created. Progress will update automatically.","success");
+await loadGoals();
+await loadDashboardStats(currentUser.id);
+}
+
+async function deleteGoal(goalId){
+if(!currentUser)return;
+if(!confirm("Delete this goal?"))return;
+const {error}=await supabaseClient.from("goals").delete().eq("id",goalId).eq("user_id",currentUser.id);
+if(error){setAccountStatus(error.message,"error");return;}
+await loadGoals();
+await loadDashboardStats(currentUser.id);
+}
+
+function calculateGoalProgress(goal,sessions,drills){
+const start=goal.start_date||"0000-01-01";
+const end=goalEndDate(goal);
+const matchingSessions=sessions.filter(s=>{
+const inDate=s.session_date>=start&&s.session_date<=end;
+const inFocus=!goal.focus||s.focus===goal.focus;
+return inDate&&inFocus;
+});
+const sessionIds=new Set(matchingSessions.map(s=>s.id));
+const matchingDrills=drills.filter(d=>sessionIds.has(d.session_id));
+if(goal.metric==="sessions_completed")return matchingSessions.filter(s=>s.completed).length;
+if(goal.metric==="training_days"){
+return new Set(matchingSessions.filter(s=>s.completed||Number(s.completed_minutes)>0).map(s=>s.session_date)).size;
+}
+if(goal.metric==="success_targets")return matchingDrills.filter(d=>d.success_target_met).length;
+if(goal.metric==="training_minutes"){
+let total=0;
+for(const session of matchingSessions){
+const sessionDrills=matchingDrills.filter(d=>d.session_id===session.id);
+const seconds=sessionDrills.reduce((sum,d)=>sum+(Number(d.elapsed_seconds)||0),0);
+total+=seconds>0?seconds/60:Number(session.completed_minutes)||0;
+}
+return Math.round(total*10)/10;
+}
+return Number(goal.current_value)||0;
+}
+
+async function loadGoals(){
+const list=document.getElementById("goalList");
+if(!list)return;
+if(!currentUser){list.innerHTML="";return;}
+const [goalsResult,sessionsResult,drillsResult]=await Promise.all([
+supabaseClient.from("goals").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false}),
+supabaseClient.from("training_sessions").select("id,session_date,focus,completed,completed_minutes").eq("user_id",currentUser.id),
+supabaseClient.from("training_drills").select("session_id,elapsed_seconds,success_target_met").eq("user_id",currentUser.id)
+]);
+if(goalsResult.error||sessionsResult.error||drillsResult.error){
+console.error("Goal load error",goalsResult.error||sessionsResult.error||drillsResult.error);
+return;
+}
+const goals=goalsResult.data||[];
+const sessions=sessionsResult.data||[];
+const drills=drillsResult.data||[];
+if(!goals.length){list.innerHTML=`<div class="account-note">No goals yet. Add one above and RL Trainer will track it automatically.</div>`;return;}
+const writes=[];
+list.innerHTML=goals.map(goal=>{
+const current=calculateGoalProgress(goal,sessions,drills);
+const target=Number(goal.target_value)||1;
+const complete=current>=target;
+if(Number(goal.current_value)!==Number(current)||Boolean(goal.completed)!==complete){
+writes.push(supabaseClient.from("goals").update({current_value:current,completed:complete}).eq("id",goal.id).eq("user_id",currentUser.id));
+}
+const pct=Math.min(100,Math.max(0,(current/target)*100));
+return`<div class="goal-item ${complete?"goal-complete":""}">
+<div class="goal-head"><div><div class="goal-title">${goal.title}</div><div class="goal-meta">${goal.start_date} → ${goalEndDate(goal)}${complete?" • COMPLETE":""}</div></div><button class="goal-delete" onclick="deleteGoal('${goal.id}')">Delete</button></div>
+<div class="goal-progress-track"><div class="goal-progress-fill" style="width:${pct}%"></div></div>
+<div class="goal-progress-text">${current} / ${target} ${goal.unit||""} • ${pct.toFixed(0)}%</div>
+</div>`;
+}).join("");
+if(writes.length)await Promise.all(writes);
 }
 
 const packs={
