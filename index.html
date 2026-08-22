@@ -15,9 +15,9 @@
     }
 
     .container {
-      max-width: 900px;
+      max-width: 1000px;
       margin: auto;
-      padding: 50px 20px;
+      padding: 40px 20px;
     }
 
     h1 {
@@ -27,11 +27,10 @@
 
     p {
       color: #b8c2d9;
-      font-size: 18px;
     }
 
     .card {
-      margin-top: 30px;
+      margin-top: 25px;
       padding: 25px;
       background: #1b2233;
       border-radius: 12px;
@@ -40,7 +39,7 @@
     select,
     button {
       margin: 8px;
-      padding: 14px 18px;
+      padding: 12px 16px;
       font-size: 16px;
       border: none;
       border-radius: 8px;
@@ -61,42 +60,43 @@
       background: #0072e5;
     }
 
-    .pack-name {
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
-
-    .pack-code {
-      font-size: 20px;
-      font-weight: bold;
-      letter-spacing: 1px;
-      margin-bottom: 20px;
-      color: #66b5ff;
-    }
-
-    .routine {
+    .results {
       margin-top: 25px;
-      text-align: left;
-      background: #141a28;
-      padding: 20px;
-      border-radius: 10px;
       display: none;
     }
 
-    .routine h2 {
-      text-align: center;
+    .pack {
+      background: #141a28;
+      margin: 15px 0;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: left;
     }
 
-    .routine-item {
-      margin: 15px 0;
-      padding: 15px;
-      background: #1f283b;
-      border-radius: 8px;
+    .pack h3 {
+      margin-top: 0;
     }
 
     .code {
-      font-weight: bold;
       color: #66b5ff;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .difficulty {
+      font-size: 14px;
+      color: #b8c2d9;
+    }
+
+    .random-box {
+      font-size: 20px;
+      margin: 20px 0;
+    }
+
+    footer {
+      margin-top: 40px;
+      color: #7f8ba3;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -108,41 +108,38 @@
     <h1>🚀 RL Trainer</h1>
 
     <p>
-      Train smarter. Improve your mechanics. Climb the ranks.
+      Find training packs based on your rank and what you want to improve.
     </p>
+
+    <!-- RANDOM PACK -->
 
     <div class="card">
 
       <h2>Random Training Pack</h2>
 
-      <div class="pack-name" id="packName">
-        Click below to get a training pack
-      </div>
-
-      <div class="pack-code" id="packCode">
-        ---- ---- ----
+      <div class="random-box" id="randomPack">
+        Click below to get a random pack.
       </div>
 
       <button onclick="getRandomPack()">
         Give Me a Random Pack
       </button>
 
-      <button onclick="copyCode()">
-        Copy Code
-      </button>
-
     </div>
+
+
+    <!-- TRAINING PACK FINDER -->
 
     <div class="card">
 
-      <h2>What Should I Train?</h2>
+      <h2>Find Training Packs</h2>
 
       <p>
-        Choose your rank and get a 30-minute training routine.
+        Choose your rank and the skill you want to train.
       </p>
 
       <select id="rank">
-        <option value="">Choose your rank</option>
+        <option value="">Choose Rank</option>
         <option value="bronze">Bronze</option>
         <option value="silver">Silver</option>
         <option value="gold">Gold</option>
@@ -153,264 +150,329 @@
         <option value="ssl">Supersonic Legend</option>
       </select>
 
-      <button onclick="generateRoutine()">
-        Build My Routine
+      <select id="skill">
+        <option value="">Choose Skill</option>
+        <option value="shooting">Shooting</option>
+        <option value="aerials">Aerials</option>
+        <option value="defense">Defense</option>
+        <option value="wall">Wall / Backboard</option>
+        <option value="doubletouch">Double Touches</option>
+        <option value="allaround">All-Around</option>
+      </select>
+
+      <button onclick="findPacks()">
+        Find My Packs
       </button>
 
-      <div class="routine" id="routine"></div>
+      <div class="results" id="results"></div>
 
     </div>
 
+    <footer>
+      RL Trainer — community-focused Rocket League training tools.
+    </footer>
+
   </div>
+
 
   <script>
 
-    const trainingPacks = [
-      {
-        name: "Shooting Consistency",
-        code: "4912-A5C9-9A56-555D"
-      },
-      {
-        name: "Aerial Car Control",
-        code: "A3E1-92C2-8757-4195"
-      },
-      {
-        name: "Novice Aerials",
-        code: "0A40-E21D-61C1-49C6"
-      },
-      {
-        name: "Shadow Saves",
-        code: "6A8C-7B90-2AAA-B6B5"
-      },
+    const packs = [
+
       {
         name: "Ground Shots",
-        code: "7C94-D3A7-46A9-82DC"
+        code: "6EB1-79B2-33B8-681C",
+        skill: "shooting",
+        minRank: 0,
+        maxRank: 4,
+        difficulty: "Beginner - Intermediate"
       },
+
       {
-        name: "Powershots",
-        code: "7028-5E10-88EF-E83E"
+        name: "Shooting Consistency",
+        code: "4912-A5C9-9A56-555D",
+        skill: "shooting",
+        minRank: 2,
+        maxRank: 6,
+        difficulty: "Intermediate"
       },
+
+      {
+        name: "Power Shots",
+        code: "7028-5E10-88EF-E83E",
+        skill: "shooting",
+        minRank: 3,
+        maxRank: 7,
+        difficulty: "Intermediate - Advanced"
+      },
+
+      {
+        name: "Novice Aerials",
+        code: "0A40-E21D-61C1-49C6",
+        skill: "aerials",
+        minRank: 1,
+        maxRank: 3,
+        difficulty: "Beginner"
+      },
+
+      {
+        name: "Aerial Car Control",
+        code: "A3E1-92C2-8757-4195",
+        skill: "aerials",
+        minRank: 2,
+        maxRank: 5,
+        difficulty: "Intermediate"
+      },
+
+      {
+        name: "Aerial Shots - Pass",
+        code: "C7E0-9E0B-B739-A899",
+        skill: "aerials",
+        minRank: 2,
+        maxRank: 6,
+        difficulty: "Intermediate"
+      },
+
+      {
+        name: "Fast Aerial Double Jump",
+        code: "F269-B159-0BAC-AC2E",
+        skill: "aerials",
+        minRank: 4,
+        maxRank: 7,
+        difficulty: "Advanced"
+      },
+
+      {
+        name: "Saves",
+        code: "2E23-ABD5-20C6-DBD4",
+        skill: "defense",
+        minRank: 0,
+        maxRank: 4,
+        difficulty: "Beginner - Intermediate"
+      },
+
+      {
+        name: "Shadow Defense",
+        code: "5CCE-FB29-7B05-A0B1",
+        skill: "defense",
+        minRank: 2,
+        maxRank: 7,
+        difficulty: "Intermediate - Advanced"
+      },
+
+      {
+        name: "Backboard Defense",
+        code: "99E5-4AA3-60D5-44BD",
+        skill: "defense",
+        minRank: 4,
+        maxRank: 7,
+        difficulty: "Advanced"
+      },
+
+      {
+        name: "Backboard Therapy",
+        code: "D7F8-FD53-98D1-DAFE",
+        skill: "wall",
+        minRank: 4,
+        maxRank: 7,
+        difficulty: "Advanced"
+      },
+
       {
         name: "Backboard Shots",
-        code: "AFFD-5023-BD4F-D320"
+        code: "AFFD-5023-BD4F-D320",
+        skill: "wall",
+        minRank: 3,
+        maxRank: 7,
+        difficulty: "Intermediate - Advanced"
       },
+
       {
-        name: "Fast Aerials / Redirects",
-        code: "24A2-849A-610E-C67C"
+        name: "Double Tap Playground",
+        code: "CAFC-FB3E-3C0F-B8F1",
+        skill: "doubletouch",
+        minRank: 4,
+        maxRank: 7,
+        difficulty: "Advanced"
+      },
+
+      {
+        name: "Deevo",
+        code: "0CB0-16C8-DAAD-B578",
+        skill: "doubletouch",
+        minRank: 4,
+        maxRank: 7,
+        difficulty: "Advanced"
+      },
+
+      {
+        name: "Self Set Backboard Consistency",
+        code: "23BC-0377-C228-A338",
+        skill: "doubletouch",
+        minRank: 5,
+        maxRank: 7,
+        difficulty: "High Advanced"
+      },
+
+      {
+        name: "Ultimate Warmup",
+        code: "FA24-B2B7-2E8E-193B",
+        skill: "allaround",
+        minRank: 3,
+        maxRank: 7,
+        difficulty: "Intermediate - Advanced"
+      },
+
+      {
+        name: "First Touch Practice",
+        code: "F43A-8231-0B8F-B9FA",
+        skill: "allaround",
+        minRank: 4,
+        maxRank: 7,
+        difficulty: "Advanced"
+      },
+
+      {
+        name: "Ground to Air Dribble",
+        code: "71F9-F223-C3A8-993A",
+        skill: "allaround",
+        minRank: 4,
+        maxRank: 7,
+        difficulty: "Advanced"
       }
+
     ];
 
-    const routines = {
 
-      bronze: [
-        {
-          skill: "Basic Saves",
-          time: "10 minutes",
-          code: "6AFE-E510-BAA3-CB43"
-        },
-        {
-          skill: "Ball Contact Practice",
-          time: "10 minutes",
-          code: "Use Free Play. Focus on simply making solid contact."
-        },
-        {
-          skill: "Driving & Recoveries",
-          time: "10 minutes",
-          code: "Practice powerslides, flips and landing on your wheels."
-        }
-      ],
-
-      silver: [
-        {
-          skill: "Ground Shots",
-          time: "10 minutes",
-          code: "729C-E297-873F-8579"
-        },
-        {
-          skill: "Basic Aerials",
-          time: "10 minutes",
-          code: "57AA-3994-71EC-7BCD"
-        },
-        {
-          skill: "Power Hits",
-          time: "10 minutes",
-          code: "DC62-FEEC-D575-1B6F"
-        }
-      ],
-
-      gold: [
-        {
-          skill: "Ground Shooting",
-          time: "10 minutes",
-          code: "7C94-D3A7-46A9-82DC"
-        },
-        {
-          skill: "Aerial Car Control",
-          time: "10 minutes",
-          code: "A3E1-92C2-8757-4195"
-        },
-        {
-          skill: "Defense",
-          time: "10 minutes",
-          code: "87E7-773A-CBE5-B2C3"
-        }
-      ],
-
-      platinum: [
-        {
-          skill: "Shooting Consistency",
-          time: "10 minutes",
-          code: "4912-A5C9-9A56-555D"
-        },
-        {
-          skill: "Shadow Saves",
-          time: "10 minutes",
-          code: "6A8C-7B90-2AAA-B6B5"
-        },
-        {
-          skill: "Wall / Backboard Training",
-          time: "10 minutes",
-          code: "152C-2EAC-5269-4402"
-        }
-      ],
-
-      diamond: [
-        {
-          skill: "Powershots",
-          time: "10 minutes",
-          code: "7028-5E10-88EF-E83E"
-        },
-        {
-          skill: "Backboard Reads",
-          time: "10 minutes",
-          code: "DEE2-0629-B3A4-D717"
-        },
-        {
-          skill: "Double Touch Practice",
-          time: "10 minutes",
-          code: "E8EB-C454-38AF-9637"
-        }
-      ],
-
-      champion: [
-        {
-          skill: "Backboard Shots",
-          time: "10 minutes",
-          code: "AFFD-5023-BD4F-D320"
-        },
-        {
-          skill: "Redirects",
-          time: "10 minutes",
-          code: "4B34-668E-8D1B-05BC"
-        },
-        {
-          skill: "High-Speed Recoveries",
-          time: "10 minutes",
-          code: "Use Free Play. Practice wave dashes, half flips and fast recoveries."
-        }
-      ],
-
-      grandchampion: [
-        {
-          skill: "Fast Aerials / Redirects",
-          time: "10 minutes",
-          code: "24A2-849A-610E-C67C"
-        },
-        {
-          skill: "Advanced Redirects",
-          time: "10 minutes",
-          code: "BE27-2F2E-44FF-5A38"
-        },
-        {
-          skill: "High-Speed Free Play",
-          time: "10 minutes",
-          code: "Play as fast as possible while maintaining possession and control."
-        }
-      ],
-
-      ssl: [
-        {
-          skill: "Advanced Mechanical Warmup",
-          time: "10 minutes",
-          code: "2186-5167-B7C8-C46F"
-        },
-        {
-          skill: "Elite Reads & Redirects",
-          time: "10 minutes",
-          code: "24A2-849A-610E-C67C"
-        },
-        {
-          skill: "Match-Speed Free Play",
-          time: "10 minutes",
-          code: "Train at full speed with minimal resets. Focus on efficiency and precision."
-        }
-      ]
-
+    const rankLevels = {
+      bronze: 0,
+      silver: 1,
+      gold: 2,
+      platinum: 3,
+      diamond: 4,
+      champion: 5,
+      grandchampion: 6,
+      ssl: 7
     };
 
-    function getRandomPack() {
 
-      const randomIndex =
-        Math.floor(Math.random() * trainingPacks.length);
+    function findPacks() {
 
-      const pack =
-        trainingPacks[randomIndex];
+      const rank = document.getElementById("rank").value;
+      const skill = document.getElementById("skill").value;
+      const results = document.getElementById("results");
 
-      document.getElementById("packName").textContent =
-        pack.name;
-
-      document.getElementById("packCode").textContent =
-        pack.code;
-    }
-
-    function copyCode() {
-
-      const code =
-        document.getElementById("packCode").textContent;
-
-      if (code === "---- ---- ----") {
-        alert("Get a training pack first.");
+      if (!rank || !skill) {
+        alert("Choose both your rank and a skill.");
         return;
       }
 
-      navigator.clipboard.writeText(code);
+      const level = rankLevels[rank];
 
-      alert("Training pack code copied!");
-    }
+      const matches = packs.filter(pack => {
 
-    function generateRoutine() {
+        const rankMatch =
+          level >= pack.minRank &&
+          level <= pack.maxRank;
 
-      const rank =
-        document.getElementById("rank").value;
+        const skillMatch =
+          pack.skill === skill;
 
-      const routineBox =
-        document.getElementById("routine");
+        return rankMatch && skillMatch;
 
-      if (!rank) {
-        alert("Choose your rank first.");
+      });
+
+
+      if (matches.length === 0) {
+
+        results.innerHTML = `
+          <div class="pack">
+            <h3>No specific pack found</h3>
+            <p>
+              Try All-Around training or choose another skill.
+            </p>
+          </div>
+        `;
+
+        results.style.display = "block";
+
         return;
       }
 
-      const selectedRoutine =
-        routines[rank];
 
-      let html =
-        "<h2>Your 30-Minute Training Routine</h2>";
+      let html = "<h2>Recommended Training Packs</h2>";
 
-      selectedRoutine.forEach(item => {
+
+      matches.forEach(pack => {
 
         html += `
-          <div class="routine-item">
-            <strong>${item.skill}</strong><br><br>
-            ⏱ ${item.time}<br><br>
-            <span class="code">${item.code}</span>
+          <div class="pack">
+
+            <h3>${pack.name}</h3>
+
+            <div class="difficulty">
+              Difficulty: ${pack.difficulty}
+            </div>
+
+            <p class="code">
+              ${pack.code}
+            </p>
+
+            <button onclick="copyPack('${pack.code}')">
+              Copy Code
+            </button>
+
           </div>
         `;
 
       });
 
-      routineBox.innerHTML = html;
-      routineBox.style.display = "block";
+
+      results.innerHTML = html;
+      results.style.display = "block";
+
+    }
+
+
+    function copyPack(code) {
+
+      navigator.clipboard.writeText(code);
+
+      alert("Training pack code copied!");
+
+    }
+
+
+    function getRandomPack() {
+
+      const randomIndex =
+        Math.floor(Math.random() * packs.length);
+
+      const pack =
+        packs[randomIndex];
+
+      document.getElementById("randomPack").innerHTML = `
+
+        <strong>${pack.name}</strong>
+
+        <br><br>
+
+        <span class="code">
+          ${pack.code}
+        </span>
+
+        <br><br>
+
+        ${pack.difficulty}
+
+        <br>
+
+        <button onclick="copyPack('${pack.code}')">
+          Copy Code
+        </button>
+
+      `;
+
     }
 
   </script>
