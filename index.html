@@ -10,7 +10,7 @@
 </head>
 <body>
 <div class="container">
-<header><h1>🚀 RL Trainer</h1><div class="subtitle">Purpose-built Rocket League sessions. Different time choices create different workouts — not longer versions of the same one.</div></header>
+<header><h1>🚀 RL Trainer</h1><div class="subtitle">Purpose-built Rocket League sessions where every block teaches the exact skill you selected.</div></header>
 
 <div class="card">
 <h2>🎲 Give Me a Random Pack</h2>
@@ -22,7 +22,7 @@
 
 <div class="card">
 <h2>🎯 Build Today's Training Session</h2>
-<p>Choose your rank, available time, and exact focus. Each duration uses its own independent program bank.</p>
+<p>Choose your rank, available time, and exact focus. The pack is the training tool; the instructions always stay locked to your selected skill.</p>
 <div class="controls">
 <select id="rankSelect"><option value="">Choose Your Rank</option><option value="bronze">Bronze</option><option value="silver">Silver</option><option value="gold">Gold</option><option value="platinum">Platinum</option><option value="diamond">Diamond</option><option value="champion">Champion</option><option value="grandchampion">Grand Champion</option><option value="ssl">Supersonic Legend</option></select>
 <select id="timeSelect"><option value="">How Much Time?</option><option value="15">15 Minutes</option><option value="30">30 Minutes</option><option value="45">45 Minutes</option><option value="60">60 Minutes</option></select>
@@ -63,8 +63,8 @@ rocketeerAerialVariety:{name:"Rocketeer Aerial Variety",creator:"Community",code
 shotsYouShouldntMiss:{name:"Shots You Shouldn't Miss",creator:"Community",code:"42BF-686D-E047-574B",category:"Shooting"},
 uncomfortableSaves:{name:"Uncomfortable Saves",creator:"Community",code:"5CB2-6D82-1B54-47B7",category:"Defense"},
 powershots:{name:"Powershots",creator:"Yeeza",code:"7028-5E10-88EF-E83E",category:"Shooting"},
-ultimateWarmup:{name:"The ultimate warm-up",creator:"Hinata",code:"FA24-B2B7-2E8E-193B",category:"All-Around"},
-deevo:{name:"deevo",creator:"Torsos",code:"0CB0-16C8-DAAD-B578",category:"Backboard"},
+ultimateWarmup:{name:"The Ultimate Warmup",creator:"Hinata",code:"FA24-B2B7-2E8E-193B",category:"All-Around"},
+deevo:{name:"Deevo",creator:"Torsos",code:"0CB0-16C8-DAAD-B578",category:"Backboard"},
 dribbleTraining:{name:"Dribble Training",creator:"Virge",code:"04C1-42C8-6E5D-6F75",category:"Ground Control"},
 passTraining:{name:"Pass Training",creator:"FLuuMP",code:"BFD6-DA9F-49A2-81B3",category:"Aerials"},
 shadowSaves:{name:"Shadow Saves",creator:"Wayprotein",code:"6A8C-7B90-2AAA-B6B5",category:"Defense"},
@@ -84,57 +84,141 @@ ssl:{label:"Supersonic Legend",level:7,target:"Aim for 9 of 10 or better with pr
 };
 
 const rankGuides={
-bronze:{priorities:["Reliable car movement and ball contact","Basic shots on target","Simple saves and clean landings"],avoid:"Do not make flip resets, air dribbles, or constant air roll the center of your training yet."},
+bronze:{priorities:["Reliable car movement and ball contact","Basic shots on target","Simple saves and clean landings"],avoid:"Do not make advanced mechanics the center of your training yet."},
 silver:{priorities:["Strong contact and basic shot placement","Safe clears and recoveries","Reading ground and low-air balls"],avoid:"Do not trade basic consistency for flashy mechanics you cannot reproduce in matches."},
-gold:{priorities:["Powerful, placed shots","Useful clears and basic wall comfort","Simple aerial launches and recoveries"],avoid:"Advanced mechanics are optional; fundamentals should still take most of the session."},
-platinum:{priorities:["Shooting consistency at higher pace","Aerial fundamentals and shadow defense","Wall play, recoveries, and boost-efficient movement"],avoid:"Do not confuse playing faster with rushing every touch."},
-diamond:{priorities:["Fast aerials and backboard defense","First-touch quality and recovery speed","Consistent shooting under pressure"],avoid:"Do not let double taps or other advanced mechanics replace basic consistency and positioning."},
-champion:{priorities:["Game-speed shooting and first touches","Backboard reads and useful aerial touches","Possession after contact and fast recoveries"],avoid:"A mechanic that only works with perfect setup is not yet match-ready."},
-grandchampion:{priorities:["Mechanical consistency at full speed","Threatening first touches and possession","Boost efficiency, 50s, and adaptable recoveries"],avoid:"Do not autopilot training; target the weakness that is actually costing possessions or goals."},
-ssl:{priorities:["Pinpoint weakness-specific training","Repeatable mechanics under pressure","Adaptability, first touches, and efficiency"],avoid:"Do not chase novelty for its own sake; high-level improvement is often consistency and decision quality."}
+gold:{priorities:["Powerful, placed shots","Useful clears and wall comfort","Simple aerial launches and recoveries"],avoid:"Fundamentals should still take most of your practice time."},
+platinum:{priorities:["Shooting consistency at higher pace","Aerial fundamentals and shadow defense","Wall play and recoveries"],avoid:"Do not confuse playing faster with rushing every touch."},
+diamond:{priorities:["Fast aerials and backboard defense","First-touch quality and recovery speed","Consistent shooting under pressure"],avoid:"Do not let advanced mechanics replace basic consistency."},
+champion:{priorities:["Game-speed shooting and first touches","Backboard reads and useful aerial touches","Possession after contact and fast recoveries"],avoid:"A mechanic that only works with a perfect setup is not match-ready."},
+grandchampion:{priorities:["Mechanical consistency at full speed","Threatening first touches and possession","Boost efficiency and adaptable recoveries"],avoid:"Do not autopilot training; target what is actually costing possessions or goals."},
+ssl:{priorities:["Pinpoint weakness-specific training","Repeatable mechanics under pressure","Adaptability, first touches, and efficiency"],avoid:"Do not chase novelty for its own sake."}
 };
 
 const focusLabels={
-allaround:"All-Around Improvement",
-shootingAccuracy:"Shooting Accuracy",
-powerShots:"Power Shots",
-groundControl:"Ground Control",
-saves:"Saves",
-clears:"Clears",
-shadowDefense:"Shadow Defense",
-basicAerials:"Basic Aerials",
-fastAerials:"Fast Aerials",
-aerialAccuracy:"Aerial Accuracy",
-redirects:"Redirects",
-wallPlay:"Wall Play",
-backboardReads:"Backboard Reads",
-doubleTouches:"Double Touches",
-recoveries:"Recoveries / Car Control",
-freeplaySpeed:"Free Play / Speed"
+allaround:"All-Around Improvement",shootingAccuracy:"Shooting Accuracy",powerShots:"Power Shots",groundControl:"Ground Control",saves:"Saves",clears:"Clears",shadowDefense:"Shadow Defense",basicAerials:"Basic Aerials",fastAerials:"Fast Aerials",aerialAccuracy:"Aerial Accuracy",redirects:"Redirects",wallPlay:"Wall Play",backboardReads:"Backboard Reads",doubleTouches:"Double Touches",recoveries:"Recoveries / Car Control",freeplaySpeed:"Free Play / Speed"
+};
+
+const focusCoaching={
+allaround:{
+instructions:"Treat this block as balanced training. Use the assigned pack or Free Play task to sharpen the named skill, then recover as if the play were continuing.",
+success:"Complete the block with deliberate touches and clean recoveries.",
+why:"All-Around sessions keep several high-value mechanics active without over-specializing.",
+tip:"If one weakness clearly stands out, use a strict-focus session next."
+},
+shootingAccuracy:{
+instructions:"Pick a scoring target before every attempt: left, right, high, low, or far post. Do not count a goal that misses your chosen target. Reduce power if needed to regain placement, then rebuild speed.",
+success:"Hit your called target consistently; lucky goals do not count.",
+why:"Accuracy turns ordinary chances into shots defenders cannot cover comfortably.",
+tip:"Call the target out loud or in your head before you move."
+},
+powerShots:{
+instructions:"Use the assigned pack only as a ball setup. Your job is power: approach with space, strike through the center or slightly below center, time your dodge through contact, and keep the shot on target. When possible, hit shortly after the bounce.",
+success:"Produce hard, on-target shots repeatedly without sacrificing clean contact.",
+why:"Power reduces the defender's reaction time and makes rebounds more dangerous.",
+tip:"Do not confuse more boost with more power. Contact timing and where you strike the ball matter more."
+},
+groundControl:{
+instructions:"Use soft touches, catches, cuts, and controlled direction changes. Keep the ball close enough that you can make the next touch intentionally instead of chasing it.",
+success:"Maintain possession through several intentional touches without booming the ball away.",
+why:"Ground control gives you time, options, and the ability to punish early challenges.",
+tip:"Small inputs beat frantic inputs. Slow the ball down before trying to speed yourself up."
+},
+saves:{
+instructions:"Prioritize reading the shot, getting your car behind the ball, and directing the save toward a safe side. Recover immediately after contact.",
+success:"Make repeatable saves that do not hand the opponent an easy second shot.",
+why:"A controlled save ends pressure; a random block often extends it.",
+tip:"The safest touch is usually better than the most impressive touch."
+},
+clears:{
+instructions:"Use each setup to practice removing danger with purpose. Aim high or toward a side wall/corner when appropriate, and avoid serving the ball into midfield.",
+success:"Create clears that actually relieve pressure and give your team time.",
+why:"A clear is valuable only if it changes the possession or field position.",
+tip:"Think about where the opponent cannot immediately shoot from."
+},
+shadowDefense:{
+instructions:"Stay goal-side, match the attacker's path, and delay your challenge until the touch becomes readable. Use the assigned pack to practice patience, then direct the save toward safety.",
+success:"Avoid panic challenges and make controlled defensive touches from a shadow position.",
+why:"Shadow defense buys time and forces the attacker to show their plan first.",
+tip:"Your job is not to steal the ball instantly; your job is to protect the dangerous line."
+},
+basicAerials:{
+instructions:"Set your car's nose toward the ball before committing boost. Take a simple, controlled path and focus on useful contact instead of spinning.",
+success:"Reach aerial balls cleanly and direct the touch somewhere intentional.",
+why:"Reliable aerial fundamentals create the base for every advanced airborne mechanic.",
+tip:"Simple aerials done early and cleanly beat fancy aerials done late."
+},
+fastAerials:{
+instructions:"Practice the fast-aerial launch itself: jump, tilt, second jump, and boost with minimal wasted motion. Then use the assigned pack to reach the ball sooner without losing control.",
+success:"Launch quickly and arrive with enough control to make a useful touch.",
+why:"Fast aerials win contested balls only when speed and control happen together.",
+tip:"If your launch is inconsistent, slow the inputs down until the sequence is repeatable."
+},
+aerialAccuracy:{
+instructions:"Choose where you want the aerial touch to go before takeoff. Approach on a line that lets your final contact send the ball toward that target, using only small air-roll corrections.",
+success:"Put repeated aerial touches on your intended target or into useful space.",
+why:"Aerial accuracy converts aerial ability into actual offense and controlled defense.",
+tip:"Your approach angle determines more than your last-second correction."
+},
+redirects:{
+instructions:"Read the incoming ball early and build an approach line that intersects it at a useful angle. Focus on the final contact angle rather than chasing directly behind the ball.",
+success:"Create controlled redirect touches toward goal or dangerous space.",
+why:"Redirects train anticipation, aerial pathing, and precise contact on moving passes.",
+tip:"If you need a huge last-second correction, your approach was probably wrong earlier."
+},
+wallPlay:{
+instructions:"Use the wall as a controlled surface. Match the ball's speed, choose your exit point, and make one intentional touch before worrying about advanced follow-ups.",
+success:"Create clean wall contacts and recover smoothly back to the field or into the air.",
+why:"Comfort on the wall expands your options while reducing awkward recoveries.",
+tip:"Practice both walls; do not let one side become your permanent weak side."
+},
+backboardReads:{
+instructions:"Read the ball's approach angle before it hits the backboard. Move early toward where the rebound will be, then choose a controlled clear, shot, or setup.",
+success:"Arrive at backboard rebounds early enough to make an intentional touch.",
+why:"Strong backboard reads create time that late reactions cannot recover.",
+tip:"Watch the incoming angle, not just the bounce after it happens."
+},
+doubleTouches:{
+instructions:"Judge the first touch first. Use the assigned pack to create a rebound you can realistically reach, then finish only when the setup is good. Reset bad setups instead of practicing miracle saves.",
+success:"Create repeatable first-touch setups and convert a growing percentage of the playable rebounds.",
+why:"Double touches become practical only when the setup is intentional and repeatable.",
+tip:"A great first touch is more important than a lucky second touch."
+},
+recoveries:{
+instructions:"Every rep ends with a recovery goal: land wheels-first, preserve momentum, use powerslide when needed, and choose the fastest route back into the play.",
+success:"Recover cleanly without long stops, awkward spins, or unnecessary boost waste.",
+why:"Recovery speed determines how often you can participate in the next play.",
+tip:"Practice recovering from bad positions, not just perfect landings."
+},
+freeplaySpeed:{
+instructions:"Play continuously without resetting. Chain touches, recoveries, wall play, shots, and catches at a pace you can still control. Increase speed only when the quality survives.",
+success:"Maintain purposeful movement and possession for long stretches without stopping.",
+why:"Game-speed Free Play connects isolated mechanics into realistic sequences.",
+tip:"Speed is useful only if your next touch is still intentional."
+}
 };
 
 const free={
-ballContact:{name:"Ball Contact Fundamentals",category:"Ground Control",instructions:"Chase the ball continuously and make controlled contact. Recover immediately after every touch.",why:"Reliable contact is the base skill behind every other mechanic.",tip:"Clean contact first, speed second."},
-recovery:{name:"Recovery Circuit",category:"Recoveries",instructions:"Chain half-flips, wavedashes, wall exits, and powerslide landings while staying in motion.",why:"Fast recovery keeps you active in the play.",tip:"Use the recovery that fits the landing."},
-power:{name:"Power Contact Free Play",category:"Power Shots",instructions:"Strike the ball shortly after the bounce and drive through the center of it.",why:"Powerful contact creates harder saves and stronger clears.",tip:"Give yourself space to read the bounce."},
-dribble:{name:"Ground Control Circuit",category:"Ground Control",instructions:"Carry the ball slowly, make cuts, catch bounces, and keep the ball close.",why:"Ground control gives you options instead of giving possession away.",tip:"Use small throttle and steering inputs."},
-shadow:{name:"Shadow Defense Simulation",category:"Shadow Defense",instructions:"Retreat between the ball and goal, match the attack, then challenge late enough to make a controlled save.",why:"Shadowing buys time and improves challenge timing.",tip:"Stay between the ball and the center of your goal."},
-aerial:{name:"Aerial Launch Repetitions",category:"Aerials",instructions:"Pop the ball upward and practice controlled aerial takeoffs with a clean line to the ball.",why:"A clean launch makes every aerial mechanic easier.",tip:"Aim first, then boost."},
-fastAerial:{name:"Fast-Aerial Launch Drill",category:"Fast Aerials",instructions:"Repeat fast-aerial takeoffs from stationary and moving positions while minimizing wasted boost.",why:"Efficient launches reach contested balls sooner.",tip:"Repeat the input sequence consistently."},
-redirect:{name:"Redirect Read Free Play",category:"Redirects",instructions:"Bang the ball off walls, reposition, and meet the next touch from an angle.",why:"Redirects depend on early reads and approach lines.",tip:"Adjust before the final second."},
-wall:{name:"Wall Movement and Recovery",category:"Wall Play",instructions:"Drive both walls, jump off at different heights, rotate, land cleanly, and continue moving.",why:"Wall comfort requires movement skill as much as ball contact.",tip:"Practice both walls equally."},
-backboard:{name:"Backboard Read Simulation",category:"Backboard Reads",instructions:"Hit the ball toward the backboard, reposition immediately, and read the rebound for a follow-up or clear.",why:"Early backboard reads create time and control.",tip:"Read the approach before the bounce."},
-pressure:{name:"Pressure Free Play",category:"Game Transfer",instructions:"Play continuously at high speed without resetting. Chain catches, wall touches, aerials, shots, and recoveries.",why:"This connects isolated mechanics into real-game sequences.",tip:"Treat bad touches as recovery problems instead of restarting."},
-integrated:{name:"Integrated Free Play",category:"Game Transfer",instructions:"Combine ground control, aerial attacks, wall play, recoveries, and boost management without resetting.",why:"Integrated practice connects mechanics under imperfect conditions.",tip:"Reduce wasted boost while keeping pace."}
+ballContact:{name:"Ball Contact Fundamentals",category:"Ground Control"},
+recovery:{name:"Recovery Circuit",category:"Recoveries"},
+power:{name:"Power Contact Free Play",category:"Power Shots"},
+dribble:{name:"Ground Control Circuit",category:"Ground Control"},
+shadow:{name:"Shadow Defense Simulation",category:"Shadow Defense"},
+aerial:{name:"Aerial Launch Repetitions",category:"Aerials"},
+fastAerial:{name:"Fast-Aerial Launch Drill",category:"Fast Aerials"},
+redirect:{name:"Redirect Read Free Play",category:"Redirects"},
+wall:{name:"Wall Movement and Recovery",category:"Wall Play"},
+backboard:{name:"Backboard Read Simulation",category:"Backboard Reads"},
+pressure:{name:"Pressure Free Play",category:"Game Transfer"},
+integrated:{name:"Integrated Free Play",category:"Game Transfer"}
 };
 
 const focusResources={
 shootingAccuracy:[{pack:"groundShots"},{pack:"shootingConsistency"},{pack:"angledShots"},{pack:"shotsYouShouldntMiss"},{free:"pressure"}],
-powerShots:[{pack:"powershots"},{pack:"groundShots"},{pack:"warmupShotsClears"},{free:"power"},{free:"pressure"}],
+powerShots:[{free:"power"},{pack:"powershots"},{pack:"groundShots"},{pack:"warmupShotsClears"},{free:"pressure"}],
 groundControl:[{free:"ballContact"},{pack:"dribbleTraining"},{free:"dribble"},{pack:"groundShots"},{free:"integrated"}],
 saves:[{pack:"saves"},{pack:"shadowSaves"},{pack:"uncomfortableSaves"},{pack:"defensiveBackboardReads"},{free:"shadow"}],
 clears:[{pack:"clears"},{pack:"sideWallClears"},{pack:"warmupShotsClears"},{pack:"defensiveBackboardReads"},{free:"pressure"}],
-shadowDefense:[{pack:"shadowDefense"},{pack:"shadowSaves"},{pack:"uncomfortableSaves"},{free:"shadow"},{pack:"defensiveBackboardReads"}],
+shadowDefense:[{free:"shadow"},{pack:"shadowDefense"},{pack:"shadowSaves"},{pack:"uncomfortableSaves"},{pack:"defensiveBackboardReads"}],
 basicAerials:[{free:"aerial"},{pack:"aerialPass"},{pack:"passTraining"},{pack:"doubleJumpAerials"},{free:"pressure"}],
 fastAerials:[{free:"fastAerial"},{pack:"doubleJumpAerials"},{pack:"aerialPass"},{pack:"rocketeerAerialVariety"},{free:"pressure"}],
 aerialAccuracy:[{pack:"aerialPass"},{pack:"aerialRedirects"},{pack:"aerialRebounds"},{pack:"rocketeerAerialVariety"},{free:"pressure"}],
@@ -150,13 +234,13 @@ allaround:[{pack:"ultimateWarmup"},{pack:"shootingConsistency"},{pack:"saves"},{
 const programBanks={
 15:[
 {name:"Quick Fix",desc:"One narrow weakness, high-value reps, immediate transfer.",steps:[{label:"Diagnostic",min:4,slot:0},{label:"Main Fix",min:7,slot:1},{label:"Game Transfer",min:4,slot:4}]},
-{name:"Pressure Sprint",desc:"Skip the long warm-up and train execution under pressure.",steps:[{label:"Technique",min:5,slot:2},{label:"Pressure Reps",min:6,slot:3},{label:"Finish",min:4,slot:4}]},
-{name:"Two-Tool Tune-Up",desc:"Two complementary drills plus a short transfer block.",steps:[{label:"Tool A",min:5,slot:1},{label:"Tool B",min:5,slot:2},{label:"Transfer",min:5,slot:4}]}
+{name:"Pressure Sprint",desc:"Train execution under pressure without spending half the session warming up.",steps:[{label:"Technique",min:5,slot:2},{label:"Pressure Reps",min:6,slot:3},{label:"Finish",min:4,slot:4}]},
+{name:"Two-Tool Tune-Up",desc:"Two complementary tools plus a short transfer block.",steps:[{label:"Tool A",min:5,slot:1},{label:"Tool B",min:5,slot:2},{label:"Transfer",min:5,slot:4}]}
 ],
 30:[
 {name:"Consistency Builder",desc:"Longer quality reps with one variation and a closing test.",steps:[{label:"Core Work",min:10,slot:1},{label:"Variation",min:8,slot:2},{label:"Pressure Test",min:7,slot:3},{label:"Transfer",min:5,slot:4}]},
 {name:"Weakness Repair",desc:"Diagnose, rebuild the mechanic, then test it at speed.",steps:[{label:"Diagnostic",min:5,slot:0},{label:"Rebuild",min:10,slot:1},{label:"Speed Test",min:10,slot:3},{label:"Transfer",min:5,slot:4}]},
-{name:"Match Prep",desc:"A practical session built around realistic execution rather than repetition volume.",steps:[{label:"Activation",min:5,slot:0},{label:"Game-Speed Technique",min:8,slot:2},{label:"Pressure",min:9,slot:3},{label:"Application",min:8,slot:4}]}
+{name:"Match Prep",desc:"A practical session built around realistic execution.",steps:[{label:"Activation",min:5,slot:0},{label:"Game-Speed Technique",min:8,slot:2},{label:"Pressure",min:9,slot:3},{label:"Application",min:8,slot:4}]}
 ],
 45:[
 {name:"Skill Lab",desc:"Deep technical work with a separate variation block and longer application.",steps:[{label:"Technical Reset",min:7,slot:0},{label:"Deep Work",min:12,slot:1},{label:"Variation Lab",min:10,slot:3},{label:"Transfer",min:16,slot:4}]},
@@ -170,39 +254,15 @@ const programBanks={
 ]
 };
 
-const packInstructions={
-"Ground Control":"Keep the ball close and use small touches. Practice catches, controlled changes of direction, and possession rather than booming the ball away.",
-Shooting:"Choose a target before each attempt. Focus on clean contact, placement, and a useful recovery.",
-Defense:"Read the shot before committing. Make the safest useful touch you can, then recover immediately.",
-"Wall Play":"Approach the wall under control. Read the ball before jumping and prioritize clean contact.",
-Aerials:"Take the shortest controlled path to the ball. Minimize unnecessary air roll and wasted boost.",
-Redirects:"Focus on your approach line and the angle of your final touch. Make small corrections instead of oversteering.",
-Backboard:"Read the ball's approach before it hits the backboard. Position early and choose a controlled follow-up.",
-"Double Touches":"Grade the setup first. Your first touch should create a second touch you can realistically reach.",
-"All-Around":"Move through the drill at realistic pace. Prioritize clean execution and immediate recoveries."
-};
-
-const packWhy={
-"Ground Control":"Better first touches and close control create time, options, and threatening possessions.",
-Shooting:"Better shooting converts more of the chances you already create.",
-Defense:"Controlled defense prevents follow-up shots and can turn saves into possession.",
-"Wall Play":"Wall comfort expands both offensive and defensive options.",
-Aerials:"Efficient aerial movement helps you reach contested balls earlier and with more control.",
-Redirects:"Redirect work develops aerial reading, approach angles, and precision.",
-Backboard:"Backboard reads become increasingly important as opponents use the walls more effectively.",
-"Double Touches":"Repeatable setups make advanced mechanics useful in real matches.",
-"All-Around":"Balanced repetition exposes weak areas while keeping several core mechanics active."
-};
-
 function rankAdjustment(focus,rankKey){
 const level=rankProfiles[rankKey].level;
 const advanced=["redirects","doubleTouches","backboardReads","fastAerials"];
 
 if(advanced.includes(focus)&&level<=2)
-return "For this rank, judge success mainly by the setup, read, and clean first touch. Finishing the advanced mechanic is optional.";
+return"For this rank, judge success mainly by the setup, read, and clean first touch. Finishing the advanced mechanic is optional.";
 
 if(advanced.includes(focus)&&level<=4)
-return "Prioritize controlled setups and repeatable contact before maximum speed.";
+return"Prioritize controlled setups and repeatable contact before maximum speed.";
 
 return rankProfiles[rankKey].style;
 }
@@ -214,17 +274,19 @@ return list[index%list.length];
 
 function materializeResource(resource,focus,rankKey){
 
+const coach=focusCoaching[focus];
+
 if(resource.free){
 
 const t=free[resource.free];
 
 return{
 name:t.name,
-category:t.category,
-instructions:t.instructions,
-success:`${rankProfiles[rankKey].target}`,
-why:t.why,
-tip:`${t.tip} ${rankAdjustment(focus,rankKey)}`,
+category:focusLabels[focus],
+instructions:coach.instructions,
+success:`${coach.success} ${rankProfiles[rankKey].target}`,
+why:coach.why,
+tip:`${coach.tip} ${rankAdjustment(focus,rankKey)}`,
 freePlay:true,
 freeKey:resource.free
 };
@@ -234,12 +296,12 @@ freeKey:resource.free
 const p=packs[resource.pack];
 
 return{
-name:p.name,
-category:p.category,
-instructions:packInstructions[p.category]||packInstructions["All-Around"],
-success:`Complete the drill with intentional, controlled touches. ${rankProfiles[rankKey].target}`,
-why:packWhy[p.category]||packWhy["All-Around"],
-tip:rankAdjustment(focus,rankKey),
+name:`${focusLabels[focus]} — ${p.name}`,
+category:focusLabels[focus],
+instructions:coach.instructions,
+success:`${coach.success} ${rankProfiles[rankKey].target}`,
+why:coach.why,
+tip:`${coach.tip} ${rankAdjustment(focus,rankKey)}`,
 freePlay:false,
 packKey:resource.pack
 };
@@ -247,7 +309,7 @@ packKey:resource.pack
 }
 
 function lastProgramKey(rank,focus,time){
-return `rl_program_${rank}_${focus}_${time}`;
+return`rl_program_${rank}_${focus}_${time}`;
 }
 
 function chooseProgram(rank,focus,time){
@@ -402,8 +464,12 @@ ${built.program.desc}
 
 <br><br>
 
-Choosing a different time uses a different program bank.
-It does not simply add stages onto this workout.
+Every block below is coached specifically as
+<strong>${focusLabels[focus]}</strong>.
+
+A pack may contain other shot types,
+but the instructions tell you exactly how to use that pack
+for your selected focus.
 
 </div>
 
@@ -448,7 +514,7 @@ if(d.freePlay){
 html+=`
 
 <div class="pack-name">
-Training:
+Training Tool:
 Free Play
 </div>
 
@@ -465,7 +531,7 @@ const p=packs[d.packKey];
 html+=`
 
 <div class="pack-name">
-Training:
+Training Tool:
 ${p.name}
 </div>
 
@@ -492,7 +558,7 @@ Copy Training Code
 html+=`
 
 <div class="section-label">
-HOW TO TRAIN
+HOW TO TRAIN THIS FOCUS
 </div>
 
 <div class="instructions">
@@ -558,13 +624,12 @@ html+=`
 Training note:
 </strong>
 
-This is an independent
-${time}-minute program.
+The selected custom pack is the practice environment,
+not the coaching category.
 
-Switching to 15, 30, 45, or 60 minutes
-selects from a different workout bank
-rather than extending or shortening
-this exact routine.
+In STRICT FOCUS mode,
+every block is instructed and scored specifically for
+${focusLabels[focus]}.
 
 </div>
 
@@ -650,15 +715,30 @@ codes.add(p.code);
 
 }
 
-for(const[f,list]of Object.entries(focusResources)){
+for(const focus of Object.keys(focusLabels)){
 
-if(list.length<5){
+if(!focusCoaching[focus]){
 
 errors.push(
-`${f} has fewer than 5 resources`
+`Missing coaching for ${focus}`
 );
 
 }
+
+if(
+!focusResources[focus]||
+focusResources[focus].length<5
+){
+
+errors.push(
+`Missing resources for ${focus}`
+);
+
+}
+
+}
+
+for(const[f,list]of Object.entries(focusResources)){
 
 for(const r of list){
 
@@ -711,7 +791,7 @@ errors.push(
 for(const step of program.steps){
 
 if(
-step.slot<0 ||
+step.slot<0||
 step.slot>8
 ){
 
@@ -746,8 +826,6 @@ for(const focus of focuses)
 
 for(const time of times){
 
-for(let i=0;i<3;i++){
-
 const built=
 buildSession(
 rank,
@@ -771,16 +849,26 @@ errors.push(
 
 }
 
+for(const block of built.session){
+
 if(
-built.session.some(
-x=>
-!x.drill ||
-!x.drill.name
-)
+!block.drill||
+!block.drill.name
 ){
 
 errors.push(
 `${rank}/${focus}/${time} missing drill`
+);
+
+}
+
+if(
+focus!=="allaround" &&
+block.drill.category!==focusLabels[focus]
+){
+
+errors.push(
+`${rank}/${focus}/${time} leaked category ${block.drill.category}`
 );
 
 }
@@ -802,9 +890,8 @@ console.log(
 `RL Trainer validation passed:
 ${Object.keys(packs).length} packs,
 ${ranks.length} ranks,
-${focuses.length} focuses,
-4 independent duration banks,
-and ${ranks.length*focuses.length*times.length} combinations.`
+${focuses.length} focus modes,
+and ${ranks.length*focuses.length*times.length} strict-focus combinations.`
 );
 
 }
