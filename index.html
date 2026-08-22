@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RL Trainer</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #101522;
+      color: white;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 50px 20px;
+    }
+
+    h1 {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #b8c2d9;
+      font-size: 18px;
+    }
+
+    .card {
+      margin-top: 30px;
+      padding: 25px;
+      background: #1b2233;
+      border-radius: 12px;
+    }
+
+    .pack-name {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .pack-code {
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      margin: 8px;
+      padding: 14px 22px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #168cff;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0072e5;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>🚀 RL Trainer</h1>
+
+    <p>
+      Random Rocket League training packs to help you improve.
+    </p>
+
+    <div class="card">
+      <div class="pack-name" id="packName">
+        Click the button to get a training pack
+      </div>
+
+      <div class="pack-code" id="packCode">
+        ---- ---- ----
+      </div>
+
+      <button onclick="getRandomPack()">
+        Give Me a Random Pack
+      </button>
+
+      <button onclick="copyCode()">
+        Copy Code
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const trainingPacks = [
+      {
+        name: "Aerial Practice",
+        code: "A3E1-92C2-8757-4195"
+      },
+      {
+        name: "Shooting Consistency",
+        code: "4912-A5C9-9A56-555D"
+      },
+      {
+        name: "Wall Shots",
+        code: "9F6D-4387-4C57-2E4B"
+      },
+      {
+        name: "Goalie Training",
+        code: "8D93-C997-0ACD-8416"
+      },
+      {
+        name: "Fast Aerials",
+        code: "F001-A333-AAEB-2786"
+      }
+    ];
+
+    function getRandomPack() {
+      const randomIndex = Math.floor(Math.random() * trainingPacks.length);
+      const pack = trainingPacks[randomIndex];
+
+      document.getElementById("packName").textContent = pack.name;
+      document.getElementById("packCode").textContent = pack.code;
+    }
+
+    function copyCode() {
+      const code = document.getElementById("packCode").textContent;
+
+      if (code === "---- ---- ----") {
+        alert("Get a training pack first.");
+        return;
+      }
+
+      navigator.clipboard.writeText(code);
+      alert("Training pack code copied!");
+    }
+  </script>
+
+</body>
+</html>
