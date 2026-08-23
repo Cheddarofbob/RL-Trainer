@@ -202,6 +202,48 @@
   outline-offset:3px;
 }
 
+
+/* ===== PRIVATE FEEDBACK INBOX ===== */
+.admin-feedback-button{display:none}
+.feedback-inbox-dialog{width:min(1080px,calc(100vw - 28px));max-height:88vh;margin:5vh auto;background:#111b2b;border:1px solid #30415e;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.5);overflow:hidden}
+.feedback-inbox-head{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:18px 20px;background:#172033;border-bottom:1px solid #2b3b56}
+.feedback-inbox-head h2{margin:0}
+.feedback-inbox-body{padding:18px 20px 24px;overflow:auto;max-height:calc(88vh - 70px)}
+.feedback-inbox-stats{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.feedback-inbox-stat{background:#0d1523;border:1px solid #27364f;border-radius:10px;padding:14px}
+.feedback-inbox-stat-number{font-size:25px;font-weight:800;color:#75bdff}
+.feedback-inbox-stat-label{margin-top:4px;color:#93a7c3;font-size:12px}
+.feedback-inbox-toolbar{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end;margin:14px 0}
+.feedback-inbox-toolbar select,.feedback-inbox-toolbar button{width:100%}
+.feedback-inbox-alert{display:none;margin:12px 0;padding:12px;border-radius:9px;background:#352b16;border:1px solid #6e5825;color:#f5dda0;line-height:1.5}
+.feedback-inbox-alert.show{display:block}
+.feedback-theme-list{display:grid;gap:12px}
+.feedback-theme-card{background:#0d1523;border:1px solid #2b3b56;border-radius:12px;overflow:hidden}
+.feedback-theme-main{padding:15px 16px}
+.feedback-theme-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.feedback-theme-title{font-size:17px;font-weight:800;color:#e5f1ff}
+.feedback-theme-meta{margin-top:6px;color:#8fa3bd;font-size:12px;line-height:1.5}
+.feedback-theme-badges{display:flex;gap:6px;flex-wrap:wrap}
+.feedback-theme-badge{padding:5px 8px;border-radius:999px;background:#17283a;color:#cde7ff;font-size:11px;font-weight:700}
+.feedback-theme-badge.count{background:#18382a;color:#9af0b9}
+.feedback-theme-badge.priority-high,.feedback-theme-badge.priority-critical{background:#3a1f24;color:#ffc3c9}
+.feedback-theme-summary{margin-top:12px;color:#c7d0df;line-height:1.55}
+.feedback-theme-controls{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end;margin-top:13px;padding-top:12px;border-top:1px solid #24334a}
+.feedback-theme-controls select{width:100%;padding:9px 10px;font-size:13px}
+.feedback-theme-save{padding:9px 12px;font-size:13px}
+.feedback-theme-details{border-top:1px solid #24334a}
+.feedback-theme-details summary{cursor:pointer;padding:12px 16px;color:#9fcfff;font-weight:700;list-style:none}
+.feedback-theme-details summary::-webkit-details-marker{display:none}
+.feedback-theme-details[open] summary{background:#122238}
+.feedback-message-list{display:grid;gap:8px;padding:0 16px 16px}
+.feedback-message-item{background:#121e30;border:1px solid #283a55;border-radius:9px;padding:12px}
+.feedback-message-text{color:#e3edf9;line-height:1.55;white-space:pre-wrap}
+.feedback-message-meta{margin-top:8px;color:#7f93af;font-size:11px;line-height:1.5}
+.feedback-empty{padding:22px;text-align:center;color:#8fa3bd;background:#0d1523;border:1px dashed #30415e;border-radius:10px}
+.feedback-top-issue{font-size:13px;line-height:1.35;color:#cde7ff;margin-top:4px}
+@media(max-width:850px){.feedback-inbox-stats{grid-template-columns:1fr 1fr}.feedback-inbox-toolbar{grid-template-columns:1fr 1fr}.feedback-theme-controls{grid-template-columns:1fr 1fr}.feedback-theme-save{grid-column:1/-1}}
+@media(max-width:560px){.feedback-inbox-stats,.feedback-inbox-toolbar,.feedback-theme-controls{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -240,6 +282,7 @@
 <div class="account-actions">
 <button class="settings-button" onclick="openAccountSettings()">⚙ Account Settings</button>
 <button class="settings-button" onclick="openFeedbackModal()">💬 Feedback</button>
+<button id="adminFeedbackButton" class="settings-button admin-feedback-button" onclick="openFeedbackInbox()">🛡 Feedback Inbox</button>
 <button class="logout-button" onclick="logOutUser()">Log Out</button>
 </div>
 </div>
@@ -456,6 +499,39 @@
   </div>
 </div>
 
+
+<div id="feedbackInboxModal" class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="feedbackInboxTitle" onclick="closeFeedbackInboxOnBackdrop(event)">
+  <div class="feedback-inbox-dialog">
+    <div class="feedback-inbox-head">
+      <div>
+        <h2 id="feedbackInboxTitle">🛡 Feedback Inbox</h2>
+        <div class="field-help">Private Admin / Owner view</div>
+      </div>
+      <button class="settings-close" onclick="closeFeedbackInbox()">Close</button>
+    </div>
+
+    <div class="feedback-inbox-body">
+      <div class="feedback-inbox-stats">
+        <div class="feedback-inbox-stat"><div id="feedbackInboxSubmissions" class="feedback-inbox-stat-number">0</div><div class="feedback-inbox-stat-label">Total Submissions</div></div>
+        <div class="feedback-inbox-stat"><div id="feedbackInboxThemes" class="feedback-inbox-stat-number">0</div><div class="feedback-inbox-stat-label">Grouped Themes</div></div>
+        <div class="feedback-inbox-stat"><div id="feedbackInboxOpen" class="feedback-inbox-stat-number">0</div><div class="feedback-inbox-stat-label">New / Reviewing</div></div>
+        <div class="feedback-inbox-stat"><div id="feedbackInboxTopCount" class="feedback-inbox-stat-number">0</div><div class="feedback-inbox-stat-label">Top Theme Reports</div><div id="feedbackInboxTopTitle" class="feedback-top-issue">—</div></div>
+      </div>
+
+      <div id="feedbackNeedsReview" class="feedback-inbox-alert"></div>
+
+      <div class="feedback-inbox-toolbar">
+        <div class="field"><label for="feedbackInboxCategory">Category</label><select id="feedbackInboxCategory" onchange="renderFeedbackInbox()"><option value="all">All Categories</option><option value="bug">Bugs</option><option value="feature_request">Feature Requests</option><option value="ui_ux">UI / UX</option><option value="training_coaching">Training / Coaching</option><option value="account">Accounts</option><option value="performance">Performance</option><option value="other">Other</option></select></div>
+        <div class="field"><label for="feedbackInboxStatus">Status</label><select id="feedbackInboxStatus" onchange="renderFeedbackInbox()"><option value="all">All Statuses</option><option value="new">New</option><option value="reviewing">Reviewing</option><option value="planned">Planned</option><option value="in_progress">In Progress</option><option value="fixed">Fixed</option><option value="wont_do">Won't Do</option></select></div>
+        <div class="field"><label for="feedbackInboxSort">Sort</label><select id="feedbackInboxSort" onchange="renderFeedbackInbox()"><option value="reports">Most Reported</option><option value="newest">Newest Activity</option><option value="priority">Priority</option></select></div>
+        <button class="regen" onclick="loadFeedbackInbox()">Refresh</button>
+      </div>
+
+      <div id="feedbackThemeList" class="feedback-theme-list"></div>
+    </div>
+  </div>
+</div>
+
 <footer class="site-footer">
   <div class="site-footer-original-branding">RL Trainer — Train with purpose. Improve with consistency.</div>
   <button class="footer-feedback-link" onclick="openFeedbackModal()" aria-label="Send feedback">
@@ -476,6 +552,9 @@ let currentUser=null;
 let currentBuiltSession=null;
 let activeSavedSession=null;
 let timerUiInterval=null;
+let currentProfile=null;
+let feedbackInboxThemes=[];
+let feedbackInboxRows=[];
 let passwordRecoveryMode=window.location.hash.includes("type=recovery")||new URLSearchParams(window.location.search).get("type")==="recovery";
 function setAccountStatus(message,type="info"){
 const el=document.getElementById("accountStatus");
@@ -580,6 +659,10 @@ if(error){setAccountStatus(error.message,"error");return;}
 setAccountStatus("Logged out.","success");
 activeSavedSession=null;
 currentBuiltSession=null;
+currentProfile=null;
+feedbackInboxThemes=[];
+feedbackInboxRows=[];
+closeFeedbackInbox();
 await renderAuth(null);
 }
 async function ensureProfile(user){
@@ -593,6 +676,9 @@ return created.data;
 }
 function populateProfile(profile){
 if(!profile)return;
+currentProfile=profile;
+const adminFeedbackButton=document.getElementById("adminFeedbackButton");
+if(adminFeedbackButton)adminFeedbackButton.style.display=["admin","owner"].includes(profile.account_role)?"inline-block":"none";
 document.getElementById("profileDisplayName").value=profile.display_name||"";
 document.getElementById("profilePlatform").value=profile.rl_platform||"";
 document.getElementById("profilePlayerId").value=profile.rl_player_id||"";
@@ -623,7 +709,7 @@ document.body.style.overflow="";
 function closeSettingsOnBackdrop(event){
 if(event.target?.id==="accountSettingsModal")closeAccountSettings();
 }
-document.addEventListener("keydown",event=>{if(event.key==="Escape"){closeAccountSettings();closeFeedbackModal();}});
+document.addEventListener("keydown",event=>{if(event.key==="Escape"){closeAccountSettings();closeFeedbackModal();closeFeedbackInbox();}});
 
 function populateAccountSettings(user){
 const emailInput=document.getElementById("settingsEmail");
@@ -741,7 +827,7 @@ const panel=document.getElementById("accountPanel");
 const recoveryPanel=document.getElementById("passwordRecoveryPanel");
 if(passwordRecoveryMode&&currentUser){forms.style.display="none";panel.style.display="none";recoveryPanel.style.display="block";setAccountStatus("Recovery link accepted. Choose your new password below.","info");return;}
 recoveryPanel.style.display="none";
-if(!currentUser){closeAccountSettings();forms.style.display="block";panel.style.display="none";document.getElementById("accountEmail").textContent="";const settingsEmail=document.getElementById("settingsEmail");if(settingsEmail)settingsEmail.value="";const goalList=document.getElementById("goalList");if(goalList)goalList.innerHTML="";const scheduleList=document.getElementById("scheduleList");if(scheduleList)scheduleList.innerHTML="";const historyList=document.getElementById("historyList");if(historyList)historyList.innerHTML="";const performanceList=document.getElementById("performanceList");if(performanceList)performanceList.innerHTML="";renderSessionStartPanel();return;}
+if(!currentUser){closeAccountSettings();closeFeedbackInbox();currentProfile=null;const adminFeedbackButton=document.getElementById("adminFeedbackButton");if(adminFeedbackButton)adminFeedbackButton.style.display="none";forms.style.display="block";panel.style.display="none";document.getElementById("accountEmail").textContent="";const settingsEmail=document.getElementById("settingsEmail");if(settingsEmail)settingsEmail.value="";const goalList=document.getElementById("goalList");if(goalList)goalList.innerHTML="";const scheduleList=document.getElementById("scheduleList");if(scheduleList)scheduleList.innerHTML="";const historyList=document.getElementById("historyList");if(historyList)historyList.innerHTML="";const performanceList=document.getElementById("performanceList");if(performanceList)performanceList.innerHTML="";renderSessionStartPanel();return;}
 forms.style.display="none";panel.style.display="block";document.getElementById("accountEmail").textContent=currentUser.email||"";
 populateAccountSettings(currentUser);
 const profile=await ensureProfile(currentUser);
@@ -763,6 +849,130 @@ initializeAuth();
 setPerformanceDateDefault();
 updateGoalMetricUI();
 
+
+
+/* =====================================================
+   PRIVATE ADMIN / OWNER FEEDBACK INBOX
+===================================================== */
+function isFeedbackStaff(){
+return Boolean(currentUser&&["admin","owner"].includes(currentProfile?.account_role));
+}
+function feedbackCategoryLabel(value){
+return{bug:"Bug",feature_request:"Feature Request",ui_ux:"UI / UX",training_coaching:"Training / Coaching",account:"Account",performance:"Performance",other:"Other"}[value]||value||"Other";
+}
+function feedbackStatusLabel(value){
+return{new:"New",reviewing:"Reviewing",planned:"Planned",in_progress:"In Progress",fixed:"Fixed",wont_do:"Won't Do"}[value]||value||"New";
+}
+function feedbackPriorityWeight(value){
+return{critical:4,high:3,normal:2,low:1}[value]||0;
+}
+function feedbackDateLabel(value){
+if(!value)return"—";
+const d=new Date(value);
+return Number.isNaN(d.getTime())?String(value):d.toLocaleString();
+}
+function escapeFeedbackHtml(value){
+return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+}
+async function openFeedbackInbox(){
+if(!isFeedbackStaff()){setAccountStatus("Admin access required.","error");return;}
+const modal=document.getElementById("feedbackInboxModal");
+if(!modal)return;
+modal.classList.add("open");
+document.body.style.overflow="hidden";
+await loadFeedbackInbox();
+}
+function closeFeedbackInbox(){
+const modal=document.getElementById("feedbackInboxModal");
+if(modal)modal.classList.remove("open");
+if(!document.getElementById("accountSettingsModal")?.classList.contains("open")&&!document.getElementById("feedbackModal")?.classList.contains("open"))document.body.style.overflow="";
+}
+function closeFeedbackInboxOnBackdrop(event){
+if(event.target?.id==="feedbackInboxModal")closeFeedbackInbox();
+}
+async function loadFeedbackInbox(){
+if(!isFeedbackStaff())return;
+const list=document.getElementById("feedbackThemeList");
+if(list)list.innerHTML=`<div class="feedback-empty">Loading feedback…</div>`;
+const [themesResult,feedbackResult]=await Promise.all([
+supabaseClient.from("feedback_themes").select("id,title,summary,category,status,priority,report_count,first_reported_at,last_reported_at,created_at,updated_at").order("report_count",{ascending:false}),
+supabaseClient.from("feedback").select("id,user_id,theme_id,feedback_type,message,rating,page_context,rank_context,platform_context,grouping_status,created_at").order("created_at",{ascending:false}).limit(500)
+]);
+if(themesResult.error||feedbackResult.error){
+console.error("Feedback inbox load error",themesResult.error||feedbackResult.error);
+if(list)list.innerHTML=`<div class="feedback-empty">Could not load the Feedback Inbox.</div>`;
+return;
+}
+feedbackInboxThemes=themesResult.data||[];
+feedbackInboxRows=feedbackResult.data||[];
+renderFeedbackInboxSummary();
+renderFeedbackInbox();
+}
+function renderFeedbackInboxSummary(){
+const rows=feedbackInboxRows;
+const themes=feedbackInboxThemes;
+const openThemes=themes.filter(t=>["new","reviewing"].includes(t.status)).length;
+const top=[...themes].sort((a,b)=>(Number(b.report_count)||0)-(Number(a.report_count)||0))[0]||null;
+document.getElementById("feedbackInboxSubmissions").textContent=rows.length;
+document.getElementById("feedbackInboxThemes").textContent=themes.length;
+document.getElementById("feedbackInboxOpen").textContent=openThemes;
+document.getElementById("feedbackInboxTopCount").textContent=top?.report_count||0;
+document.getElementById("feedbackInboxTopTitle").textContent=top?.title||"—";
+const needs=rows.filter(r=>r.grouping_status==="needs_review"||r.grouping_status==="pending");
+const alert=document.getElementById("feedbackNeedsReview");
+if(alert){
+alert.classList.toggle("show",needs.length>0);
+alert.textContent=needs.length?`${needs.length} submission${needs.length===1?"":"s"} still need semantic grouping/review.`:"";
+}
+}
+function renderFeedbackInbox(){
+const list=document.getElementById("feedbackThemeList");
+if(!list)return;
+const category=document.getElementById("feedbackInboxCategory")?.value||"all";
+const status=document.getElementById("feedbackInboxStatus")?.value||"all";
+const sort=document.getElementById("feedbackInboxSort")?.value||"reports";
+let themes=feedbackInboxThemes.filter(t=>(category==="all"||t.category===category)&&(status==="all"||t.status===status));
+if(sort==="newest")themes.sort((a,b)=>new Date(b.last_reported_at||0)-new Date(a.last_reported_at||0));
+else if(sort==="priority")themes.sort((a,b)=>feedbackPriorityWeight(b.priority)-feedbackPriorityWeight(a.priority)||(Number(b.report_count)||0)-(Number(a.report_count)||0));
+else themes.sort((a,b)=>(Number(b.report_count)||0)-(Number(a.report_count)||0)||new Date(b.last_reported_at||0)-new Date(a.last_reported_at||0));
+if(!themes.length){list.innerHTML=`<div class="feedback-empty">No feedback themes match these filters.</div>`;return;}
+list.innerHTML=themes.map(theme=>{
+const messages=feedbackInboxRows.filter(r=>r.theme_id===theme.id);
+const anonymous=messages.filter(r=>!r.user_id).length;
+const loggedIn=messages.length-anonymous;
+const messageHtml=messages.length?messages.map(row=>`<div class="feedback-message-item">
+<div class="feedback-message-text">${escapeFeedbackHtml(row.message)}</div>
+<div class="feedback-message-meta">${row.user_id?"Logged-in user":"Anonymous"}${row.rating?` • Rating ${row.rating}/5`:""}${row.page_context?` • ${escapeFeedbackHtml(row.page_context)}`:""}${row.rank_context?` • ${escapeFeedbackHtml(row.rank_context)}`:""}${row.platform_context?` • ${escapeFeedbackHtml(row.platform_context)}`:""}<br>${feedbackDateLabel(row.created_at)}</div>
+</div>`).join(""):`<div class="feedback-empty">No raw messages are attached to this theme.</div>`;
+return`<div class="feedback-theme-card">
+<div class="feedback-theme-main">
+<div class="feedback-theme-head">
+<div><div class="feedback-theme-title">${escapeFeedbackHtml(theme.title)}</div><div class="feedback-theme-meta">${feedbackCategoryLabel(theme.category)} • First: ${feedbackDateLabel(theme.first_reported_at)} • Latest: ${feedbackDateLabel(theme.last_reported_at)}</div></div>
+<div class="feedback-theme-badges"><span class="feedback-theme-badge count">${theme.report_count||messages.length} report${Number(theme.report_count||messages.length)===1?"":"s"}</span><span class="feedback-theme-badge">${loggedIn} logged-in</span><span class="feedback-theme-badge">${anonymous} anonymous</span><span class="feedback-theme-badge">${feedbackStatusLabel(theme.status)}</span><span class="feedback-theme-badge priority-${theme.priority}">${String(theme.priority||"normal").toUpperCase()}</span></div>
+</div>
+<div class="feedback-theme-summary">${escapeFeedbackHtml(theme.summary||"No summary yet.")}</div>
+<div class="feedback-theme-controls">
+<div class="field"><label for="status-${theme.id}">Status</label><select id="status-${theme.id}"><option value="new" ${theme.status==="new"?"selected":""}>New</option><option value="reviewing" ${theme.status==="reviewing"?"selected":""}>Reviewing</option><option value="planned" ${theme.status==="planned"?"selected":""}>Planned</option><option value="in_progress" ${theme.status==="in_progress"?"selected":""}>In Progress</option><option value="fixed" ${theme.status==="fixed"?"selected":""}>Fixed</option><option value="wont_do" ${theme.status==="wont_do"?"selected":""}>Won't Do</option></select></div>
+<div class="field"><label for="priority-${theme.id}">Priority</label><select id="priority-${theme.id}"><option value="low" ${theme.priority==="low"?"selected":""}>Low</option><option value="normal" ${theme.priority==="normal"?"selected":""}>Normal</option><option value="high" ${theme.priority==="high"?"selected":""}>High</option><option value="critical" ${theme.priority==="critical"?"selected":""}>Critical</option></select></div>
+<button class="feedback-theme-save" onclick="saveFeedbackThemeWorkflow('${theme.id}')">Save</button>
+</div>
+</div>
+<details class="feedback-theme-details"><summary>View ${messages.length} original message${messages.length===1?"":"s"}</summary><div class="feedback-message-list">${messageHtml}</div></details>
+</div>`;
+}).join("");
+}
+async function saveFeedbackThemeWorkflow(themeId){
+if(!isFeedbackStaff())return;
+const status=document.getElementById(`status-${themeId}`)?.value;
+const priority=document.getElementById(`priority-${themeId}`)?.value;
+const {error}=await supabaseClient.rpc("update_feedback_theme_status",{target_theme_id:themeId,new_status:status,new_priority:priority});
+if(error){setAccountStatus(error.message,"error");return;}
+const theme=feedbackInboxThemes.find(t=>t.id===themeId);
+if(theme){theme.status=status;theme.priority=priority;}
+renderFeedbackInboxSummary();
+renderFeedbackInbox();
+setAccountStatus("Feedback theme updated.","success");
+}
 
 /* =====================================================
    PLAYER FEEDBACK
