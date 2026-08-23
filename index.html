@@ -244,6 +244,20 @@
 @media(max-width:850px){.feedback-inbox-stats{grid-template-columns:1fr 1fr}.feedback-inbox-toolbar{grid-template-columns:1fr 1fr}.feedback-theme-controls{grid-template-columns:1fr 1fr}.feedback-theme-save{grid-column:1/-1}}
 @media(max-width:560px){.feedback-inbox-stats,.feedback-inbox-toolbar,.feedback-theme-controls{grid-template-columns:1fr}}
 
+
+.feedback-reply-box{margin-top:14px;padding:13px;background:#101d2e;border:1px solid #2b4261;border-radius:10px}
+.feedback-reply-box label{display:block;margin-bottom:7px;color:#b9d9ff;font-size:12px;font-weight:700}
+.feedback-reply-box textarea{width:100%;min-height:88px;resize:vertical;box-sizing:border-box}
+.feedback-reply-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap}
+.feedback-reply-recipient{color:#8fa3bd;font-size:11px;line-height:1.45}
+.feedback-reply-send{padding:9px 13px}
+.feedback-message-reply{margin-top:10px;padding-top:10px;border-top:1px solid #263a56}
+.feedback-message-reply textarea{width:100%;min-height:72px;resize:vertical;box-sizing:border-box}
+.feedback-message-reply-actions{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-top:7px;flex-wrap:wrap}
+.feedback-anonymous-note{margin-top:10px;color:#8fa3bd;font-size:11px;font-style:italic}
+.feedback-response-history{margin-top:10px;padding:10px;background:#13263a;border-left:3px solid #4fa3ff;border-radius:7px;color:#d9ebff;font-size:12px;line-height:1.5}
+.feedback-response-history strong{color:#8fc8ff}
+
 </style>
 </head>
 <body>
@@ -555,6 +569,7 @@ let timerUiInterval=null;
 let currentProfile=null;
 let feedbackInboxThemes=[];
 let feedbackInboxRows=[];
+let feedbackInboxResponses=[];
 let passwordRecoveryMode=window.location.hash.includes("type=recovery")||new URLSearchParams(window.location.search).get("type")==="recovery";
 function setAccountStatus(message,type="info"){
 const el=document.getElementById("accountStatus");
@@ -662,6 +677,7 @@ currentBuiltSession=null;
 currentProfile=null;
 feedbackInboxThemes=[];
 feedbackInboxRows=[];
+feedbackInboxResponses=[];
 closeFeedbackInbox();
 await renderAuth(null);
 }
@@ -894,17 +910,19 @@ async function loadFeedbackInbox(){
 if(!isFeedbackStaff())return;
 const list=document.getElementById("feedbackThemeList");
 if(list)list.innerHTML=`<div class="feedback-empty">Loading feedback…</div>`;
-const [themesResult,feedbackResult]=await Promise.all([
+const [themesResult,feedbackResult,responsesResult]=await Promise.all([
 supabaseClient.from("feedback_themes").select("id,title,summary,category,status,priority,report_count,first_reported_at,last_reported_at,created_at,updated_at").order("report_count",{ascending:false}),
-supabaseClient.from("feedback").select("id,user_id,theme_id,feedback_type,message,rating,page_context,rank_context,platform_context,grouping_status,created_at").order("created_at",{ascending:false}).limit(500)
+supabaseClient.from("feedback").select("id,user_id,theme_id,feedback_type,message,rating,page_context,rank_context,platform_context,grouping_status,created_at").order("created_at",{ascending:false}).limit(500),
+supabaseClient.from("feedback_responses").select("id,feedback_id,theme_id,message,created_at,created_by").order("created_at",{ascending:false}).limit(500)
 ]);
-if(themesResult.error||feedbackResult.error){
-console.error("Feedback inbox load error",themesResult.error||feedbackResult.error);
+if(themesResult.error||feedbackResult.error||responsesResult.error){
+console.error("Feedback inbox load error",themesResult.error||feedbackResult.error||responsesResult.error);
 if(list)list.innerHTML=`<div class="feedback-empty">Could not load the Feedback Inbox.</div>`;
 return;
 }
 feedbackInboxThemes=themesResult.data||[];
 feedbackInboxRows=feedbackResult.data||[];
+feedbackInboxResponses=responsesResult.data||[];
 renderFeedbackInboxSummary();
 renderFeedbackInbox();
 }
@@ -939,18 +957,39 @@ if(!themes.length){list.innerHTML=`<div class="feedback-empty">No feedback theme
 list.innerHTML=themes.map(theme=>{
 const messages=feedbackInboxRows.filter(r=>r.theme_id===theme.id);
 const anonymous=messages.filter(r=>!r.user_id).length;
-const loggedIn=messages.length-anonymous;
-const messageHtml=messages.length?messages.map(row=>`<div class="feedback-message-item">
+const uniqueLoggedInUsers=new Set(messages.filter(r=>r.user_id).map(r=>r.user_id)).size;
+const themeResponses=feedbackInboxResponses.filter(r=>r.theme_id===theme.id);
+const themeResponseHtml=themeResponses.length?`<div class="feedback-response-history"><strong>Previous group response${themeResponses.length===1?"":"s"}:</strong><br>${themeResponses.map(r=>`${escapeFeedbackHtml(r.message)} <span class="feedback-message-meta">(${feedbackDateLabel(r.created_at)})</span>`).join("<br><br>")}</div>`:"";
+const messageHtml=messages.length?messages.map(row=>{
+const individualResponses=feedbackInboxResponses.filter(r=>r.feedback_id===row.id);
+const responseHistory=individualResponses.length?`<div class="feedback-response-history"><strong>Previous individual response${individualResponses.length===1?"":"s"}:</strong><br>${individualResponses.map(r=>`${escapeFeedbackHtml(r.message)} <span class="feedback-message-meta">(${feedbackDateLabel(r.created_at)})</span>`).join("<br><br>")}</div>`:"";
+const replyControl=row.user_id?`<div class="feedback-message-reply">
+<label for="individualReply-${row.id}">Reply to this user</label>
+<textarea id="individualReply-${row.id}" maxlength="5000" placeholder="Write a response to this player…"></textarea>
+<div class="feedback-message-reply-actions"><span class="feedback-reply-recipient">This response will notify only this logged-in player.</span><button class="feedback-reply-send" onclick="sendIndividualFeedbackReply('${row.id}')">Send Reply</button></div>
+</div>`:`<div class="feedback-anonymous-note">Anonymous submission — there is no account to receive an individual reply.</div>`;
+return`<div class="feedback-message-item">
 <div class="feedback-message-text">${escapeFeedbackHtml(row.message)}</div>
 <div class="feedback-message-meta">${row.user_id?"Logged-in user":"Anonymous"}${row.rating?` • Rating ${row.rating}/5`:""}${row.page_context?` • ${escapeFeedbackHtml(row.page_context)}`:""}${row.rank_context?` • ${escapeFeedbackHtml(row.rank_context)}`:""}${row.platform_context?` • ${escapeFeedbackHtml(row.platform_context)}`:""}<br>${feedbackDateLabel(row.created_at)}</div>
-</div>`).join(""):`<div class="feedback-empty">No raw messages are attached to this theme.</div>`;
+${responseHistory}
+${replyControl}
+</div>`}).join(""):`<div class="feedback-empty">No raw messages are attached to this theme.</div>`;
 return`<div class="feedback-theme-card">
 <div class="feedback-theme-main">
 <div class="feedback-theme-head">
 <div><div class="feedback-theme-title">${escapeFeedbackHtml(theme.title)}</div><div class="feedback-theme-meta">${feedbackCategoryLabel(theme.category)} • First: ${feedbackDateLabel(theme.first_reported_at)} • Latest: ${feedbackDateLabel(theme.last_reported_at)}</div></div>
-<div class="feedback-theme-badges"><span class="feedback-theme-badge count">${theme.report_count||messages.length} report${Number(theme.report_count||messages.length)===1?"":"s"}</span><span class="feedback-theme-badge">${loggedIn} logged-in</span><span class="feedback-theme-badge">${anonymous} anonymous</span><span class="feedback-theme-badge">${feedbackStatusLabel(theme.status)}</span><span class="feedback-theme-badge priority-${theme.priority}">${String(theme.priority||"normal").toUpperCase()}</span></div>
+<div class="feedback-theme-badges"><span class="feedback-theme-badge count">${theme.report_count||messages.length} report${Number(theme.report_count||messages.length)===1?"":"s"}</span><span class="feedback-theme-badge">${uniqueLoggedInUsers} logged-in</span><span class="feedback-theme-badge">${anonymous} anonymous</span><span class="feedback-theme-badge">${feedbackStatusLabel(theme.status)}</span><span class="feedback-theme-badge priority-${theme.priority}">${String(theme.priority||"normal").toUpperCase()}</span></div>
 </div>
 <div class="feedback-theme-summary">${escapeFeedbackHtml(theme.summary||"No summary yet.")}</div>
+${themeResponseHtml}
+<div class="feedback-reply-box">
+<label for="groupReply-${theme.id}">Respond to entire group</label>
+<textarea id="groupReply-${theme.id}" maxlength="5000" placeholder="Write one response for everyone who reported this issue…"></textarea>
+<div class="feedback-reply-actions">
+<span class="feedback-reply-recipient">${uniqueLoggedInUsers} logged-in user${uniqueLoggedInUsers===1?"":"s"} will be notified${anonymous?` • ${anonymous} anonymous report${anonymous===1?"":"s"} cannot receive replies`:""}.</span>
+<button class="feedback-reply-send" onclick="sendGroupFeedbackReply('${theme.id}')">Send to Group</button>
+</div>
+</div>
 <div class="feedback-theme-controls">
 <div class="field"><label for="status-${theme.id}">Status</label><select id="status-${theme.id}"><option value="new" ${theme.status==="new"?"selected":""}>New</option><option value="reviewing" ${theme.status==="reviewing"?"selected":""}>Reviewing</option><option value="planned" ${theme.status==="planned"?"selected":""}>Planned</option><option value="in_progress" ${theme.status==="in_progress"?"selected":""}>In Progress</option><option value="fixed" ${theme.status==="fixed"?"selected":""}>Fixed</option><option value="wont_do" ${theme.status==="wont_do"?"selected":""}>Won't Do</option></select></div>
 <div class="field"><label for="priority-${theme.id}">Priority</label><select id="priority-${theme.id}"><option value="low" ${theme.priority==="low"?"selected":""}>Low</option><option value="normal" ${theme.priority==="normal"?"selected":""}>Normal</option><option value="high" ${theme.priority==="high"?"selected":""}>High</option><option value="critical" ${theme.priority==="critical"?"selected":""}>Critical</option></select></div>
@@ -960,6 +999,42 @@ return`<div class="feedback-theme-card">
 <details class="feedback-theme-details"><summary>View ${messages.length} original message${messages.length===1?"":"s"}</summary><div class="feedback-message-list">${messageHtml}</div></details>
 </div>`;
 }).join("");
+}
+async function sendGroupFeedbackReply(themeId){
+if(!isFeedbackStaff())return;
+const textarea=document.getElementById(`groupReply-${themeId}`);
+const message=textarea?.value.trim()||"";
+if(!message){setAccountStatus("Write a response before sending.","error");textarea?.focus();return;}
+const themeMessages=feedbackInboxRows.filter(r=>r.theme_id===themeId);
+const recipients=new Set(themeMessages.filter(r=>r.user_id).map(r=>r.user_id)).size;
+const anonymous=themeMessages.filter(r=>!r.user_id).length;
+const confirmation=`Send this response to ${recipients} logged-in user${recipients===1?"":"s"}?${anonymous?` ${anonymous} anonymous report${anonymous===1?"":"s"} cannot receive it.`:""}`;
+if(!window.confirm(confirmation))return;
+const button=textarea?.parentElement?.querySelector(".feedback-reply-send");
+if(button){button.disabled=true;button.textContent="Sending…";}
+const {data,error}=await supabaseClient.rpc("send_feedback_response",{target_feedback_id:null,target_theme_id:themeId,response_message:message});
+if(button){button.disabled=false;button.textContent="Send to Group";}
+if(error){setAccountStatus(error.message,"error");return;}
+const result=data?.[0];
+textarea.value="";
+setAccountStatus(`Group response saved. ${result?.notified_users??recipients} user${(result?.notified_users??recipients)===1?"":"s"} notified${(result?.anonymous_reports??anonymous)?`; ${result?.anonymous_reports??anonymous} anonymous report${(result?.anonymous_reports??anonymous)===1?"":"s"} could not receive it`:""}.`,"success");
+await loadFeedbackInbox();
+}
+async function sendIndividualFeedbackReply(feedbackId){
+if(!isFeedbackStaff())return;
+const textarea=document.getElementById(`individualReply-${feedbackId}`);
+const message=textarea?.value.trim()||"";
+if(!message){setAccountStatus("Write a response before sending.","error");textarea?.focus();return;}
+if(!window.confirm("Send this response to this player?"))return;
+const button=textarea?.parentElement?.querySelector(".feedback-reply-send");
+if(button){button.disabled=true;button.textContent="Sending…";}
+const {data,error}=await supabaseClient.rpc("send_feedback_response",{target_feedback_id:feedbackId,target_theme_id:null,response_message:message});
+if(button){button.disabled=false;button.textContent="Send Reply";}
+if(error){setAccountStatus(error.message,"error");return;}
+const result=data?.[0];
+textarea.value="";
+setAccountStatus(result?.notified_users===1?"Response saved and the player was notified.":"Response saved, but this submission has no account to notify.","success");
+await loadFeedbackInbox();
 }
 async function saveFeedbackThemeWorkflow(themeId){
 if(!isFeedbackStaff())return;
