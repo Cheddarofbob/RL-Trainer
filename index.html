@@ -31,6 +31,18 @@
 .logout-button{background:#7d3441}
 .logout-button:hover{background:#963e4d}
 .account-note{color:#9fb1c9;line-height:1.55;margin-top:12px}
+.settings-button{background:#30415e}.settings-button:hover{background:#3d5275}
+.account-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.settings-modal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(4,8,15,.78);padding:24px;overflow:auto}
+.settings-modal.open{display:block}
+.settings-dialog{max-width:900px;margin:35px auto;background:#172033;border:1px solid #30415e;border-radius:14px;padding:24px;box-shadow:0 24px 70px rgba(0,0,0,.45)}
+.settings-dialog-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:18px}
+.settings-dialog-head h2{margin:0}
+.settings-close{background:#30415e;padding:9px 12px;font-size:14px}
+.settings-section{background:#101827;border:1px solid #2b3b56;border-radius:10px;padding:18px;margin-top:16px}
+.settings-section h3{margin-top:0}
+.settings-summary{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.settings-pill{background:#101827;color:#cde7ff;border-radius:18px;padding:6px 10px;font-size:12px}
 .auth-secondary{margin-top:12px;display:flex;justify-content:flex-end}
 .link-button{background:transparent;color:#75bdff;padding:6px 0;font-size:14px;text-decoration:underline}
 .link-button:hover{background:transparent;color:#a8d8ff}
@@ -148,7 +160,10 @@
 <strong id="accountDisplayName">Player Dashboard</strong>
 <div id="accountEmail" class="account-email"></div>
 </div>
+<div class="account-actions">
+<button class="settings-button" onclick="openAccountSettings()">⚙ Account Settings</button>
 <button class="logout-button" onclick="logOutUser()">Log Out</button>
+</div>
 </div>
 <div class="stat-grid">
 <div class="stat"><div id="statSessions" class="stat-number">0</div><div class="stat-label">Completed Sessions</div></div>
@@ -225,6 +240,20 @@
 </div>
 <div id="performanceList" class="performance-list"></div>
 
+<div class="settings-summary">
+<span id="profileSummaryPlatform" class="settings-pill">Platform: —</span>
+<span id="profileSummaryRank" class="settings-pill">Rank: —</span>
+<span id="profileSummaryDaily" class="settings-pill">Daily target: 30 min</span>
+</div>
+</div>
+
+<div id="accountSettingsModal" class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="accountSettingsTitle" onclick="closeSettingsOnBackdrop(event)">
+<div class="settings-dialog">
+<div class="settings-dialog-head">
+<h2 id="accountSettingsTitle">⚙ Account Settings</h2>
+<button class="settings-close" onclick="closeAccountSettings()">Close</button>
+</div>
+<div class="settings-section">
 <h3>Rocket League Profile</h3>
 <div class="profile-grid">
 <div class="field"><label for="profileDisplayName">In-Game Name</label><input id="profileDisplayName" type="text" maxlength="40" autocomplete="nickname" placeholder="Your Rocket League name"></div>
@@ -240,7 +269,11 @@
 </div>
 <div class="account-note">Automatic Rocket League Tracker syncing comes later. For now, this saves the identity we will connect to Tracker Network.</div>
 
-<h3>Account Settings</h3>
+
+</div>
+<div class="settings-section">
+<h3>Login & Security</h3>
+
 <div class="account-settings">
 <div class="account-note">Change your login email or password here. Your In-Game Name and platform are managed in the Rocket League Profile section above.</div>
 <div class="settings-grid">
@@ -259,6 +292,9 @@
 <div class="field"><label for="deleteAccountConfirm">Type DELETE to confirm</label><input id="deleteAccountConfirm" type="text" autocomplete="off" placeholder="DELETE"></div>
 <button class="delete-account-button" onclick="deleteAccountPermanently()">Delete My Account</button>
 </div>
+</div>
+</div>
+
 </div>
 </div>
 </div>
@@ -421,7 +457,31 @@ document.getElementById("profileTrackerUrl").value=profile.tracker_profile_url||
 document.getElementById("profileRank").value=profile.current_rank||"";
 document.getElementById("profileDailyMinutes").value=profile.daily_minutes_target??30;
 document.getElementById("accountDisplayName").textContent=profile.display_name||"Player Dashboard";
+const summaryPlatform=document.getElementById("profileSummaryPlatform");
+const summaryRank=document.getElementById("profileSummaryRank");
+const summaryDaily=document.getElementById("profileSummaryDaily");
+if(summaryPlatform)summaryPlatform.textContent=`Platform: ${profile.rl_platform||"—"}`;
+if(summaryRank)summaryRank.textContent=`Rank: ${profile.current_rank||"—"}`;
+if(summaryDaily)summaryDaily.textContent=`Daily target: ${profile.daily_minutes_target??30} min`;
 }
+function openAccountSettings(){
+const modal=document.getElementById("accountSettingsModal");
+if(!modal||!currentUser)return;
+modal.classList.add("open");
+document.body.style.overflow="hidden";
+const email=document.getElementById("settingsEmail");
+if(email)email.value=currentUser.email||"";
+}
+function closeAccountSettings(){
+const modal=document.getElementById("accountSettingsModal");
+if(modal)modal.classList.remove("open");
+document.body.style.overflow="";
+}
+function closeSettingsOnBackdrop(event){
+if(event.target?.id==="accountSettingsModal")closeAccountSettings();
+}
+document.addEventListener("keydown",event=>{if(event.key==="Escape")closeAccountSettings();});
+
 function populateAccountSettings(user){
 const emailInput=document.getElementById("settingsEmail");
 if(emailInput)emailInput.value=user?.email||"";
@@ -538,7 +598,7 @@ const panel=document.getElementById("accountPanel");
 const recoveryPanel=document.getElementById("passwordRecoveryPanel");
 if(passwordRecoveryMode&&currentUser){forms.style.display="none";panel.style.display="none";recoveryPanel.style.display="block";setAccountStatus("Recovery link accepted. Choose your new password below.","info");return;}
 recoveryPanel.style.display="none";
-if(!currentUser){forms.style.display="block";panel.style.display="none";document.getElementById("accountEmail").textContent="";const settingsEmail=document.getElementById("settingsEmail");if(settingsEmail)settingsEmail.value="";const goalList=document.getElementById("goalList");if(goalList)goalList.innerHTML="";const scheduleList=document.getElementById("scheduleList");if(scheduleList)scheduleList.innerHTML="";const historyList=document.getElementById("historyList");if(historyList)historyList.innerHTML="";const performanceList=document.getElementById("performanceList");if(performanceList)performanceList.innerHTML="";renderSessionStartPanel();return;}
+if(!currentUser){closeAccountSettings();forms.style.display="block";panel.style.display="none";document.getElementById("accountEmail").textContent="";const settingsEmail=document.getElementById("settingsEmail");if(settingsEmail)settingsEmail.value="";const goalList=document.getElementById("goalList");if(goalList)goalList.innerHTML="";const scheduleList=document.getElementById("scheduleList");if(scheduleList)scheduleList.innerHTML="";const historyList=document.getElementById("historyList");if(historyList)historyList.innerHTML="";const performanceList=document.getElementById("performanceList");if(performanceList)performanceList.innerHTML="";renderSessionStartPanel();return;}
 forms.style.display="none";panel.style.display="block";document.getElementById("accountEmail").textContent=currentUser.email||"";
 populateAccountSettings(currentUser);
 const profile=await ensureProfile(currentUser);
