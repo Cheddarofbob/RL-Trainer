@@ -276,6 +276,26 @@
 .feedback-reply-admin{margin-top:10px;padding:11px;background:#13263a;border-left:3px solid #58aaff;border-radius:7px;color:#e5f2ff;line-height:1.55}
 .feedback-reply-time{margin-top:8px;color:#7187a5;font-size:11px}
 
+
+/* ===== FEEDBACK EMAIL PREFERENCES + DELIVERY RETRY ===== */
+.feedback-email-pref{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:12px 14px;margin-top:14px;background:#101b2c;border:1px solid #2a3b55;border-radius:10px}
+.feedback-email-pref-copy{min-width:0}
+.feedback-email-pref-title{font-weight:800;color:#e6f1ff}
+.feedback-email-pref-note{margin-top:4px;color:#8fa3bd;font-size:12px;line-height:1.45}
+.feedback-switch{position:relative;display:inline-block;width:48px;height:26px;flex:0 0 auto}
+.feedback-switch input{opacity:0;width:0;height:0}
+.feedback-slider{position:absolute;cursor:pointer;inset:0;background:#39465a;border-radius:999px;transition:.18s}
+.feedback-slider:before{content:"";position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.18s}
+.feedback-switch input:checked + .feedback-slider{background:#168cff}
+.feedback-switch input:checked + .feedback-slider:before{transform:translateX(22px)}
+.feedback-email-delivery{display:none;margin:12px 0;padding:12px 14px;border:1px solid #723842;background:#321c22;border-radius:10px}
+.feedback-email-delivery.show{display:block}
+.feedback-email-delivery-head{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.feedback-email-delivery-title{font-weight:800;color:#ffd3d8}
+.feedback-email-delivery-note{margin-top:4px;color:#d9aeb4;font-size:12px}
+.feedback-failed-list{display:grid;gap:7px;margin-top:10px}
+.feedback-failed-item{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px 10px;background:#25171c;border-radius:8px;color:#d9c0c4;font-size:12px}
+
 </style>
 </head>
 <body>
@@ -438,6 +458,16 @@
 <div class="field"><label for="settingsPasswordConfirm">Confirm New Password</label><input id="settingsPasswordConfirm" type="password" minlength="12" autocomplete="new-password" placeholder="Repeat your new password"></div>
 <button onclick="changeAccountPassword()">Change Password</button>
 </div>
+<div class="feedback-email-pref">
+  <div class="feedback-email-pref-copy">
+    <div class="feedback-email-pref-title">Feedback reply emails</div>
+    <div class="feedback-email-pref-note">Keep in-app replies either way. Turn this off if you do not want an email when RL Trainer responds to your feedback.</div>
+  </div>
+  <label class="feedback-switch" aria-label="Feedback reply email preference">
+    <input id="feedbackEmailEnabled" type="checkbox" checked onchange="saveFeedbackEmailPreference()">
+    <span class="feedback-slider"></span>
+  </label>
+</div>
 </div>
 </details>
 
@@ -568,6 +598,16 @@
       </div>
 
       <div id="feedbackNeedsReview" class="feedback-inbox-alert"></div>
+<div id="feedbackEmailDeliveryAlert" class="feedback-email-delivery">
+  <div class="feedback-email-delivery-head">
+    <div>
+      <div id="feedbackEmailDeliveryTitle" class="feedback-email-delivery-title">Email delivery issue</div>
+      <div class="feedback-email-delivery-note">In-app replies still work. Retry failed reply emails here.</div>
+    </div>
+    <button id="retryAllFeedbackEmailsButton" onclick="retryFailedFeedbackEmails()">Retry Failed Emails</button>
+  </div>
+  <div id="feedbackFailedEmailList" class="feedback-failed-list"></div>
+</div>
 
       <div class="feedback-inbox-toolbar">
         <div class="field"><label for="feedbackInboxCategory">Category</label><select id="feedbackInboxCategory" onchange="renderFeedbackInbox()"><option value="all">All Categories</option><option value="bug">Bugs</option><option value="feature_request">Feature Requests</option><option value="ui_ux">UI / UX</option><option value="training_coaching">Training / Coaching</option><option value="account">Accounts</option><option value="performance">Performance</option><option value="other">Other</option></select></div>
@@ -605,6 +645,7 @@ let currentProfile=null;
 let feedbackInboxThemes=[];
 let feedbackInboxRows=[];
 let feedbackInboxResponses=[];
+let feedbackInboxNotifications=[];
 let passwordRecoveryMode=window.location.hash.includes("type=recovery")||new URLSearchParams(window.location.search).get("type")==="recovery";
 function setAccountStatus(message,type="info"){
 const el=document.getElementById("accountStatus");
@@ -713,6 +754,7 @@ currentProfile=null;
 feedbackInboxThemes=[];
 feedbackInboxRows=[];
 feedbackInboxResponses=[];
+feedbackInboxNotifications=[];
 closeFeedbackInbox();
 await renderAuth(null);
 }
@@ -728,6 +770,8 @@ return created.data;
 function populateProfile(profile){
 if(!profile)return;
 currentProfile=profile;
+const feedbackEmailEnabled=document.getElementById("feedbackEmailEnabled");
+if(feedbackEmailEnabled)feedbackEmailEnabled.checked=profile.feedback_email_enabled!==false;
 const adminFeedbackButton=document.getElementById("adminFeedbackButton");
 if(adminFeedbackButton)adminFeedbackButton.style.display=["admin","owner"].includes(profile.account_role)?"inline-block":"none";
 document.getElementById("profileDisplayName").value=profile.display_name||"";
@@ -743,6 +787,24 @@ const summaryDaily=document.getElementById("profileSummaryDaily");
 if(summaryPlatform)summaryPlatform.textContent=`Platform: ${profile.rl_platform||"—"}`;
 if(summaryRank)summaryRank.textContent=`Rank: ${profile.current_rank||"—"}`;
 if(summaryDaily)summaryDaily.textContent=`Daily target: ${profile.daily_minutes_target??30} min`;
+}
+
+async function saveFeedbackEmailPreference(){
+if(!currentUser)return;
+const input=document.getElementById("feedbackEmailEnabled");
+if(!input)return;
+input.disabled=true;
+const enabled=input.checked;
+const {data,error}=await supabaseClient
+.from("profiles")
+.update({feedback_email_enabled:enabled})
+.eq("user_id",currentUser.id)
+.select("*")
+.single();
+input.disabled=false;
+if(error){input.checked=!enabled;setAccountStatus(error.message,"error");return;}
+currentProfile=data;
+setAccountStatus(enabled?"Feedback reply emails enabled.":"Feedback reply emails disabled. In-app replies will still appear.","success");
 }
 function openAccountSettings(){
 const modal=document.getElementById("accountSettingsModal");
@@ -1036,20 +1098,23 @@ async function loadFeedbackInbox(){
 if(!isFeedbackStaff())return;
 const list=document.getElementById("feedbackThemeList");
 if(list)list.innerHTML=`<div class="feedback-empty">Loading feedback…</div>`;
-const [themesResult,feedbackResult,responsesResult]=await Promise.all([
+const [themesResult,feedbackResult,responsesResult,notificationsResult]=await Promise.all([
 supabaseClient.from("feedback_themes").select("id,title,summary,category,status,priority,report_count,first_reported_at,last_reported_at,created_at,updated_at").order("report_count",{ascending:false}),
 supabaseClient.from("feedback").select("id,user_id,theme_id,feedback_type,message,rating,page_context,rank_context,platform_context,grouping_status,created_at").order("created_at",{ascending:false}).limit(500),
-supabaseClient.from("feedback_responses").select("id,feedback_id,theme_id,message,created_at,created_by").order("created_at",{ascending:false}).limit(500)
+supabaseClient.from("feedback_responses").select("id,feedback_id,theme_id,message,created_at,created_by").order("created_at",{ascending:false}).limit(500),
+supabaseClient.from("feedback_notifications").select("id,response_id,user_id,feedback_id,email_status,emailed_at,created_at").order("created_at",{ascending:false}).limit(500)
 ]);
-if(themesResult.error||feedbackResult.error||responsesResult.error){
-console.error("Feedback inbox load error",themesResult.error||feedbackResult.error||responsesResult.error);
+if(themesResult.error||feedbackResult.error||responsesResult.error||notificationsResult.error){
+console.error("Feedback inbox load error",themesResult.error||feedbackResult.error||responsesResult.error||notificationsResult.error);
 if(list)list.innerHTML=`<div class="feedback-empty">Could not load the Feedback Inbox.</div>`;
 return;
 }
 feedbackInboxThemes=themesResult.data||[];
 feedbackInboxRows=feedbackResult.data||[];
 feedbackInboxResponses=responsesResult.data||[];
+feedbackInboxNotifications=notificationsResult.data||[];
 renderFeedbackInboxSummary();
+renderFailedFeedbackEmails();
 renderFeedbackInbox();
 }
 function renderFeedbackInboxSummary(){
@@ -1068,6 +1133,41 @@ if(alert){
 alert.classList.toggle("show",needs.length>0);
 alert.textContent=needs.length?`${needs.length} submission${needs.length===1?"":"s"} still need semantic grouping/review.`:"";
 }
+}
+
+function renderFailedFeedbackEmails(){
+const alert=document.getElementById("feedbackEmailDeliveryAlert");
+const title=document.getElementById("feedbackEmailDeliveryTitle");
+const list=document.getElementById("feedbackFailedEmailList");
+if(!alert||!list)return;
+const failed=feedbackInboxNotifications.filter(n=>n.email_status==="failed");
+alert.classList.toggle("show",failed.length>0);
+if(title)title.textContent=failed.length===1?"1 reply email failed":`${failed.length} reply emails failed`;
+if(!failed.length){list.innerHTML="";return;}
+list.innerHTML=failed.slice(0,25).map(n=>{
+const response=feedbackInboxResponses.find(r=>r.id===n.response_id);
+return`<div class="feedback-failed-item"><span>${escapeFeedbackHtml(response?.message||"Feedback reply")} • ${feedbackDateLabel(n.created_at)}</span><button onclick="retryFailedFeedbackEmail('${n.id}')">Retry</button></div>`;
+}).join("");
+}
+async function retryFailedFeedbackEmail(notificationId){
+if(!isFeedbackStaff())return;
+const {data,error}=await supabaseClient.rpc("retry_feedback_reply_emails",{target_notification_id:notificationId});
+if(error){setAccountStatus(error.message,"error");return;}
+setAccountStatus(`Queued ${data?.[0]?.queued_count??0} email retry.`,"success");
+await loadFeedbackInbox();
+}
+async function retryFailedFeedbackEmails(){
+if(!isFeedbackStaff())return;
+const failed=feedbackInboxNotifications.filter(n=>n.email_status==="failed").length;
+if(!failed){setAccountStatus("There are no failed feedback emails to retry.","info");return;}
+if(!window.confirm(`Retry ${failed} failed feedback email${failed===1?"":"s"}?`))return;
+const button=document.getElementById("retryAllFeedbackEmailsButton");
+if(button){button.disabled=true;button.textContent="Retrying…";}
+const {data,error}=await supabaseClient.rpc("retry_feedback_reply_emails",{target_notification_id:null});
+if(button){button.disabled=false;button.textContent="Retry Failed Emails";}
+if(error){setAccountStatus(error.message,"error");return;}
+setAccountStatus(`Queued ${data?.[0]?.queued_count??0} failed email${(data?.[0]?.queued_count??0)===1?"":"s"} for retry.`,"success");
+await loadFeedbackInbox();
 }
 function renderFeedbackInbox(){
 const list=document.getElementById("feedbackThemeList");
