@@ -31,6 +31,12 @@
 .logout-button{background:#7d3441}
 .logout-button:hover{background:#963e4d}
 .account-note{color:#9fb1c9;line-height:1.55;margin-top:12px}
+.auth-secondary{margin-top:12px;display:flex;justify-content:flex-end}
+.link-button{background:transparent;color:#75bdff;padding:6px 0;font-size:14px;text-decoration:underline}
+.link-button:hover{background:transparent;color:#a8d8ff}
+.recovery-panel{display:none;margin-top:18px;padding:18px;background:#101827;border:1px solid #2b3b56;border-radius:10px}
+.recovery-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}
+@media(max-width:750px){.recovery-grid{grid-template-columns:1fr}.auth-secondary{justify-content:flex-start}}
 @media(max-width:950px){.auth-grid{grid-template-columns:1fr 1fr}.profile-grid{grid-template-columns:1fr 1fr}.stat-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:650px){.auth-grid,.profile-grid,.stat-grid{grid-template-columns:1fr}.profile-actions button{width:100%}}
 
@@ -114,7 +120,17 @@
 <button onclick="signUpUser()">Sign Up</button>
 <button onclick="logInUser()">Log In</button>
 </div>
+<div class="auth-secondary"><button class="link-button" onclick="requestPasswordReset()">Forgot Password?</button></div>
 <div class="account-note">Your trainer still works without an account. Logging in will let us save progress to your private profile.</div>
+</div>
+<div id="passwordRecoveryPanel" class="recovery-panel">
+<h3>Choose a New Password</h3>
+<div class="account-note">Use a new password with at least 12 characters, including uppercase, lowercase, a number, and a special character.</div>
+<div class="recovery-grid">
+<div class="field"><label for="resetPassword">New Password</label><input id="resetPassword" type="password" minlength="12" autocomplete="new-password" placeholder="12+ characters" oninput="updateResetPasswordRequirements()"><div id="resetPasswordRequirements" class="password-requirements">12+ characters • uppercase • lowercase • number • special character</div></div>
+<div class="field"><label for="resetPasswordConfirm">Confirm New Password</label><input id="resetPasswordConfirm" type="password" minlength="12" autocomplete="new-password" placeholder="Repeat your new password"></div>
+<button onclick="completePasswordReset()">Update Password</button>
+</div>
 </div>
 <div id="accountPanel" class="account-panel">
 <div class="account-head">
@@ -249,6 +265,7 @@ let currentUser=null;
 let currentBuiltSession=null;
 let activeSavedSession=null;
 let timerUiInterval=null;
+let passwordRecoveryMode=window.location.hash.includes("type=recovery")||new URLSearchParams(window.location.search).get("type")==="recovery";
 function setAccountStatus(message,type="info"){
 const el=document.getElementById("accountStatus");
 el.textContent=message||"";
@@ -280,6 +297,41 @@ el.classList.toggle("valid",allGood);
 el.textContent=allGood
 ?"Strong password requirements met."
 :`${checks.length?"✓":"○"} 12+ characters  •  ${checks.upper?"✓":"○"} uppercase  •  ${checks.lower?"✓":"○"} lowercase  •  ${checks.number?"✓":"○"} number  •  ${checks.special?"✓":"○"} special character`;
+}
+async function requestPasswordReset(){
+const email=document.getElementById("authEmail").value.trim();
+if(!email){setAccountStatus("Enter the email address for your RL Trainer account first.","error");document.getElementById("authEmail").focus();return;}
+setAuthBusy(true);
+setAccountStatus("Sending password reset email…","info");
+const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:"https://myrltrainer.com/"});
+setAuthBusy(false);
+if(error){setAccountStatus(error.message,"error");return;}
+setAccountStatus("Password reset email sent. Check your inbox and spam folder, then use the link to choose a new password.","success");
+}
+function updateResetPasswordRequirements(){
+const input=document.getElementById("resetPassword");
+const el=document.getElementById("resetPasswordRequirements");
+if(!input||!el)return;
+const checks=passwordChecks(input.value);
+const allGood=Object.values(checks).every(Boolean);
+el.classList.toggle("valid",allGood);
+el.textContent=allGood?"Strong password requirements met.":`${checks.length?"✓":"○"} 12+ characters  •  ${checks.upper?"✓":"○"} uppercase  •  ${checks.lower?"✓":"○"} lowercase  •  ${checks.number?"✓":"○"} number  •  ${checks.special?"✓":"○"} special character`;
+}
+async function completePasswordReset(){
+const password=document.getElementById("resetPassword").value;
+const confirmPassword=document.getElementById("resetPasswordConfirm").value;
+if(!isStrongPassword(password)){setAccountStatus("Your new password must be at least 12 characters and include uppercase, lowercase, a number, and a special character.","error");updateResetPasswordRequirements();return;}
+if(password!==confirmPassword){setAccountStatus("The two new passwords do not match.","error");return;}
+setAccountStatus("Updating password…","info");
+const {error}=await supabaseClient.auth.updateUser({password});
+if(error){setAccountStatus(error.message,"error");return;}
+passwordRecoveryMode=false;
+history.replaceState({},document.title,"/");
+document.getElementById("resetPassword").value="";
+document.getElementById("resetPasswordConfirm").value="";
+const {data}=await supabaseClient.auth.getSession();
+await renderAuth(data?.session||null);
+setAccountStatus("Password updated successfully. You are signed in.","success");
 }
 async function signUpUser(){
 const displayName=document.getElementById("authDisplayName").value.trim();
@@ -387,6 +439,9 @@ async function renderAuth(session){
 currentUser=session?.user||null;
 const forms=document.getElementById("authForms");
 const panel=document.getElementById("accountPanel");
+const recoveryPanel=document.getElementById("passwordRecoveryPanel");
+if(passwordRecoveryMode&&currentUser){forms.style.display="none";panel.style.display="none";recoveryPanel.style.display="block";setAccountStatus("Recovery link accepted. Choose your new password below.","info");return;}
+recoveryPanel.style.display="none";
 if(!currentUser){forms.style.display="block";panel.style.display="none";document.getElementById("accountEmail").textContent="";const goalList=document.getElementById("goalList");if(goalList)goalList.innerHTML="";const scheduleList=document.getElementById("scheduleList");if(scheduleList)scheduleList.innerHTML="";const historyList=document.getElementById("historyList");if(historyList)historyList.innerHTML="";const performanceList=document.getElementById("performanceList");if(performanceList)performanceList.innerHTML="";renderSessionStartPanel();return;}
 forms.style.display="none";panel.style.display="block";document.getElementById("accountEmail").textContent=currentUser.email||"";
 const profile=await ensureProfile(currentUser);
@@ -402,7 +457,7 @@ async function initializeAuth(){
 const {data,error}=await supabaseClient.auth.getSession();
 if(error)console.error("Session load error",error);
 await renderAuth(data?.session||null);
-supabaseClient.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>renderAuth(session),0);});
+supabaseClient.auth.onAuthStateChange((event,session)=>{if(event==="PASSWORD_RECOVERY")passwordRecoveryMode=true;setTimeout(()=>renderAuth(session),0);});
 }
 initializeAuth();
 setPerformanceDateDefault();
