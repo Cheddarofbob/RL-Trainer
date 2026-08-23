@@ -258,6 +258,24 @@
 .feedback-response-history{margin-top:10px;padding:10px;background:#13263a;border-left:3px solid #4fa3ff;border-radius:7px;color:#d9ebff;font-size:12px;line-height:1.5}
 .feedback-response-history strong{color:#8fc8ff}
 
+
+/* ===== PLAYER FEEDBACK REPLIES / NOTIFICATIONS ===== */
+.feedback-notify-button{position:relative}
+.feedback-notify-badge{display:none;position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#ff5d6c;color:#fff;font-size:10px;font-weight:800;line-height:18px;text-align:center;border:2px solid #172033}
+.feedback-notify-badge.show{display:block}
+.feedback-replies-dialog{width:min(720px,calc(100vw - 28px));max-height:84vh;margin:7vh auto;background:#111b2b;border:1px solid #30415e;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.5);overflow:hidden}
+.feedback-replies-head{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:18px 20px;background:#172033;border-bottom:1px solid #2b3b56}
+.feedback-replies-head h2{margin:0}
+.feedback-replies-body{padding:16px 20px 22px;overflow:auto;max-height:calc(84vh - 72px)}
+.feedback-reply-notification{background:#0d1523;border:1px solid #2b3b56;border-radius:12px;padding:14px;margin-bottom:10px}
+.feedback-reply-notification.unread{border-color:#4b91d9;box-shadow:inset 3px 0 0 #4b91d9}
+.feedback-reply-notification-title{display:flex;justify-content:space-between;gap:10px;align-items:center;font-weight:800;color:#e8f3ff}
+.feedback-reply-new{font-size:10px;padding:4px 7px;border-radius:999px;background:#1d5b91;color:#dff1ff}
+.feedback-reply-original{margin-top:11px;padding:10px;background:#111f32;border-radius:8px;color:#aebdd1;font-size:12px;line-height:1.5}
+.feedback-reply-original strong,.feedback-reply-admin strong{color:#8fc8ff}
+.feedback-reply-admin{margin-top:10px;padding:11px;background:#13263a;border-left:3px solid #58aaff;border-radius:7px;color:#e5f2ff;line-height:1.55}
+.feedback-reply-time{margin-top:8px;color:#7187a5;font-size:11px}
+
 </style>
 </head>
 <body>
@@ -296,6 +314,7 @@
 <div class="account-actions">
 <button class="settings-button" onclick="openAccountSettings()">⚙ Account Settings</button>
 <button class="settings-button" onclick="openFeedbackModal()">💬 Feedback</button>
+<button id="feedbackRepliesButton" class="settings-button feedback-notify-button" onclick="openFeedbackReplies()">🔔 Replies<span id="feedbackRepliesBadge" class="feedback-notify-badge">0</span></button>
 <button id="adminFeedbackButton" class="settings-button admin-feedback-button" onclick="openFeedbackInbox()">🛡 Feedback Inbox</button>
 <button class="logout-button" onclick="logOutUser()">Log Out</button>
 </div>
@@ -514,6 +533,22 @@
 </div>
 
 
+
+<div id="feedbackRepliesModal" class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="feedbackRepliesTitle" onclick="closeFeedbackRepliesOnBackdrop(event)">
+  <div class="feedback-replies-dialog">
+    <div class="feedback-replies-head">
+      <div>
+        <h2 id="feedbackRepliesTitle">🔔 Updates & Replies</h2>
+        <div class="field-help">Private responses to feedback you submitted while logged in.</div>
+      </div>
+      <button class="settings-close" onclick="closeFeedbackReplies()">Close</button>
+    </div>
+    <div class="feedback-replies-body">
+      <div id="feedbackRepliesList"><div class="feedback-empty">No replies yet.</div></div>
+    </div>
+  </div>
+</div>
+
 <div id="feedbackInboxModal" class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="feedbackInboxTitle" onclick="closeFeedbackInboxOnBackdrop(event)">
   <div class="feedback-inbox-dialog">
     <div class="feedback-inbox-head">
@@ -725,7 +760,7 @@ document.body.style.overflow="";
 function closeSettingsOnBackdrop(event){
 if(event.target?.id==="accountSettingsModal")closeAccountSettings();
 }
-document.addEventListener("keydown",event=>{if(event.key==="Escape"){closeAccountSettings();closeFeedbackModal();closeFeedbackInbox();}});
+document.addEventListener("keydown",event=>{if(event.key==="Escape"){closeAccountSettings();closeFeedbackModal();closeFeedbackInbox();closeFeedbackReplies();}});
 
 function populateAccountSettings(user){
 const emailInput=document.getElementById("settingsEmail");
@@ -843,7 +878,7 @@ const panel=document.getElementById("accountPanel");
 const recoveryPanel=document.getElementById("passwordRecoveryPanel");
 if(passwordRecoveryMode&&currentUser){forms.style.display="none";panel.style.display="none";recoveryPanel.style.display="block";setAccountStatus("Recovery link accepted. Choose your new password below.","info");return;}
 recoveryPanel.style.display="none";
-if(!currentUser){closeAccountSettings();closeFeedbackInbox();currentProfile=null;const adminFeedbackButton=document.getElementById("adminFeedbackButton");if(adminFeedbackButton)adminFeedbackButton.style.display="none";forms.style.display="block";panel.style.display="none";document.getElementById("accountEmail").textContent="";const settingsEmail=document.getElementById("settingsEmail");if(settingsEmail)settingsEmail.value="";const goalList=document.getElementById("goalList");if(goalList)goalList.innerHTML="";const scheduleList=document.getElementById("scheduleList");if(scheduleList)scheduleList.innerHTML="";const historyList=document.getElementById("historyList");if(historyList)historyList.innerHTML="";const performanceList=document.getElementById("performanceList");if(performanceList)performanceList.innerHTML="";renderSessionStartPanel();return;}
+if(!currentUser){closeAccountSettings();closeFeedbackInbox();closeFeedbackReplies();feedbackReplyNotifications=[];updateFeedbackReplyBadge();currentProfile=null;const adminFeedbackButton=document.getElementById("adminFeedbackButton");if(adminFeedbackButton)adminFeedbackButton.style.display="none";forms.style.display="block";panel.style.display="none";document.getElementById("accountEmail").textContent="";const settingsEmail=document.getElementById("settingsEmail");if(settingsEmail)settingsEmail.value="";const goalList=document.getElementById("goalList");if(goalList)goalList.innerHTML="";const scheduleList=document.getElementById("scheduleList");if(scheduleList)scheduleList.innerHTML="";const historyList=document.getElementById("historyList");if(historyList)historyList.innerHTML="";const performanceList=document.getElementById("performanceList");if(performanceList)performanceList.innerHTML="";renderSessionStartPanel();return;}
 forms.style.display="none";panel.style.display="block";document.getElementById("accountEmail").textContent=currentUser.email||"";
 populateAccountSettings(currentUser);
 const profile=await ensureProfile(currentUser);
@@ -853,6 +888,7 @@ await loadGoals();
 await loadSchedules();
 await loadHistory();
 await loadPerformance();
+await loadFeedbackReplyNotifications();
 renderSessionStartPanel();
 }
 async function initializeAuth(){
@@ -866,6 +902,96 @@ setPerformanceDateDefault();
 updateGoalMetricUI();
 
 
+
+
+/* =====================================================
+   PLAYER FEEDBACK REPLIES / NOTIFICATIONS
+===================================================== */
+let feedbackReplyNotifications=[];
+async function loadFeedbackReplyNotifications(){
+if(!currentUser){feedbackReplyNotifications=[];updateFeedbackReplyBadge();return;}
+const {data:notifications,error}=await supabaseClient
+.from("feedback_notifications")
+.select("id,response_id,feedback_id,read_at,created_at")
+.eq("user_id",currentUser.id)
+.order("created_at",{ascending:false})
+.limit(100);
+if(error){console.error("Feedback notification load error",error);return;}
+const rows=notifications||[];
+const responseIds=[...new Set(rows.map(n=>n.response_id).filter(Boolean))];
+const feedbackIds=[...new Set(rows.map(n=>n.feedback_id).filter(Boolean))];
+let responses=[];
+let originals=[];
+if(responseIds.length){
+const result=await supabaseClient.from("feedback_responses").select("id,message,created_at,feedback_id,theme_id").in("id",responseIds);
+if(result.error)console.error("Feedback response load error",result.error);
+else responses=result.data||[];
+}
+if(feedbackIds.length){
+const result=await supabaseClient.from("feedback").select("id,message,feedback_type,created_at").in("id",feedbackIds);
+if(result.error)console.error("Original feedback load error",result.error);
+else originals=result.data||[];
+}
+feedbackReplyNotifications=rows.map(n=>({
+...n,
+response:responses.find(r=>r.id===n.response_id)||null,
+original:originals.find(f=>f.id===n.feedback_id)||null
+}));
+updateFeedbackReplyBadge();
+renderFeedbackReplies();
+}
+function updateFeedbackReplyBadge(){
+const badge=document.getElementById("feedbackRepliesBadge");
+if(!badge)return;
+const unread=feedbackReplyNotifications.filter(n=>!n.read_at).length;
+badge.textContent=unread>99?"99+":String(unread);
+badge.classList.toggle("show",unread>0);
+}
+function renderFeedbackReplies(){
+const list=document.getElementById("feedbackRepliesList");
+if(!list)return;
+if(!feedbackReplyNotifications.length){
+list.innerHTML=`<div class="feedback-empty">No feedback replies yet. When RL Trainer responds to feedback you submitted while logged in, it will appear here.</div>`;
+return;
+}
+list.innerHTML=feedbackReplyNotifications.map(n=>{
+const response=n.response;
+const original=n.original;
+return`<div class="feedback-reply-notification ${n.read_at?"":"unread"}">
+<div class="feedback-reply-notification-title"><span>RL Trainer replied to your feedback</span>${n.read_at?"":'<span class="feedback-reply-new">NEW</span>'}</div>
+${original?`<div class="feedback-reply-original"><strong>Your feedback</strong><br>${escapeFeedbackHtml(original.message)}</div>`:""}
+<div class="feedback-reply-admin"><strong>RL Trainer</strong><br>${escapeFeedbackHtml(response?.message||"A response was sent, but it could not be loaded.")}</div>
+<div class="feedback-reply-time">${feedbackDateLabel(response?.created_at||n.created_at)}</div>
+</div>`;
+}).join("");
+}
+async function openFeedbackReplies(){
+if(!currentUser)return;
+const modal=document.getElementById("feedbackRepliesModal");
+if(!modal)return;
+modal.classList.add("open");
+document.body.style.overflow="hidden";
+await loadFeedbackReplyNotifications();
+const unreadIds=feedbackReplyNotifications.filter(n=>!n.read_at).map(n=>n.id);
+if(unreadIds.length){
+const now=new Date().toISOString();
+const {error}=await supabaseClient.from("feedback_notifications").update({read_at:now}).in("id",unreadIds).eq("user_id",currentUser.id);
+if(error)console.error("Could not mark feedback replies read",error);
+else{
+feedbackReplyNotifications=feedbackReplyNotifications.map(n=>unreadIds.includes(n.id)?{...n,read_at:now}:n);
+updateFeedbackReplyBadge();
+renderFeedbackReplies();
+}
+}
+}
+function closeFeedbackReplies(){
+const modal=document.getElementById("feedbackRepliesModal");
+if(modal)modal.classList.remove("open");
+if(!document.getElementById("accountSettingsModal")?.classList.contains("open")&&!document.getElementById("feedbackModal")?.classList.contains("open")&&!document.getElementById("feedbackInboxModal")?.classList.contains("open"))document.body.style.overflow="";
+}
+function closeFeedbackRepliesOnBackdrop(event){
+if(event.target?.id==="feedbackRepliesModal")closeFeedbackReplies();
+}
 
 /* =====================================================
    PRIVATE ADMIN / OWNER FEEDBACK INBOX
