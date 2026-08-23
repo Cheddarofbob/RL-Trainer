@@ -37,6 +37,16 @@
 .recovery-panel{display:none;margin-top:18px;padding:18px;background:#101827;border:1px solid #2b3b56;border-radius:10px}
 .recovery-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}
 @media(max-width:750px){.recovery-grid{grid-template-columns:1fr}.auth-secondary{justify-content:flex-start}}
+/* ===== ACCOUNT SETTINGS ===== */
+.account-settings{margin-top:18px;padding:16px;background:#101827;border:1px solid #2b3b56;border-radius:10px}
+.settings-grid{display:grid;grid-template-columns:1.5fr auto;gap:10px;align-items:end}
+.settings-password-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin-top:14px}
+.danger-zone{margin-top:18px;padding:16px;background:#2a171b;border:1px solid #6b3440;border-radius:10px}
+.danger-zone h4{margin:0 0 8px;color:#ffc3c9}
+.danger-grid{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;margin-top:12px}
+.delete-account-button{background:#a52e3e}
+.delete-account-button:hover{background:#c3374a}
+@media(max-width:750px){.settings-grid,.settings-password-grid,.danger-grid{grid-template-columns:1fr}}
 @media(max-width:950px){.auth-grid{grid-template-columns:1fr 1fr}.profile-grid{grid-template-columns:1fr 1fr}.stat-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:650px){.auth-grid,.profile-grid,.stat-grid{grid-template-columns:1fr}.profile-actions button{width:100%}}
 
@@ -229,6 +239,28 @@
 <button class="regen" onclick="refreshDashboard()">Refresh Dashboard</button>
 </div>
 <div class="account-note">Automatic Rocket League Tracker syncing comes later. For now, this saves the identity we will connect to Tracker Network.</div>
+
+<h3>Account Settings</h3>
+<div class="account-settings">
+<div class="account-note">Change your login email or password here. Your In-Game Name and platform are managed in the Rocket League Profile section above.</div>
+<div class="settings-grid">
+<div class="field"><label for="settingsEmail">Login Email</label><input id="settingsEmail" type="email" autocomplete="email" placeholder="you@example.com"><div class="field-help">Changing your email may require confirmation before the new address becomes active.</div></div>
+<button onclick="changeAccountEmail()">Change Email</button>
+</div>
+<div class="settings-password-grid">
+<div class="field"><label for="settingsPassword">New Password</label><input id="settingsPassword" type="password" minlength="12" autocomplete="new-password" placeholder="12+ characters" oninput="updateSettingsPasswordRequirements()"><div id="settingsPasswordRequirements" class="password-requirements">12+ characters • uppercase • lowercase • number • special character</div></div>
+<div class="field"><label for="settingsPasswordConfirm">Confirm New Password</label><input id="settingsPasswordConfirm" type="password" minlength="12" autocomplete="new-password" placeholder="Repeat your new password"></div>
+<button onclick="changeAccountPassword()">Change Password</button>
+</div>
+<div class="danger-zone">
+<h4>Delete Account</h4>
+<div class="account-note">Permanently deletes your RL Trainer account and its saved profile, training sessions, drills, goals, schedules, tracker snapshots, and match-performance data. This cannot be undone.</div>
+<div class="danger-grid">
+<div class="field"><label for="deleteAccountConfirm">Type DELETE to confirm</label><input id="deleteAccountConfirm" type="text" autocomplete="off" placeholder="DELETE"></div>
+<button class="delete-account-button" onclick="deleteAccountPermanently()">Delete My Account</button>
+</div>
+</div>
+</div>
 </div>
 <div id="accountStatus" class="account-status"></div>
 </div>
@@ -390,6 +422,63 @@ document.getElementById("profileRank").value=profile.current_rank||"";
 document.getElementById("profileDailyMinutes").value=profile.daily_minutes_target??30;
 document.getElementById("accountDisplayName").textContent=profile.display_name||"Player Dashboard";
 }
+function populateAccountSettings(user){
+const emailInput=document.getElementById("settingsEmail");
+if(emailInput)emailInput.value=user?.email||"";
+}
+function updateSettingsPasswordRequirements(){
+const input=document.getElementById("settingsPassword");
+const el=document.getElementById("settingsPasswordRequirements");
+if(!input||!el)return;
+const checks=passwordChecks(input.value);
+const allGood=Object.values(checks).every(Boolean);
+el.classList.toggle("valid",allGood);
+el.textContent=allGood
+?"Strong password requirements met."
+:`${checks.length?"✓":"○"} 12+ characters  •  ${checks.upper?"✓":"○"} uppercase  •  ${checks.lower?"✓":"○"} lowercase  •  ${checks.number?"✓":"○"} number  •  ${checks.special?"✓":"○"} special character`;
+}
+async function changeAccountEmail(){
+if(!currentUser){setAccountStatus("Log in before changing your email.","error");return;}
+const input=document.getElementById("settingsEmail");
+const nextEmail=input?.value.trim()||"";
+if(!nextEmail||!nextEmail.includes("@")){setAccountStatus("Enter a valid email address.","error");return;}
+if(nextEmail.toLowerCase()===(currentUser.email||"").toLowerCase()){setAccountStatus("That is already your login email.","info");return;}
+setAccountStatus("Requesting email change…","info");
+const {data,error}=await supabaseClient.auth.updateUser({email:nextEmail},{emailRedirectTo:"https://myrltrainer.com/"});
+if(error){setAccountStatus(error.message,"error");return;}
+if(data?.user)currentUser=data.user;
+populateAccountSettings(currentUser);
+setAccountStatus("Email change requested. Check your inbox and complete any confirmation steps Supabase sends before the new address becomes active.","success");
+}
+async function changeAccountPassword(){
+if(!currentUser){setAccountStatus("Log in before changing your password.","error");return;}
+const password=document.getElementById("settingsPassword")?.value||"";
+const confirmPassword=document.getElementById("settingsPasswordConfirm")?.value||"";
+if(!isStrongPassword(password)){setAccountStatus("Password must be at least 12 characters and include uppercase, lowercase, a number, and a special character.","error");updateSettingsPasswordRequirements();return;}
+if(password!==confirmPassword){setAccountStatus("The new passwords do not match.","error");return;}
+setAccountStatus("Updating password…","info");
+const {error}=await supabaseClient.auth.updateUser({password});
+if(error){setAccountStatus(error.message,"error");return;}
+document.getElementById("settingsPassword").value="";
+document.getElementById("settingsPasswordConfirm").value="";
+updateSettingsPasswordRequirements();
+setAccountStatus("Password updated successfully.","success");
+}
+async function deleteAccountPermanently(){
+if(!currentUser){setAccountStatus("Log in before deleting your account.","error");return;}
+const typed=document.getElementById("deleteAccountConfirm")?.value.trim()||"";
+if(typed!=="DELETE"){setAccountStatus("Type DELETE exactly before deleting your account.","error");return;}
+if(!confirm("Permanently delete your RL Trainer account and all saved data? This cannot be undone."))return;
+setAccountStatus("Deleting account and saved data…","info");
+const {error}=await supabaseClient.rpc("delete_own_account");
+if(error){setAccountStatus(error.message,"error");return;}
+try{await supabaseClient.auth.signOut({scope:"local"});}catch(e){console.warn("Local sign-out after deletion",e);}
+currentUser=null;
+activeSavedSession=null;
+currentBuiltSession=null;
+await renderAuth(null);
+setAccountStatus("Your RL Trainer account and saved data were permanently deleted.","success");
+}
 async function loadDashboardStats(userId){
 const [sessionsResult,goalsResult,schedulesResult]=await Promise.all([
   supabaseClient.from("training_sessions").select("session_date,completed_minutes,completed").eq("user_id",userId),
@@ -420,10 +509,14 @@ setAccountStatus("Dashboard refreshed.","success");
 }
 async function saveProfile(){
 if(!currentUser){setAccountStatus("Log in before saving your profile.","error");return;}
+const displayName=document.getElementById("profileDisplayName").value.trim();
+const platform=document.getElementById("profilePlatform").value;
+if(!displayName){setAccountStatus("Your In-Game Name cannot be blank.","error");return;}
+if(!platform){setAccountStatus("Choose your Rocket League platform before saving.","error");return;}
 const dailyMinutes=Math.max(0,Math.min(480,Number(document.getElementById("profileDailyMinutes").value)||0));
 const updates={
-  display_name:document.getElementById("profileDisplayName").value.trim()||null,
-  rl_platform:document.getElementById("profilePlatform").value||null,
+  display_name:displayName,
+  rl_platform:platform,
   rl_player_id:document.getElementById("profilePlayerId").value.trim()||null,
   tracker_profile_url:document.getElementById("profileTrackerUrl").value.trim()||null,
   current_rank:document.getElementById("profileRank").value||null,
@@ -431,7 +524,10 @@ const updates={
   timezone:Intl.DateTimeFormat().resolvedOptions().timeZone||"UTC"
 };
 const {data,error}=await supabaseClient.from("profiles").update(updates).eq("user_id",currentUser.id).select("*").single();
-if(error){setAccountStatus(error.message,"error");return;}
+if(error){
+const message=error.code==="23505"?"That In-Game Name is already registered on this platform. Choose another name or platform.":error.message;
+setAccountStatus(message,"error");return;
+}
 populateProfile(data);
 setAccountStatus("Profile saved.","success");
 }
@@ -442,8 +538,9 @@ const panel=document.getElementById("accountPanel");
 const recoveryPanel=document.getElementById("passwordRecoveryPanel");
 if(passwordRecoveryMode&&currentUser){forms.style.display="none";panel.style.display="none";recoveryPanel.style.display="block";setAccountStatus("Recovery link accepted. Choose your new password below.","info");return;}
 recoveryPanel.style.display="none";
-if(!currentUser){forms.style.display="block";panel.style.display="none";document.getElementById("accountEmail").textContent="";const goalList=document.getElementById("goalList");if(goalList)goalList.innerHTML="";const scheduleList=document.getElementById("scheduleList");if(scheduleList)scheduleList.innerHTML="";const historyList=document.getElementById("historyList");if(historyList)historyList.innerHTML="";const performanceList=document.getElementById("performanceList");if(performanceList)performanceList.innerHTML="";renderSessionStartPanel();return;}
+if(!currentUser){forms.style.display="block";panel.style.display="none";document.getElementById("accountEmail").textContent="";const settingsEmail=document.getElementById("settingsEmail");if(settingsEmail)settingsEmail.value="";const goalList=document.getElementById("goalList");if(goalList)goalList.innerHTML="";const scheduleList=document.getElementById("scheduleList");if(scheduleList)scheduleList.innerHTML="";const historyList=document.getElementById("historyList");if(historyList)historyList.innerHTML="";const performanceList=document.getElementById("performanceList");if(performanceList)performanceList.innerHTML="";renderSessionStartPanel();return;}
 forms.style.display="none";panel.style.display="block";document.getElementById("accountEmail").textContent=currentUser.email||"";
+populateAccountSettings(currentUser);
 const profile=await ensureProfile(currentUser);
 populateProfile(profile);
 await loadDashboardStats(currentUser.id);
