@@ -138,6 +138,70 @@
 @media(max-width:950px){.performance-stats,.performance-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:650px){.performance-stats,.performance-grid{grid-template-columns:1fr}}
 
+
+/* ===== PLAYER FEEDBACK ===== */
+.feedback-dialog{max-width:560px;margin:9vh auto 40px;background:#111b2b;border:1px solid #30415e;border-radius:16px;padding:0;box-shadow:0 24px 80px rgba(0,0,0,.48);overflow:hidden}
+.feedback-dialog-head{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:16px 18px;background:#172033;border-bottom:1px solid #2b3b56}
+.feedback-dialog-head h2{margin:0;font-size:20px}
+.feedback-chat-body{padding:18px}
+.feedback-chat-intro{color:#9fb1c9;font-size:14px;line-height:1.55;margin-bottom:14px}
+.feedback-meta-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.feedback-message-wrap{position:relative;background:#0d1523;border:1px solid #2b3b56;border-radius:12px;padding:12px 12px 28px}
+.feedback-message-wrap:focus-within{border-color:#168cff;box-shadow:0 0 0 2px rgba(22,140,255,.12)}
+.feedback-message-wrap textarea{width:100%;min-height:145px;resize:vertical;padding:0;border:0;outline:0;font:inherit;background:transparent;color:#fff;line-height:1.55}
+.feedback-message-wrap textarea::placeholder{color:#71809a}
+.feedback-char-count{position:absolute;right:12px;bottom:8px;color:rgba(159,177,201,.58);font-size:12px;pointer-events:none}
+.feedback-actions{display:flex;justify-content:flex-end;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}
+.feedback-status{display:none;margin-top:12px;padding:10px 12px;border-radius:8px;line-height:1.45}
+.feedback-status.info{display:block;background:#122238;color:#cde7ff}
+.feedback-status.success{display:block;background:#182a22;color:#c8f1d9}
+.feedback-status.error{display:block;background:#3a1f24;color:#ffc3c9}
+.feedback-privacy{color:#71809a;font-size:11px;line-height:1.5;margin-top:12px}
+.feedback-submit{min-width:130px}
+@media(max-width:650px){.feedback-meta-row{grid-template-columns:1fr}.feedback-dialog{margin:3vh 12px 20px}}
+
+
+.site-footer{
+  margin-top:34px;
+  padding:18px 20px 28px;
+  text-align:center;
+  border-top:1px solid rgba(22,140,255,.22);
+  background:rgba(7,13,24,.34);
+}
+.site-footer-original-branding{
+  color:#8297b4;
+  font-size:13px;
+  margin-bottom:18px;
+}
+.footer-feedback-link{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  min-width:170px;
+  padding:9px 18px;
+  border:1px solid rgba(22,140,255,.58);
+  border-radius:999px;
+  background:rgba(22,140,255,.07);
+  color:#b9dcff;
+  font:inherit;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  transition:background .18s ease,border-color .18s ease,box-shadow .18s ease,color .18s ease,transform .18s ease;
+}
+.footer-feedback-link:hover{
+  background:rgba(22,140,255,.14);
+  border-color:#168cff;
+  color:#fff;
+  box-shadow:0 0 18px rgba(22,140,255,.13);
+  transform:translateY(-1px);
+}
+.footer-feedback-link:focus-visible{
+  outline:2px solid #168cff;
+  outline-offset:3px;
+}
+
 </style>
 </head>
 <body>
@@ -336,7 +400,68 @@
 <div id="sessionStartPanel" class="session-save-panel" style="display:none"></div>
 <div id="planResults" class="results"></div>
 </div>
-<footer>RL Trainer — Train with purpose. Improve with consistency.</footer>
+
+<div id="feedbackModal" class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="feedbackTitle" onclick="closeFeedbackOnBackdrop(event)">
+  <div class="feedback-dialog">
+    <div class="feedback-dialog-head">
+      <h2 id="feedbackTitle">💬 Feedback</h2>
+      <button class="settings-close" onclick="closeFeedbackModal()">Close</button>
+    </div>
+
+    <div class="feedback-chat-body">
+      <div class="feedback-chat-intro">What should we improve? Your message is saved exactly as written, then similar feedback is grouped together automatically.</div>
+
+      <div class="feedback-meta-row">
+        <div class="field">
+          <label for="feedbackType">Type</label>
+          <select id="feedbackType">
+            <option value="ui_ux">UI / UX</option>
+            <option value="bug">Bug</option>
+            <option value="feature_request">Feature Request</option>
+            <option value="training_coaching">Training / Coaching</option>
+            <option value="account">Account</option>
+            <option value="performance">Performance / Stats</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="feedbackRating">Rating (optional)</label>
+          <select id="feedbackRating">
+            <option value="">No rating</option>
+            <option value="5">5 — Excellent</option>
+            <option value="4">4 — Good</option>
+            <option value="3">3 — Okay</option>
+            <option value="2">2 — Needs work</option>
+            <option value="1">1 — Poor</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="feedback-message-wrap">
+        <textarea id="feedbackMessage" maxlength="3000" oninput="updateFeedbackCharacterCount()" placeholder="Tell us what happened, what feels off, or what would make RL Trainer better..."></textarea>
+        <div id="feedbackCharCount" class="feedback-char-count">0 / 3000</div>
+      </div>
+
+      <div id="feedbackStatus" class="feedback-status"></div>
+
+      <div class="feedback-actions">
+        <button class="regen" onclick="closeFeedbackModal()">Cancel</button>
+        <button id="submitFeedbackButton" class="feedback-submit" onclick="submitFeedback()">Send Feedback</button>
+      </div>
+
+      <div class="feedback-privacy">Private feedback • tied to your RL Trainer account • never shown publicly</div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="site-footer-original-branding">RL Trainer — Train with purpose. Improve with consistency.</div>
+  <button class="footer-feedback-link" onclick="openFeedbackModal()" aria-label="Send feedback">
+    <span aria-hidden="true">💬</span>
+    <span>Feedback</span>
+  </button>
+</footer>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -497,7 +622,7 @@ document.body.style.overflow="";
 function closeSettingsOnBackdrop(event){
 if(event.target?.id==="accountSettingsModal")closeAccountSettings();
 }
-document.addEventListener("keydown",event=>{if(event.key==="Escape")closeAccountSettings();});
+document.addEventListener("keydown",event=>{if(event.key==="Escape"){closeAccountSettings();closeFeedbackModal();}});
 
 function populateAccountSettings(user){
 const emailInput=document.getElementById("settingsEmail");
@@ -636,6 +761,75 @@ supabaseClient.auth.onAuthStateChange((event,session)=>{if(event==="PASSWORD_REC
 initializeAuth();
 setPerformanceDateDefault();
 updateGoalMetricUI();
+
+
+/* =====================================================
+   PLAYER FEEDBACK
+===================================================== */
+function setFeedbackStatus(message,type="info"){
+const el=document.getElementById("feedbackStatus");
+if(!el)return;
+el.textContent=message||"";
+el.className=`feedback-status ${message?type:""}`;
+}
+function updateFeedbackCharacterCount(){
+const input=document.getElementById("feedbackMessage");
+const count=document.getElementById("feedbackCharCount");
+if(!input||!count)return;
+count.textContent=`${input.value.length} / ${input.maxLength||3000}`;
+}
+function openFeedbackModal(){
+if(!currentUser){setAccountStatus("Log in to send feedback so we can keep submissions tied to real RL Trainer users.","info");document.getElementById("accountCard")?.scrollIntoView({behavior:"smooth",block:"start"});return;}
+const modal=document.getElementById("feedbackModal");
+if(!modal)return;
+setFeedbackStatus("");
+modal.classList.add("open");
+document.body.style.overflow="hidden";
+setTimeout(()=>document.getElementById("feedbackMessage")?.focus(),0);
+}
+function closeFeedbackModal(){
+const modal=document.getElementById("feedbackModal");
+if(modal)modal.classList.remove("open");
+if(!document.getElementById("accountSettingsModal")?.classList.contains("open"))document.body.style.overflow="";
+}
+function closeFeedbackOnBackdrop(event){
+if(event.target?.id==="feedbackModal")closeFeedbackModal();
+}
+function feedbackPageContext(){
+if(document.getElementById("accountSettingsModal")?.classList.contains("open"))return"Account Settings";
+if(document.getElementById("planResults")?.style.display==="block")return"Generated Training Session";
+if(document.getElementById("accountPanel")?.style.display==="block")return"Player Dashboard";
+return"RL Trainer";
+}
+async function submitFeedback(){
+if(!currentUser){setFeedbackStatus("Log in before sending feedback.","error");return;}
+const feedbackType=document.getElementById("feedbackType")?.value||"other";
+const message=document.getElementById("feedbackMessage")?.value.trim()||"";
+const ratingValue=document.getElementById("feedbackRating")?.value||"";
+if(message.length<3){setFeedbackStatus("Tell us a little more before sending.","error");return;}
+const button=document.getElementById("submitFeedbackButton");
+if(button){button.disabled=true;button.textContent="Sending…";}
+setFeedbackStatus("Sending your feedback…","info");
+const rankContext=document.getElementById("profileRank")?.value||document.getElementById("rankSelect")?.selectedOptions?.[0]?.text||null;
+const platformContext=document.getElementById("profilePlatform")?.value||null;
+const {error}=await supabaseClient.from("feedback").insert({
+user_id:currentUser.id,
+feedback_type:feedbackType,
+message,
+rating:ratingValue?Number(ratingValue):null,
+page_context:feedbackPageContext(),
+rank_context:rankContext&&rankContext!=="Choose Your Rank"?rankContext:null,
+platform_context:platformContext||null,
+grouping_status:"pending"
+});
+if(button){button.disabled=false;button.textContent="Send Feedback";}
+if(error){setFeedbackStatus(error.message,"error");return;}
+document.getElementById("feedbackMessage").value="";
+document.getElementById("feedbackRating").value="";
+updateFeedbackCharacterCount();
+setFeedbackStatus("Thank you — your feedback was sent.","success");
+setTimeout(()=>closeFeedbackModal(),1200);
+}
 
 /* =====================================================
    SESSION SAVING + DRILL CHECK-OFFS
