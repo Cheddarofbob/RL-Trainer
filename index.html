@@ -451,7 +451,7 @@
         <button id="submitFeedbackButton" class="feedback-submit" onclick="submitFeedback()">Send Feedback</button>
       </div>
 
-      <div class="feedback-privacy">Private feedback • tied to your RL Trainer account • never shown publicly</div>
+      <div class="feedback-privacy">Private feedback • anonymous when logged out • never shown publicly</div>
     </div>
   </div>
 </div>
@@ -780,10 +780,9 @@ if(!input||!count)return;
 count.textContent=`${input.value.length} / ${input.maxLength||3000}`;
 }
 function openFeedbackModal(){
-if(!currentUser){setAccountStatus("Log in to send feedback so we can keep submissions tied to real RL Trainer users.","info");document.getElementById("accountCard")?.scrollIntoView({behavior:"smooth",block:"start"});return;}
 const modal=document.getElementById("feedbackModal");
 if(!modal)return;
-setFeedbackStatus("");
+setFeedbackStatus(currentUser?"Submitting as your RL Trainer account.":"Submitting anonymously.","info");
 modal.classList.add("open");
 document.body.style.overflow="hidden";
 setTimeout(()=>document.getElementById("feedbackMessage")?.focus(),0);
@@ -803,7 +802,6 @@ if(document.getElementById("accountPanel")?.style.display==="block")return"Playe
 return"RL Trainer";
 }
 async function submitFeedback(){
-if(!currentUser){setFeedbackStatus("Log in before sending feedback.","error");return;}
 const feedbackType=document.getElementById("feedbackType")?.value||"other";
 const message=document.getElementById("feedbackMessage")?.value.trim()||"";
 const ratingValue=document.getElementById("feedbackRating")?.value||"";
@@ -811,10 +809,12 @@ if(message.length<3){setFeedbackStatus("Tell us a little more before sending.","
 const button=document.getElementById("submitFeedbackButton");
 if(button){button.disabled=true;button.textContent="Sending…";}
 setFeedbackStatus("Sending your feedback…","info");
-const rankContext=document.getElementById("profileRank")?.value||document.getElementById("rankSelect")?.selectedOptions?.[0]?.text||null;
-const platformContext=document.getElementById("profilePlatform")?.value||null;
+const rankContext=currentUser
+?document.getElementById("profileRank")?.value||document.getElementById("rankSelect")?.selectedOptions?.[0]?.text||null
+:document.getElementById("rankSelect")?.selectedOptions?.[0]?.text||null;
+const platformContext=currentUser?document.getElementById("profilePlatform")?.value||null:null;
 const {error}=await supabaseClient.from("feedback").insert({
-user_id:currentUser.id,
+user_id:currentUser?.id||null,
 feedback_type:feedbackType,
 message,
 rating:ratingValue?Number(ratingValue):null,
