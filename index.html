@@ -291,7 +291,7 @@ if(!platform){setAccountStatus("Choose your Rocket League platform before signin
 if(!email||!password){setAccountStatus("Enter an email and password first.","error");return;}
 if(!isStrongPassword(password)){setAccountStatus("Password must be at least 12 characters and include uppercase, lowercase, a number, and a special character.","error");updatePasswordRequirements();return;}
 setAuthBusy(true);setAccountStatus("Creating account…","info");
-const {data,error}=await supabaseClient.auth.signUp({email,password,options:{emailRedirectTo:"https://cheddarofbob.github.io/RL-Trainer/",data:{display_name:displayName,rl_platform:platform}}});
+const {data,error}=await supabaseClient.auth.signUp({email,password,options:{emailRedirectTo:"https://myrltrainer.com/",data:{display_name:displayName,rl_platform:platform}}});
 setAuthBusy(false);
 if(error){
 const message=/database error saving new user/i.test(error.message)?"We couldn’t create that profile. If this in-game name is already registered on that platform, choose another name or platform.":error.message;
