@@ -296,6 +296,11 @@
 .feedback-failed-list{display:grid;gap:7px;margin-top:10px}
 .feedback-failed-item{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px 10px;background:#25171c;border-radius:8px;color:#d9c0c4;font-size:12px}
 
+
+.feedback-email-pref-status{display:none;margin-top:8px;padding:8px 10px;border-radius:7px;font-size:12px;line-height:1.4}
+.feedback-email-pref-status.success{display:block;background:#182a22;color:#c8f1d9}
+.feedback-email-pref-status.error{display:block;background:#3a1f24;color:#ffc3c9}
+
 </style>
 </head>
 <body>
@@ -468,6 +473,7 @@
     <span class="feedback-slider"></span>
   </label>
 </div>
+<div id="feedbackEmailPreferenceStatus" class="feedback-email-pref-status"></div>
 </div>
 </details>
 
@@ -789,11 +795,18 @@ if(summaryRank)summaryRank.textContent=`Rank: ${profile.current_rank||"—"}`;
 if(summaryDaily)summaryDaily.textContent=`Daily target: ${profile.daily_minutes_target??30} min`;
 }
 
+function setFeedbackEmailPreferenceStatus(message,type="success"){
+const el=document.getElementById("feedbackEmailPreferenceStatus");
+if(!el)return;
+el.textContent=message||"";
+el.className=`feedback-email-pref-status ${message?type:""}`;
+}
 async function saveFeedbackEmailPreference(){
 if(!currentUser)return;
 const input=document.getElementById("feedbackEmailEnabled");
 if(!input)return;
 input.disabled=true;
+setFeedbackEmailPreferenceStatus("");
 const enabled=input.checked;
 const {data,error}=await supabaseClient
 .from("profiles")
@@ -802,9 +815,18 @@ const {data,error}=await supabaseClient
 .select("*")
 .single();
 input.disabled=false;
-if(error){input.checked=!enabled;setAccountStatus(error.message,"error");return;}
+if(error){
+input.checked=!enabled;
+setFeedbackEmailPreferenceStatus(error.message,"error");
+return;
+}
 currentProfile=data;
-setAccountStatus(enabled?"Feedback reply emails enabled.":"Feedback reply emails disabled. In-app replies will still appear.","success");
+setFeedbackEmailPreferenceStatus(
+enabled
+?"Feedback reply emails enabled."
+:"Feedback reply emails disabled. In-app replies will still appear.",
+"success"
+);
 }
 function openAccountSettings(){
 const modal=document.getElementById("accountSettingsModal");
