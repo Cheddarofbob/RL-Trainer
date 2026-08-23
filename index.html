@@ -232,6 +232,7 @@
 <select id="focusSelect"><option value="">Choose Training Focus</option><option value="allaround">All-Around Improvement</option><option value="shootingAccuracy">Shooting Accuracy</option><option value="powerShots">Power Shots</option><option value="groundControl">Ground Control</option><option value="saves">Saves</option><option value="clears">Clears</option><option value="shadowDefense">Shadow Defense</option><option value="basicAerials">Basic Aerials</option><option value="fastAerials">Fast Aerials</option><option value="aerialAccuracy">Aerial Accuracy</option><option value="redirects">Redirects</option><option value="wallPlay">Wall Play</option><option value="backboardReads">Backboard Reads</option><option value="doubleTouches">Double Touches</option><option value="recoveries">Recoveries / Car Control</option><option value="freeplaySpeed">Free Play / Speed</option></select>
 <button onclick="buildPlan()">Build My Session</button>
 </div>
+<div id="sessionStartPanel" class="session-save-panel" style="display:none"></div>
 <div id="planResults" class="results"></div>
 </div>
 <footer>RL Trainer — Train with purpose. Improve with consistency.</footer>
@@ -386,7 +387,7 @@ async function renderAuth(session){
 currentUser=session?.user||null;
 const forms=document.getElementById("authForms");
 const panel=document.getElementById("accountPanel");
-if(!currentUser){forms.style.display="block";panel.style.display="none";document.getElementById("accountEmail").textContent="";const goalList=document.getElementById("goalList");if(goalList)goalList.innerHTML="";const scheduleList=document.getElementById("scheduleList");if(scheduleList)scheduleList.innerHTML="";const historyList=document.getElementById("historyList");if(historyList)historyList.innerHTML="";const performanceList=document.getElementById("performanceList");if(performanceList)performanceList.innerHTML="";return;}
+if(!currentUser){forms.style.display="block";panel.style.display="none";document.getElementById("accountEmail").textContent="";const goalList=document.getElementById("goalList");if(goalList)goalList.innerHTML="";const scheduleList=document.getElementById("scheduleList");if(scheduleList)scheduleList.innerHTML="";const historyList=document.getElementById("historyList");if(historyList)historyList.innerHTML="";const performanceList=document.getElementById("performanceList");if(performanceList)performanceList.innerHTML="";renderSessionStartPanel();return;}
 forms.style.display="none";panel.style.display="block";document.getElementById("accountEmail").textContent=currentUser.email||"";
 const profile=await ensureProfile(currentUser);
 populateProfile(profile);
@@ -395,6 +396,7 @@ await loadGoals();
 await loadSchedules();
 await loadHistory();
 await loadPerformance();
+renderSessionStartPanel();
 }
 async function initializeAuth(){
 const {data,error}=await supabaseClient.auth.getSession();
@@ -1614,6 +1616,27 @@ Copy Training Code
 `;
 box.style.display="block";
 }
+function renderSessionStartPanel(){
+const panel=document.getElementById("sessionStartPanel");
+if(!panel)return;
+if(!currentBuiltSession){
+panel.style.display="none";
+panel.innerHTML="";
+return;
+}
+panel.style.display="block";
+panel.innerHTML=`<strong>Track this workout:</strong><br>
+${currentUser?"Save this generated session to your account, then check off each block as you finish it.":"Log in to save this workout, track completed minutes, and check off training blocks."}
+<br>
+<button id="saveSessionButton" style="margin-top:12px" onclick="saveCurrentSession()" ${currentUser?"":"disabled"}>${currentUser?"Save & Start This Session":"Log In to Track Session"}</button>
+<div id="savedSessionProgress" class="session-progress"></div>`;
+if(activeSavedSession){
+const saveButton=document.getElementById("saveSessionButton");
+if(saveButton){saveButton.disabled=true;saveButton.textContent="Session Saved";}
+updateSavedSessionProgress();
+}
+}
+
 function buildPlan(){
 const rank=document.getElementById("rankSelect").value;
 const time=Number(document.getElementById("timeSelect").value);
@@ -1632,6 +1655,7 @@ time
 );
 currentBuiltSession={rank,time,focus,built};
 activeSavedSession=null;
+renderSessionStartPanel();
 let html=`
 <div class="rank-header">
 <div class="rank-title">
@@ -1787,13 +1811,6 @@ ${d.tip}
 `;
 }
 html+=`
-<div class="session-save-panel">
-<strong>Track this workout:</strong><br>
-${currentUser?"Save this generated session to your account, then check off each block as you finish it.":"Log in to save this workout, track completed minutes, and check off training blocks."}
-<br>
-<button id="saveSessionButton" style="margin-top:12px" onclick="saveCurrentSession()" ${currentUser?"":"disabled"}>${currentUser?"Save & Start This Session":"Log In to Track Session"}</button>
-<div id="savedSessionProgress" class="session-progress"></div>
-</div>
 <div class="warning">
 <strong>
 Training note:
@@ -1815,7 +1832,7 @@ Session
 `;
 results.innerHTML=html;
 results.style.display="block";
-results.scrollIntoView({
+document.getElementById("sessionStartPanel")?.scrollIntoView({
 behavior:"smooth",
 block:"start"
 });
