@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RL Trainer</title>
 <style>
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#0d1320;color:#fff}.container{max-width:1120px;margin:auto;padding:35px 20px 70px}header{position:relative;text-align:center;margin-bottom:35px}h1{font-size:48px;margin:0 0 8px}.subtitle{max-width:700px;margin:0 auto;color:#aab7cf;font-size:18px;line-height:1.55}.card{background:#172033;padding:25px;border-radius:14px;margin-top:25px}.card h2{margin-top:0}.controls{display:grid;grid-template-columns:repeat(4,minmax(160px,1fr));gap:10px;align-items:center}select,button{padding:13px 15px;border:0;border-radius:8px;font-size:16px}select{background:#fff;color:#111827}button{background:#168cff;color:#fff;cursor:pointer}button:hover{background:#0672d8}.library-count{color:#75bdff;margin-top:12px;font-weight:bold}.results,.random-result{display:none}.random-result{background:#101827;margin-top:20px;padding:22px;border-radius:10px}.random-title{font-size:26px;font-weight:bold}.random-meta{color:#9fb1c9;margin-top:8px}.rank-header{text-align:center;margin-bottom:25px}.rank-title{font-size:32px;font-weight:bold}.total-time{color:#62b4ff;margin-top:7px;font-weight:bold}.badge{display:inline-block;padding:7px 12px;border-radius:20px;margin:10px 4px 0;font-size:14px;font-weight:bold}.focus-badge{background:#203653;color:#9bd1ff}.program-badge{background:#3a2d1f;color:#ffd69a}.mode-badge{background:#18382a;color:#86efac}.rank-focus{color:#b8c4d8;max-width:860px;margin:15px auto;line-height:1.65}.rank-guide{max-width:860px;margin:15px auto;background:#151f31;border:1px solid #2b3b56;border-radius:10px;padding:15px;text-align:left}.rank-guide strong{color:#a8d8ff}.rank-guide ul{margin:8px 0 0 20px;padding:15px;text-align:left}.rank-guide ul{margin:8px 0 0 20px;padding:0}.rank-guide li{margin:6px 0;color:#c7d0df}.avoid{color:#f3c98b;margin-top:10px}.session-note{background:#122238;color:#cde7ff;padding:12px;border-radius:8px;margin:15px auto;max-width:860px;line-height:1.55}.block-title{font-size:18px;font-weight:bold;color:#a8d8ff;margin:26px 0 8px}.drill{background:#101827;border-left:4px solid #54d98c;padding:20px;margin:12px 0;border-radius:8px}.drill-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.drill-name{font-size:22px;font-weight:bold}.time{color:#67b7ff;font-weight:bold}.category{color:#67d99a;font-size:14px;margin-top:8px;font-weight:bold}.pack-name{margin-top:15px;font-size:18px;font-weight:bold}.creator{color:#8fa3bd;font-size:14px;margin-top:5px}.code{color:#70c0ff;font-family:monospace;font-size:19px;font-weight:bold;margin:12px 0}.section-label{font-weight:bold;margin-top:17px}.instructions,.why{line-height:1.65;margin-top:5px}.instructions{color:#c7d0df}.why{color:#aebbd0;font-style:italic}.success,.tip,.rank-standard{padding:13px;margin-top:14px;border-radius:7px;line-height:1.55}.success{background:#16263a;color:#cde7ff}.tip{background:#182a22;color:#c8f1d9}.rank-standard{background:#2a2135;color:#e8d5ff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#0d1320;color:#fff}.container{max-width:1120px;margin:auto;padding:35px 20px 70px}header{position:relative;text-align:center;margin-bottom:35px}h1{font-size:48px;margin:0 0 8px}.site-brand{line-height:0}.site-logo{display:block;width:min(360px,calc(100% - 180px));height:auto;margin:0 auto 10px}.subtitle{max-width:700px;margin:0 auto;color:#aab7cf;font-size:18px;line-height:1.55}.card{background:#172033;padding:25px;border-radius:14px;margin-top:25px}.card h2{margin-top:0}.controls{display:grid;grid-template-columns:repeat(4,minmax(160px,1fr));gap:10px;align-items:center}select,button{padding:13px 15px;border:0;border-radius:8px;font-size:16px}select{background:#fff;color:#111827}button{background:#168cff;color:#fff;cursor:pointer}button:hover{background:#0672d8}.library-count{color:#75bdff;margin-top:12px;font-weight:bold}.results,.random-result{display:none}.random-result{background:#101827;margin-top:20px;padding:22px;border-radius:10px}.random-title{font-size:26px;font-weight:bold}.random-meta{color:#9fb1c9;margin-top:8px}.rank-header{text-align:center;margin-bottom:25px}.rank-title{font-size:32px;font-weight:bold}.total-time{color:#62b4ff;margin-top:7px;font-weight:bold}.badge{display:inline-block;padding:7px 12px;border-radius:20px;margin:10px 4px 0;font-size:14px;font-weight:bold}.focus-badge{background:#203653;color:#9bd1ff}.program-badge{background:#3a2d1f;color:#ffd69a}.mode-badge{background:#18382a;color:#86efac}.rank-focus{color:#b8c4d8;max-width:860px;margin:15px auto;line-height:1.65}.rank-guide{max-width:860px;margin:15px auto;background:#151f31;border:1px solid #2b3b56;border-radius:10px;padding:15px;text-align:left}.rank-guide strong{color:#a8d8ff}.rank-guide ul{margin:8px 0 0 20px;padding:15px;text-align:left}.rank-guide ul{margin:8px 0 0 20px;padding:0}.rank-guide li{margin:6px 0;color:#c7d0df}.avoid{color:#f3c98b;margin-top:10px}.session-note{background:#122238;color:#cde7ff;padding:12px;border-radius:8px;margin:15px auto;max-width:860px;line-height:1.55}.block-title{font-size:18px;font-weight:bold;color:#a8d8ff;margin:26px 0 8px}.drill{background:#101827;border-left:4px solid #54d98c;padding:20px;margin:12px 0;border-radius:8px}.drill-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.drill-name{font-size:22px;font-weight:bold}.time{color:#67b7ff;font-weight:bold}.category{color:#67d99a;font-size:14px;margin-top:8px}.pack-name{margin-top:15px;font-size:18px;font-weight:bold}.creator{color:#8fa3bd;font-size:14px;margin-top:5px}.code{color:#70c0ff;font-family:monospace;font-size:19px;font-weight:bold;margin:12px 0}.section-label{font-weight:bold;margin-top:17px}.instructions,.why{line-height:1.65;margin-top:5px}.instructions{color:#c7d0df}.why{color:#aebbd0;font-style:italic}.success,.tip,.rank-standard{padding:13px;margin-top:14px;border-radius:7px;line-height:1.55}.success{background:#16263a;color:#cde7ff}.tip{background:#182a22;color:#c8f1d9}.rank-standard{background:#2a2135;color:#e8d5ff}
 .pack-coach{background:#0f2230;border:1px solid #2b526a;border-radius:9px;padding:15px;margin-top:15px;line-height:1.55}.pack-coach-title{font-weight:bold;color:#8dd8ff;margin-bottom:9px}.pack-coach-row{margin-top:8px;color:#cbd8e8}.pack-coach-row strong{color:#9fdcff}.warning{background:#252013;color:#f5dda0;padding:15px;border-radius:8px;margin-top:22px;line-height:1.55}.regen{margin-top:16px;background:#30415e}footer{text-align:center;color:#71809a;margin-top:50px;font-size:14px}@media(max-width:850px){.controls{grid-template-columns:1fr 1fr}}@media(max-width:650px){h1{font-size:38px}.controls{grid-template-columns:1fr}select,button{width:100%}}
 /* ===== ACCOUNT / DASHBOARD ===== */
 .account-status{margin-top:12px;padding:11px 13px;border-radius:8px;display:none;line-height:1.45}
@@ -35,7 +35,7 @@
 .profile-avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid #4e8bd6;background:#101827}
 .avatar-settings{display:flex;align-items:center;gap:14px;margin:4px 0 16px;padding:14px;background:#101827;border:1px solid #2b3b56;border-radius:10px}
 .avatar-preview,.avatar-preview-fallback{width:80px;height:80px;border-radius:50%;border:2px solid #4e8bd6;background:#172033}
-.avatar-preview{object-fit:cover}.avatar-preview-fallback{display:grid;place-items:center;font-size:28px}
+.avatar-preview{object-fit:cover}.avatar-preview-fallback{display:grid;place-items:center;font-size:28px}.avatar-preview[hidden],.avatar-preview-fallback[hidden]{display:none!important}
 .avatar-upload-actions{display:grid;gap:7px}
 .avatar-upload-actions input{max-width:260px;color:#cde7ff}
 .avatar-status{min-height:17px;color:#9fb1c9;font-size:12px}
@@ -123,6 +123,7 @@
 @media(max-width:750px){.settings-grid,.settings-password-grid,.danger-grid{grid-template-columns:1fr}.settings-grid>button,.settings-password-grid>button{margin-top:0}}
 @media(max-width:950px){.auth-grid{grid-template-columns:1fr 1fr}.profile-grid{grid-template-columns:1fr 1fr}.stat-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:650px){.auth-grid,.profile-grid,.stat-grid{grid-template-columns:1fr}.auth-submit-row{align-items:stretch;flex-direction:column}.auth-actions{width:100%}.auth-actions button{flex:1;min-width:0}.login-actions{flex:1;width:auto}.profile-actions button{width:100%}}
+@media(max-width:650px){#accountSettingsModal{padding:12px;overflow:hidden}#accountSettingsModal .settings-dialog{width:100%;height:calc(100dvh - 24px);margin:0;padding:16px;box-sizing:border-box;overflow-y:auto;overflow-x:hidden}#accountSettingsModal .settings-dialog-head{align-items:center;gap:10px}#accountSettingsModal .settings-dialog-head h2{min-width:0;font-size:24px;line-height:1.15}#accountSettingsModal .settings-close{width:auto;flex:0 0 auto}#accountSettingsModal .avatar-settings{display:grid;grid-template-columns:80px minmax(0,1fr);align-items:start;gap:12px;padding:12px}#accountSettingsModal .avatar-upload-actions{min-width:0}#accountSettingsModal .avatar-upload-actions input{width:100%;max-width:100%;min-width:0}#accountSettingsModal .avatar-upload-actions button{width:100%}}
 
 /* ===== SESSION COMPLETION TRACKING ===== */
 .session-save-panel{margin-top:22px;padding:16px;border-radius:10px;background:#102033;border:1px solid #28425f;line-height:1.55}
@@ -262,10 +263,10 @@
 
 /* ===== PRIVATE FEEDBACK INBOX ===== */
 .admin-feedback-button{display:none}
-.feedback-inbox-dialog{width:min(1080px,calc(100vw - 28px));max-height:88vh;margin:5vh auto;background:#111b2b;border:1px solid #30415e;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.5);overflow:hidden}
+.feedback-inbox-dialog{width:min(1080px,calc(100vw - 28px));height:88dvh;max-height:calc(100dvh - 48px);margin:5vh auto;background:#111b2b;border:1px solid #30415e;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.5);overflow:hidden;display:flex;flex-direction:column}
 .feedback-inbox-head{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:18px 20px;background:#172033;border-bottom:1px solid #2b3b56}
 .feedback-inbox-head h2{margin:0}
-.feedback-inbox-body{padding:18px 20px 24px;overflow:auto;max-height:calc(88vh - 70px)}
+.feedback-inbox-body{padding:18px 20px 24px;overflow:auto;flex:1;min-height:0}
 .feedback-inbox-stats{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:10px;margin-bottom:16px}
 .feedback-inbox-stat{background:#0d1523;border:1px solid #27364f;border-radius:10px;padding:14px}
 .feedback-inbox-stat-number{font-size:25px;font-weight:800;color:#75bdff}
@@ -298,14 +299,16 @@
 .feedback-theme-details summary{cursor:pointer;padding:12px 16px;color:#9fcfff;font-weight:700;list-style:none}
 .feedback-theme-details summary::-webkit-details-marker{display:none}
 .feedback-theme-details[open] summary{background:#122238}
-.feedback-message-list{display:grid;gap:8px;padding:0 16px 16px}
-.feedback-message-item{background:#121e30;border:1px solid #283a55;border-radius:9px;padding:12px}
+.feedback-message-list{display:grid;gap:8px;padding:0 16px 16px;min-width:0;box-sizing:border-box}
+.feedback-message-item{background:#121e30;border:1px solid #283a55;border-radius:9px;padding:12px;min-width:0;box-sizing:border-box}
 .feedback-message-text{color:#e3edf9;line-height:1.55;white-space:pre-wrap}
 .feedback-message-meta{margin-top:8px;color:#7f93af;font-size:11px;line-height:1.5}
 .feedback-empty{padding:22px;text-align:center;color:#8fa3bd;background:#0d1523;border:1px dashed #30415e;border-radius:10px}
 .feedback-top-issue{font-size:13px;line-height:1.35;color:#cde7ff;margin-top:4px}
 @media(max-width:850px){.feedback-inbox-stats{grid-template-columns:1fr 1fr}.feedback-inbox-toolbar{grid-template-columns:1fr 1fr}.feedback-theme-controls{grid-template-columns:1fr 1fr}.feedback-theme-save{grid-column:1/-1}}
 @media(max-width:560px){.feedback-inbox-stats,.feedback-inbox-toolbar,.feedback-theme-controls{grid-template-columns:1fr}}
+@media(max-width:650px){#feedbackInboxModal{padding:12px}.feedback-inbox-dialog{width:100%;height:calc(100dvh - 24px);max-height:none;margin:0;border-radius:14px}.feedback-inbox-head{padding:16px}.feedback-inbox-body{padding:14px 16px 20px}}
+@media(max-width:650px){.feedback-message-list{padding:0 12px 12px}.feedback-message-item{padding:12px}.feedback-assignment{grid-template-columns:minmax(0,1fr) auto}.feedback-message-reply{min-width:0}}
 
 
 .feedback-reply-box{margin-top:14px;padding:13px;background:#101d2e;border:1px solid #2b4261;border-radius:10px}
@@ -326,10 +329,10 @@
 .feedback-notify-button{position:relative}
 .feedback-notify-badge{display:none;position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#ff5d6c;color:#fff;font-size:10px;font-weight:800;line-height:18px;text-align:center;border:2px solid #172033}
 .feedback-notify-badge.show{display:block}
-.feedback-replies-dialog{width:min(720px,calc(100vw - 28px));max-height:84vh;margin:7vh auto;background:#111b2b;border:1px solid #30415e;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.5);overflow:hidden}
+.feedback-replies-dialog{width:min(720px,calc(100vw - 28px));height:84dvh;max-height:calc(100dvh - 48px);margin:7vh auto;background:#111b2b;border:1px solid #30415e;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.5);overflow:hidden;display:flex;flex-direction:column}
 .feedback-replies-head{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:18px 20px;background:#172033;border-bottom:1px solid #2b3b56}
 .feedback-replies-head h2{margin:0}
-.feedback-replies-body{padding:16px 20px 22px;overflow:auto;max-height:calc(84vh - 72px)}
+.feedback-replies-body{padding:16px 20px 22px;overflow-y:auto;flex:1;min-height:0}
 .feedback-reply-notification{background:#0d1523;border:1px solid #2b3b56;border-radius:12px;padding:14px;margin-bottom:10px}
 .feedback-reply-notification.unread{border-color:#4b91d9;box-shadow:inset 3px 0 0 #4b91d9}
 .feedback-reply-notification-title{display:flex;justify-content:space-between;gap:10px;align-items:center;font-weight:800;color:#e8f3ff}
@@ -338,6 +341,7 @@
 .feedback-reply-original strong,.feedback-reply-admin strong{color:#8fc8ff}
 .feedback-reply-admin{margin-top:10px;padding:11px;background:#13263a;border-left:3px solid #58aaff;border-radius:7px;color:#e5f2ff;line-height:1.55}
 .feedback-reply-time{margin-top:8px;color:#7187a5;font-size:11px}
+@media(max-width:650px){#feedbackRepliesModal{padding:12px}.feedback-replies-dialog{width:100%;height:calc(100dvh - 24px);max-height:none;margin:0;border-radius:14px}.feedback-replies-head{padding:16px}.feedback-replies-body{padding:14px 16px 20px}}
 
 
 /* ===== FEEDBACK EMAIL PREFERENCES + DELIVERY RETRY ===== */
@@ -364,12 +368,15 @@
 .feedback-email-pref-status.success{display:block;background:#182a22;color:#c8f1d9}
 .feedback-email-pref-status.error{display:block;background:#3a1f24;color:#ffc3c9}
 
+/* Local brand-logo preview: keep the new header mark compact on narrow screens. */
+.category{font-weight:bold}
+@media(max-width:650px){.site-logo{width:min(330px,calc(100% - 28px));margin-bottom:12px}}
 </style>
 </head>
 <body>
 <div class="container">
 <header>
-<h1>🚀 RL Trainer</h1>
+<h1 class="site-brand"><img class="site-logo" src="assets/rl-trainer-logo-transparent.png" alt="RL Trainer"></h1>
 <div class="subtitle">Purpose-built Rocket League sessions where every block teaches the exact skill you selected.</div>
 <div id="headerAccountActions" class="account-actions header-account-actions">
 <button id="accountMenuTrigger" class="account-menu-trigger" type="button" aria-haspopup="true" aria-expanded="false" onclick="toggleAccountMenu()">☰ Accounts</button>
@@ -643,7 +650,6 @@
   <div class="feedback-dialog">
     <div class="feedback-dialog-head">
       <h2 id="feedbackTitle">💬 Feedback</h2>
-      <button class="settings-close" onclick="closeFeedbackModal()">Close</button>
     </div>
 
     <div class="feedback-chat-body">
@@ -780,6 +786,7 @@ let feedbackInboxThemes=[];
 let feedbackInboxRows=[];
 let feedbackInboxResponses=[];
 let feedbackInboxNotifications=[];
+let feedbackInboxSubmitterNames={};
 let passwordRecoveryMode=window.location.hash.includes("type=recovery")||new URLSearchParams(window.location.search).get("type")==="recovery";
 function setAccountStatus(message,type="info"){
 const el=document.getElementById("accountStatus");
@@ -891,6 +898,7 @@ feedbackInboxThemes=[];
 feedbackInboxRows=[];
 feedbackInboxResponses=[];
 feedbackInboxNotifications=[];
+feedbackInboxSubmitterNames={};
 closeFeedbackInbox();
 await renderAuth(null);
 }
@@ -1476,6 +1484,13 @@ feedbackInboxThemes=themesResult.data||[];
 feedbackInboxRows=feedbackResult.data||[];
 feedbackInboxResponses=responsesResult.data||[];
 feedbackInboxNotifications=notificationsResult.data||[];
+const submitterIds=[...new Set(feedbackInboxRows.map(row=>row.user_id).filter(Boolean))];
+feedbackInboxSubmitterNames={};
+if(submitterIds.length){
+const {data,error}=await supabaseClient.rpc("get_feedback_submitter_names",{target_user_ids:submitterIds});
+if(error)console.warn("Feedback submitter names could not be loaded",error.message,error.code,error.details);
+else feedbackInboxSubmitterNames=Object.fromEntries((data||[]).map(profile=>[profile.user_id,profile.display_name]));
+}
 renderFeedbackInboxSummary();
 renderFailedFeedbackEmails();
 renderFeedbackInbox();
@@ -1537,12 +1552,16 @@ const choices=feedbackInboxThemes.filter(theme=>theme.category===row.feedback_ty
 const options=[`<option value="">Create a separate theme</option>`,...choices.map(theme=>`<option value="${theme.id}">Move to: ${escapeFeedbackHtml(theme.title)}</option>`)].join("");
 return`<div class="feedback-assignment"><div class="field"><label for="reviewTheme-${row.id}">Grouping decision</label><select id="reviewTheme-${row.id}">${options}</select></div><button class="regen" onclick="resolveFeedbackAssignment('${row.id}')">${row.grouping_status==="grouped"?"Move / Split":"Resolve"}</button></div>`;
 }
+function feedbackSubmitterLabel(row){
+if(!row.user_id)return"Anonymous";
+return`Player: ${escapeFeedbackHtml(feedbackInboxSubmitterNames[row.user_id]||"Logged-in user")}`;
+}
 function renderFeedbackReviewQueue(){
 const reviewRows=feedbackInboxRows.filter(row=>["pending","needs_review"].includes(row.grouping_status));
 if(!reviewRows.length)return"";
 const destinations=feedbackInboxThemes.filter(theme=>theme.status!=="wont_do");
 const batchOptions=destinations.map(theme=>`<option value="${theme.id}">${feedbackCategoryLabel(theme.category)} — ${escapeFeedbackHtml(theme.title)}</option>`).join("");
-return`<section class="feedback-review-queue"><h3>${reviewRows.length} report${reviewRows.length===1?"":"s"} need a grouping decision</h3><div class="feedback-review-batch"><div class="field"><label for="reviewBatchTheme">Merge selected reports into</label><select id="reviewBatchTheme"><option value="">Choose same-category destination…</option>${batchOptions}</select><div class="field-help">Select reports from one category only.</div></div><button class="regen" onclick="resolveSelectedFeedbackReviews()">Merge Selected</button></div>${reviewRows.map(row=>`<div class="feedback-review-item"><label class="feedback-review-check"><input type="checkbox" data-feedback-review="${row.id}"> Include in batch merge</label><div class="feedback-review-label">${row.grouping_status==="pending"?"Pending grouping":"Ambiguous match"}</div><div class="feedback-message-text">${escapeFeedbackHtml(row.message)}</div><div class="feedback-message-meta">${feedbackCategoryLabel(row.feedback_type)} • ${row.user_id?"Logged-in user":"Anonymous"} • ${feedbackDateLabel(row.created_at)}</div>${feedbackAssignmentControl(row)}</div>`).join("")}</section>`;
+return`<section class="feedback-review-queue"><h3>${reviewRows.length} report${reviewRows.length===1?"":"s"} need a grouping decision</h3><div class="feedback-review-batch"><div class="field"><label for="reviewBatchTheme">Merge selected reports into</label><select id="reviewBatchTheme"><option value="">Choose same-category destination…</option>${batchOptions}</select><div class="field-help">Select reports from one category only.</div></div><button class="regen" onclick="resolveSelectedFeedbackReviews()">Merge Selected</button></div>${reviewRows.map(row=>`<div class="feedback-review-item"><label class="feedback-review-check"><input type="checkbox" data-feedback-review="${row.id}"> Include in batch merge</label><div class="feedback-review-label">${row.grouping_status==="pending"?"Pending grouping":"Ambiguous match"}</div><div class="feedback-message-text">${escapeFeedbackHtml(row.message)}</div><div class="feedback-message-meta">${feedbackCategoryLabel(row.feedback_type)} • ${feedbackSubmitterLabel(row)} • ${feedbackDateLabel(row.created_at)}</div>${feedbackAssignmentControl(row)}</div>`).join("")}</section>`;
 }
 async function resolveFeedbackAssignment(feedbackId){
 if(!isFeedbackStaff())return;
@@ -1611,7 +1630,7 @@ const replyControl=row.user_id?`<div class="feedback-message-reply">
 </div>`:`<div class="feedback-anonymous-note">Anonymous submission — there is no account to receive an individual reply.</div>`;
 return`<div class="feedback-message-item">
 <div class="feedback-message-text">${escapeFeedbackHtml(row.message)}</div>
-<div class="feedback-message-meta">${row.user_id?"Logged-in user":"Anonymous"}${row.rating?` • Rating ${row.rating}/5`:""}${row.page_context?` • ${escapeFeedbackHtml(row.page_context)}`:""}${row.rank_context?` • ${escapeFeedbackHtml(row.rank_context)}`:""}${row.platform_context?` • ${escapeFeedbackHtml(row.platform_context)}`:""}<br>${feedbackDateLabel(row.created_at)}</div>
+<div class="feedback-message-meta">${feedbackSubmitterLabel(row)}${row.rating?` • Rating ${row.rating}/5`:""}${row.page_context?` • ${escapeFeedbackHtml(row.page_context)}`:""}${row.rank_context?` • ${escapeFeedbackHtml(row.rank_context)}`:""}${row.platform_context?` • ${escapeFeedbackHtml(row.platform_context)}`:""}<br>${feedbackDateLabel(row.created_at)}</div>
 ${feedbackAssignmentControl(row)}
 ${responseHistory}
 ${replyControl}
