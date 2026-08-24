@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://challenges.cloudflare.com; connect-src 'self' https://swyeowcjcinmqqdhywma.supabase.co https://challenges.cloudflare.com; img-src 'self' data: blob: https://swyeowcjcinmqqdhywma.supabase.co; style-src 'self' 'unsafe-inline'; font-src 'self' data:; frame-src https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <title>RL Trainer</title>
 <style>
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#0d1320;color:#fff}.container{max-width:1120px;margin:auto;padding:35px 20px 70px}header{position:relative;text-align:center;margin-bottom:35px}h1{font-size:48px;margin:0 0 8px}.site-brand{line-height:0}.site-logo{display:block;width:min(360px,calc(100% - 180px));height:auto;margin:0 auto 10px}.subtitle{max-width:700px;margin:0 auto;color:#aab7cf;font-size:18px;line-height:1.55}.card{background:#172033;padding:25px;border-radius:14px;margin-top:25px}.card h2{margin-top:0}.controls{display:grid;grid-template-columns:repeat(4,minmax(160px,1fr));gap:10px;align-items:center}select,button{padding:13px 15px;border:0;border-radius:8px;font-size:16px}select{background:#fff;color:#111827}button{background:#168cff;color:#fff;cursor:pointer}button:hover{background:#0672d8}.library-count{color:#75bdff;margin-top:12px;font-weight:bold}.results,.random-result{display:none}.random-result{background:#101827;margin-top:20px;padding:22px;border-radius:10px}.random-title{font-size:26px;font-weight:bold}.random-meta{color:#9fb1c9;margin-top:8px}.rank-header{text-align:center;margin-bottom:25px}.rank-title{font-size:32px;font-weight:bold}.total-time{color:#62b4ff;margin-top:7px;font-weight:bold}.badge{display:inline-block;padding:7px 12px;border-radius:20px;margin:10px 4px 0;font-size:14px;font-weight:bold}.focus-badge{background:#203653;color:#9bd1ff}.program-badge{background:#3a2d1f;color:#ffd69a}.mode-badge{background:#18382a;color:#86efac}.rank-focus{color:#b8c4d8;max-width:860px;margin:15px auto;line-height:1.65}.rank-guide{max-width:860px;margin:15px auto;background:#151f31;border:1px solid #2b3b56;border-radius:10px;padding:15px;text-align:left}.rank-guide strong{color:#a8d8ff}.rank-guide ul{margin:8px 0 0 20px;padding:15px;text-align:left}.rank-guide ul{margin:8px 0 0 20px;padding:0}.rank-guide li{margin:6px 0;color:#c7d0df}.avoid{color:#f3c98b;margin-top:10px}.session-note{background:#122238;color:#cde7ff;padding:12px;border-radius:8px;margin:15px auto;max-width:860px;line-height:1.55}.block-title{font-size:18px;font-weight:bold;color:#a8d8ff;margin:26px 0 8px}.drill{background:#101827;border-left:4px solid #54d98c;padding:20px;margin:12px 0;border-radius:8px}.drill-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.drill-name{font-size:22px;font-weight:bold}.time{color:#67b7ff;font-weight:bold}.category{color:#67d99a;font-size:14px;margin-top:8px}.pack-name{margin-top:15px;font-size:18px;font-weight:bold}.creator{color:#8fa3bd;font-size:14px;margin-top:5px}.code{color:#70c0ff;font-family:monospace;font-size:19px;font-weight:bold;margin:12px 0}.section-label{font-weight:bold;margin-top:17px}.instructions,.why{line-height:1.65;margin-top:5px}.instructions{color:#c7d0df}.why{color:#aebbd0;font-style:italic}.success,.tip,.rank-standard{padding:13px;margin-top:14px;border-radius:7px;line-height:1.55}.success{background:#16263a;color:#cde7ff}.tip{background:#182a22;color:#c8f1d9}.rank-standard{background:#2a2135;color:#e8d5ff}
@@ -206,6 +207,10 @@
 .feedback-message-wrap textarea{width:100%;min-height:145px;resize:vertical;padding:0;border:0;outline:0;font:inherit;background:transparent;color:#fff;line-height:1.55}
 .feedback-message-wrap textarea::placeholder{color:#71809a}
 .feedback-char-count{position:absolute;right:12px;bottom:8px;color:rgba(159,177,201,.58);font-size:12px;pointer-events:none}
+.feedback-turnstile-wrap{margin-top:14px;padding:12px;background:#101827;border:1px solid #2b3b56;border-radius:10px}
+.feedback-turnstile-label{color:#cde7ff;font-size:14px;font-weight:bold;margin-bottom:8px}
+.feedback-turnstile-note{color:#9fb1c9;font-size:12px;line-height:1.45;margin:8px 0 0}
+.feedback-turnstile-note.ready{color:#86efac}
 .feedback-actions{display:flex;justify-content:flex-end;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}
 .feedback-actions .regen{margin-top:0}
 .feedback-status{display:none;margin-top:12px;padding:10px 12px;border-radius:8px;line-height:1.45}
@@ -687,6 +692,12 @@
         <div id="feedbackCharCount" class="feedback-char-count">0 / 3000</div>
       </div>
 
+      <div id="feedbackTurnstileWrap" class="feedback-turnstile-wrap" hidden>
+        <div class="feedback-turnstile-label">Spam protection</div>
+        <div id="feedbackTurnstile"></div>
+        <div id="feedbackTurnstileNote" class="feedback-turnstile-note">Complete the quick check before sending.</div>
+      </div>
+
       <div id="feedbackStatus" class="feedback-status"></div>
 
       <div class="feedback-actions">
@@ -767,7 +778,8 @@
   <div class="footer-legal"><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a></div>
 </footer>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0"></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script>
 /* =====================================================
    SUPABASE AUTH + STARTER DASHBOARD
@@ -780,6 +792,14 @@ let profileAvatarRequest=0;
 let currentBuiltSession=null;
 let activeSavedSession=null;
 let timerUiInterval=null;
+const TURNSTILE_LOCAL_TEST_SITEKEY="1x00000000000000000000AA";
+// This public sitekey is filled in only after the real Cloudflare widget is
+// created for myrltrainer.com. Its matching secret lives only in Supabase.
+const TURNSTILE_PRODUCTION_SITEKEY="0x4AAAAAAEaNcjW8cHGUPdR7";
+const turnstilePreviewEnabled=["127.0.0.1","localhost"].includes(location.hostname);
+const feedbackTurnstileSitekey=turnstilePreviewEnabled?TURNSTILE_LOCAL_TEST_SITEKEY:TURNSTILE_PRODUCTION_SITEKEY;
+let feedbackTurnstileWidgetId=null;
+let feedbackTurnstileToken="";
 let currentProfile=null;
 let welcomeGuideShown=false;
 let feedbackInboxThemes=[];
@@ -1726,12 +1746,52 @@ const count=document.getElementById("feedbackCharCount");
 if(!input||!count)return;
 count.textContent=`${input.value.length} / ${input.maxLength||3000}`;
 }
+function setFeedbackTurnstileNote(message,isReady=false){
+const note=document.getElementById("feedbackTurnstileNote");
+if(!note)return;
+note.textContent=message;
+note.classList.toggle("ready",isReady);
+}
+function renderFeedbackTurnstilePreview(){
+const wrap=document.getElementById("feedbackTurnstileWrap");
+const host=document.getElementById("feedbackTurnstile");
+if(!wrap||!host||!feedbackTurnstileSitekey)return;
+wrap.hidden=false;
+feedbackTurnstileToken="";
+setFeedbackTurnstileNote("Loading spam protection…");
+if(!window.turnstile){
+setTimeout(renderFeedbackTurnstilePreview,120);
+return;
+}
+if(feedbackTurnstileWidgetId!==null){
+window.turnstile.reset(feedbackTurnstileWidgetId);
+return;
+}
+feedbackTurnstileWidgetId=window.turnstile.render(host,{
+sitekey:feedbackTurnstileSitekey,
+theme:"dark",
+size:"flexible",
+callback(token){
+feedbackTurnstileToken=token;
+setFeedbackTurnstileNote("Spam check complete.",true);
+},
+"expired-callback"(){
+feedbackTurnstileToken="";
+setFeedbackTurnstileNote("Spam check expired. Please complete it again.");
+},
+"error-callback"(){
+feedbackTurnstileToken="";
+setFeedbackTurnstileNote("Spam protection could not load. Try reopening Feedback.");
+}
+});
+}
 function openFeedbackModal(){
 const modal=document.getElementById("feedbackModal");
 if(!modal)return;
 setFeedbackStatus("");
 modal.classList.add("open");
 document.body.style.overflow="hidden";
+if(feedbackTurnstileSitekey)setTimeout(renderFeedbackTurnstilePreview,0);
 setTimeout(()=>document.getElementById("feedbackMessage")?.focus(),0);
 }
 function closeFeedbackModal(){
@@ -1753,6 +1813,8 @@ const feedbackType=document.getElementById("feedbackType")?.value||"other";
 const message=document.getElementById("feedbackMessage")?.value.trim()||"";
 const ratingValue=document.getElementById("feedbackRating")?.value||"";
 if(message.length<3){setFeedbackStatus("Tell us a little more before sending.","error");return;}
+if(!feedbackTurnstileSitekey){setFeedbackStatus("Spam protection is temporarily unavailable. Please try again shortly.","error");return;}
+if(!feedbackTurnstileToken){setFeedbackStatus("Complete the spam check before sending.","error");return;}
 const button=document.getElementById("submitFeedbackButton");
 if(button){button.disabled=true;button.textContent="Sending…";}
 setFeedbackStatus("Sending your feedback…","info");
@@ -1760,15 +1822,16 @@ const rankContext=currentUser
 ?document.getElementById("profileRank")?.value||document.getElementById("rankSelect")?.selectedOptions?.[0]?.text||null
 :document.getElementById("rankSelect")?.selectedOptions?.[0]?.text||null;
 const platformContext=currentUser?document.getElementById("profilePlatform")?.value||null:null;
-const {error}=await supabaseClient.from("feedback").insert({
-user_id:currentUser?.id||null,
+const {error}=await supabaseClient.functions.invoke("submit-feedback",{
+body:{
+turnstile_token:feedbackTurnstileToken,
 feedback_type:feedbackType,
 message,
 rating:ratingValue?Number(ratingValue):null,
 page_context:feedbackPageContext(),
 rank_context:rankContext&&rankContext!=="Choose Your Rank"?rankContext:null,
-platform_context:platformContext||null,
-grouping_status:"pending"
+platform_context:platformContext||null
+}
 });
 if(button){button.disabled=false;button.textContent="Send Feedback";}
 if(error){setFeedbackStatus(error.message,"error");return;}
@@ -2162,9 +2225,9 @@ writes.push(supabaseClient.from("goals").update({current_value:current,completed
 }
 const pct=Math.min(100,Math.max(0,(current/target)*100));
 return`<div class="goal-item ${complete?"goal-complete":""}">
-<div class="goal-head"><div><div class="goal-title">${goal.title}</div><div class="goal-meta">${goal.start_date} → ${goalEndDate(goal)}${complete?" • COMPLETE":""}</div></div><button class="goal-delete" onclick="deleteGoal('${goal.id}')">Delete</button></div>
+<div class="goal-head"><div><div class="goal-title">${teamEscape(goal.title)}</div><div class="goal-meta">${teamEscape(goal.start_date)} → ${teamEscape(goalEndDate(goal))}${complete?" • COMPLETE":""}</div></div><button class="goal-delete" onclick="deleteGoal('${goal.id}')">Delete</button></div>
 <div class="goal-progress-track"><div class="goal-progress-fill" style="width:${pct}%"></div></div>
-<div class="goal-progress-text">${current} / ${target} ${goal.unit||""} • ${pct.toFixed(0)}%</div>
+<div class="goal-progress-text">${current} / ${target} ${teamEscape(goal.unit||"")} • ${pct.toFixed(0)}%</div>
 </div>`;
 }).join("");
 if(writes.length)await Promise.all(writes);
@@ -2242,9 +2305,9 @@ if(error){console.error("Schedule load error",error);return;}
 const rows=data||[];
 const today=new Date().getDay();
 const todays=rows.filter(s=>s.enabled&&(s.days_of_week||[]).map(Number).includes(today));
-if(todays.length){todayBox.innerHTML=`<strong>Today:</strong> ${todays.map(s=>`${s.title} — ${scheduleTimeLabel(s.start_time)} • ${s.duration_minutes} min${s.focus?` • ${s.focus}`:""}`).join("<br>")}`;}else{todayBox.innerHTML="<strong>Today:</strong> No scheduled training. Recovery day or build a session whenever you want.";}
+if(todays.length){todayBox.innerHTML=`<strong>Today:</strong> ${todays.map(s=>`${teamEscape(s.title||"Training Session")} — ${teamEscape(scheduleTimeLabel(s.start_time))} • ${Number(s.duration_minutes)||0} min${s.focus?` • ${teamEscape(s.focus)}`:""}`).join("<br>")}`;}else{todayBox.innerHTML="<strong>Today:</strong> No scheduled training. Recovery day or build a session whenever you want.";}
 if(!rows.length){list.innerHTML=`<div class="account-note">No schedules yet. Add your regular training days above.</div>`;return;}
-list.innerHTML=rows.map(s=>`<div class="schedule-item"><div class="schedule-head"><div><div class="schedule-title">${s.title}${s.enabled?"":" • PAUSED"}</div><div class="schedule-meta">${scheduleDaysLabel(s.days_of_week)} • ${scheduleTimeLabel(s.start_time)} • ${s.duration_minutes} min${s.rank?` • ${s.rank}`:""}${s.focus?` • ${s.focus}`:""}</div></div><div><button class="schedule-toggle" onclick="toggleSchedule('${s.id}',${Boolean(s.enabled)})">${s.enabled?"Pause":"Enable"}</button> <button class="schedule-delete" onclick="deleteSchedule('${s.id}')">Delete</button></div></div></div>`).join("");
+list.innerHTML=rows.map(s=>`<div class="schedule-item"><div class="schedule-head"><div><div class="schedule-title">${teamEscape(s.title||"Training Session")}${s.enabled?"":" • PAUSED"}</div><div class="schedule-meta">${teamEscape(scheduleDaysLabel(s.days_of_week))} • ${teamEscape(scheduleTimeLabel(s.start_time))} • ${Number(s.duration_minutes)||0} min${s.rank?` • ${teamEscape(s.rank)}`:""}${s.focus?` • ${teamEscape(s.focus)}`:""}</div></div><div><button class="schedule-toggle" onclick="toggleSchedule('${s.id}',${Boolean(s.enabled)})">${s.enabled?"Pause":"Enable"}</button> <button class="schedule-delete" onclick="deleteSchedule('${s.id}')">Delete</button></div></div></div>`).join("");
 }
 async function loadHistory(){
 const list=document.getElementById("historyList");
@@ -2264,7 +2327,7 @@ const actualSeconds=ds.reduce((sum,d)=>sum+(Number(d.elapsed_seconds)||0),0);
 const actualMinutes=actualSeconds>0?Math.round(actualSeconds/6)/10:Number(s.completed_minutes)||0;
 const completedDrills=ds.filter(d=>d.completed).length;
 const successHits=ds.filter(d=>d.success_target_met).length;
-return`<div class="history-item"><div class="history-head"><div><div class="history-title">${s.focus} • ${s.program_name||"Training Session"}</div><div class="history-meta">${s.session_date} • ${s.rank} • Planned ${s.planned_minutes} min${s.completed?" • COMPLETE":" • IN PROGRESS"}</div></div><button class="history-delete" onclick="deleteTrainingSession('${s.id}')">Delete</button></div><div class="history-stats"><span class="history-pill">⏱ ${actualMinutes} actual min</span><span class="history-pill">✓ ${completedDrills}/${ds.length} drills</span><span class="history-pill">🎯 ${successHits} targets hit</span></div></div>`;
+return`<div class="history-item"><div class="history-head"><div><div class="history-title">${teamEscape(s.focus)} • ${teamEscape(s.program_name||"Training Session")}</div><div class="history-meta">${teamEscape(s.session_date)} • ${teamEscape(s.rank)} • Planned ${Number(s.planned_minutes)||0} min${s.completed?" • COMPLETE":" • IN PROGRESS"}</div></div><button class="history-delete" onclick="deleteTrainingSession('${s.id}')">Delete</button></div><div class="history-stats"><span class="history-pill">⏱ ${actualMinutes} actual min</span><span class="history-pill">✓ ${completedDrills}/${ds.length} drills</span><span class="history-pill">🎯 ${successHits} targets hit</span></div></div>`;
 }).join("");
 }
 async function deleteTrainingSession(sessionId){
@@ -2362,11 +2425,12 @@ document.getElementById("perfSaves").textContent=saves;
 document.getElementById("perfShots").textContent=shots;
 if(!rows.length){list.innerHTML=`<div class="account-note">No match performance saved yet. Add one match above to start the performance timeline.</div>`;return;}
 list.innerHTML=rows.slice(0,20).map(r=>{
-const resultLabel=(r.result||"unknown").toUpperCase();
+const resultKey=["win","loss","draw"].includes(r.result)?r.result:"draw";
+const resultLabel=resultKey.toUpperCase();
 const date=r.played_at?new Date(r.played_at).toLocaleString():"Unknown time";
 const scoreLine=r.team_score!==null&&r.team_score!==undefined&&r.opponent_score!==null&&r.opponent_score!==undefined?` • ${r.team_score}-${r.opponent_score}`:"";
 const shootingPct=Number(r.shots)>0?`${((Number(r.goals)||0)/Number(r.shots)*100).toFixed(1)}% shooting`:"No shots";
-return`<div class="performance-item performance-${r.result||"draw"}"><div class="performance-head"><div><div class="performance-title">${resultLabel} • ${r.playlist||"Rocket League Match"}${scoreLine}</div><div class="performance-meta">${date} • ${performanceSourceLabel(r.source)} • Score ${Number(r.score)||0}${r.notes?`<br>${r.notes}`:""}</div></div><button class="performance-delete" onclick="deletePerformanceMatch('${r.id}')">Delete</button></div><div class="performance-pills"><span class="performance-pill">⚽ ${Number(r.goals)||0} goals</span><span class="performance-pill">🤝 ${Number(r.assists)||0} assists</span><span class="performance-pill">🛡 ${Number(r.saves)||0} saves</span><span class="performance-pill">🎯 ${Number(r.shots)||0} shots</span><span class="performance-pill">${shootingPct}</span></div></div>`;
+return`<div class="performance-item performance-${resultKey}"><div class="performance-head"><div><div class="performance-title">${resultLabel} • ${teamEscape(r.playlist||"Rocket League Match")}${scoreLine}</div><div class="performance-meta">${teamEscape(date)} • ${teamEscape(performanceSourceLabel(r.source))} • Score ${Number(r.score)||0}${r.notes?`<br>${teamEscape(r.notes)}`:""}</div></div><button class="performance-delete" onclick="deletePerformanceMatch('${r.id}')">Delete</button></div><div class="performance-pills"><span class="performance-pill">⚽ ${Number(r.goals)||0} goals</span><span class="performance-pill">🤝 ${Number(r.assists)||0} assists</span><span class="performance-pill">🛡 ${Number(r.saves)||0} saves</span><span class="performance-pill">🎯 ${Number(r.shots)||0} shots</span><span class="performance-pill">${shootingPct}</span></div></div>`;
 }).join("");
 }
 
