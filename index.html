@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RL Trainer</title>
 <style>
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#0d1320;color:#fff}.container{max-width:1120px;margin:auto;padding:35px 20px 70px}header{text-align:center;margin-bottom:35px}h1{font-size:48px;margin:0 0 8px}.subtitle{color:#aab7cf;font-size:18px;line-height:1.55}.card{background:#172033;padding:25px;border-radius:14px;margin-top:25px}.card h2{margin-top:0}.controls{display:grid;grid-template-columns:repeat(4,minmax(160px,1fr));gap:10px;align-items:center}select,button{padding:13px 15px;border:0;border-radius:8px;font-size:16px}select{background:#fff;color:#111827}button{background:#168cff;color:#fff;cursor:pointer}button:hover{background:#0672d8}.library-count{color:#75bdff;margin-top:12px;font-weight:bold}.results,.random-result{display:none}.random-result{background:#101827;margin-top:20px;padding:22px;border-radius:10px}.random-title{font-size:26px;font-weight:bold}.random-meta{color:#9fb1c9;margin-top:8px}.rank-header{text-align:center;margin-bottom:25px}.rank-title{font-size:32px;font-weight:bold}.total-time{color:#62b4ff;margin-top:7px;font-weight:bold}.badge{display:inline-block;padding:7px 12px;border-radius:20px;margin:10px 4px 0;font-size:14px;font-weight:bold}.focus-badge{background:#203653;color:#9bd1ff}.program-badge{background:#3a2d1f;color:#ffd69a}.mode-badge{background:#18382a;color:#86efac}.rank-focus{color:#b8c4d8;max-width:860px;margin:15px auto;line-height:1.65}.rank-guide{max-width:860px;margin:15px auto;background:#151f31;border:1px solid #2b3b56;border-radius:10px;padding:15px;text-align:left}.rank-guide strong{color:#a8d8ff}.rank-guide ul{margin:8px 0 0 20px;padding:0}.rank-guide li{margin:6px 0;color:#c7d0df}.avoid{color:#f3c98b;margin-top:10px}.session-note{background:#122238;color:#cde7ff;padding:12px;border-radius:8px;margin:15px auto;max-width:860px;line-height:1.55}.block-title{font-size:18px;font-weight:bold;color:#a8d8ff;margin:26px 0 8px}.drill{background:#101827;border-left:4px solid #54d98c;padding:20px;margin:12px 0;border-radius:8px}.drill-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.drill-name{font-size:22px;font-weight:bold}.time{color:#67b7ff;font-weight:bold}.category{color:#67d99a;font-size:14px;margin-top:8px;font-weight:bold}.pack-name{margin-top:15px;font-size:18px;font-weight:bold}.creator{color:#8fa3bd;font-size:14px;margin-top:5px}.code{color:#70c0ff;font-family:monospace;font-size:19px;font-weight:bold;margin:12px 0}.section-label{font-weight:bold;margin-top:17px}.instructions,.why{line-height:1.65;margin-top:5px}.instructions{color:#c7d0df}.why{color:#aebbd0;font-style:italic}.success,.tip,.rank-standard{padding:13px;margin-top:14px;border-radius:7px;line-height:1.55}.success{background:#16263a;color:#cde7ff}.tip{background:#182a22;color:#c8f1d9}.rank-standard{background:#2a2135;color:#e8d5ff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#0d1320;color:#fff}.container{max-width:1120px;margin:auto;padding:35px 20px 70px}header{position:relative;text-align:center;margin-bottom:35px}h1{font-size:48px;margin:0 0 8px}.subtitle{max-width:700px;margin:0 auto;color:#aab7cf;font-size:18px;line-height:1.55}.card{background:#172033;padding:25px;border-radius:14px;margin-top:25px}.card h2{margin-top:0}.controls{display:grid;grid-template-columns:repeat(4,minmax(160px,1fr));gap:10px;align-items:center}select,button{padding:13px 15px;border:0;border-radius:8px;font-size:16px}select{background:#fff;color:#111827}button{background:#168cff;color:#fff;cursor:pointer}button:hover{background:#0672d8}.library-count{color:#75bdff;margin-top:12px;font-weight:bold}.results,.random-result{display:none}.random-result{background:#101827;margin-top:20px;padding:22px;border-radius:10px}.random-title{font-size:26px;font-weight:bold}.random-meta{color:#9fb1c9;margin-top:8px}.rank-header{text-align:center;margin-bottom:25px}.rank-title{font-size:32px;font-weight:bold}.total-time{color:#62b4ff;margin-top:7px;font-weight:bold}.badge{display:inline-block;padding:7px 12px;border-radius:20px;margin:10px 4px 0;font-size:14px;font-weight:bold}.focus-badge{background:#203653;color:#9bd1ff}.program-badge{background:#3a2d1f;color:#ffd69a}.mode-badge{background:#18382a;color:#86efac}.rank-focus{color:#b8c4d8;max-width:860px;margin:15px auto;line-height:1.65}.rank-guide{max-width:860px;margin:15px auto;background:#151f31;border:1px solid #2b3b56;border-radius:10px;padding:15px;text-align:left}.rank-guide strong{color:#a8d8ff}.rank-guide ul{margin:8px 0 0 20px;padding:15px;text-align:left}.rank-guide ul{margin:8px 0 0 20px;padding:0}.rank-guide li{margin:6px 0;color:#c7d0df}.avoid{color:#f3c98b;margin-top:10px}.session-note{background:#122238;color:#cde7ff;padding:12px;border-radius:8px;margin:15px auto;max-width:860px;line-height:1.55}.block-title{font-size:18px;font-weight:bold;color:#a8d8ff;margin:26px 0 8px}.drill{background:#101827;border-left:4px solid #54d98c;padding:20px;margin:12px 0;border-radius:8px}.drill-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.drill-name{font-size:22px;font-weight:bold}.time{color:#67b7ff;font-weight:bold}.category{color:#67d99a;font-size:14px;margin-top:8px;font-weight:bold}.pack-name{margin-top:15px;font-size:18px;font-weight:bold}.creator{color:#8fa3bd;font-size:14px;margin-top:5px}.code{color:#70c0ff;font-family:monospace;font-size:19px;font-weight:bold;margin:12px 0}.section-label{font-weight:bold;margin-top:17px}.instructions,.why{line-height:1.65;margin-top:5px}.instructions{color:#c7d0df}.why{color:#aebbd0;font-style:italic}.success,.tip,.rank-standard{padding:13px;margin-top:14px;border-radius:7px;line-height:1.55}.success{background:#16263a;color:#cde7ff}.tip{background:#182a22;color:#c8f1d9}.rank-standard{background:#2a2135;color:#e8d5ff}
 .pack-coach{background:#0f2230;border:1px solid #2b526a;border-radius:9px;padding:15px;margin-top:15px;line-height:1.55}.pack-coach-title{font-weight:bold;color:#8dd8ff;margin-bottom:9px}.pack-coach-row{margin-top:8px;color:#cbd8e8}.pack-coach-row strong{color:#9fdcff}.warning{background:#252013;color:#f5dda0;padding:15px;border-radius:8px;margin-top:22px;line-height:1.55}.regen{margin-top:16px;background:#30415e}footer{text-align:center;color:#71809a;margin-top:50px;font-size:14px}@media(max-width:850px){.controls{grid-template-columns:1fr 1fr}}@media(max-width:650px){h1{font-size:38px}.controls{grid-template-columns:1fr}select,button{width:100%}}
 /* ===== ACCOUNT / DASHBOARD ===== */
 .account-status{margin-top:12px;padding:11px 13px;border-radius:8px;display:none;line-height:1.45}
@@ -13,71 +13,122 @@
 .account-status.success{display:block;background:#182a22;color:#c8f1d9}
 .account-status.error{display:block;background:#3a1f24;color:#ffc3c9}
 .auth-grid,.profile-grid,.stat-grid{display:grid;gap:10px}
-.auth-grid{grid-template-columns:1fr 1fr 1fr 1fr auto auto;align-items:end}
-.profile-grid{grid-template-columns:repeat(3,minmax(160px,1fr));margin-top:16px}
+.auth-grid{grid-template-columns:repeat(4,minmax(0,1fr));align-items:start;gap:14px;margin-top:18px}
+.auth-submit-row{display:flex;justify-content:flex-end;align-items:flex-start;gap:14px;margin-top:16px}
+.auth-actions{display:flex;align-items:flex-start;gap:10px}
+.auth-actions button{min-width:120px}
+.login-actions{display:grid;gap:4px;width:120px}
+.login-actions>button:first-child{width:100%}
+.login-actions .link-button{justify-self:center}
+.profile-grid{grid-template-columns:repeat(2,minmax(160px,1fr));margin-top:14px}
 .stat-grid{grid-template-columns:repeat(4,minmax(140px,1fr));margin:18px 0}
 .field label{display:block;color:#aab7cf;font-size:13px;margin-bottom:6px}
 .field-help{color:#7f90aa;font-size:12px;line-height:1.4;margin-top:6px}
-.password-requirements{color:#f3c98b;font-size:12px;line-height:1.45;margin-top:6px}
+.password-requirements{display:none;color:#f3c98b;font-size:12px;line-height:1.45;margin-top:6px}
+.password-requirements.show{display:block}
 .password-requirements.valid{color:#86efac}
 .field input,.field select{width:100%;margin:0;padding:12px 13px;border:0;border-radius:8px;font-size:15px;background:#fff;color:#111827}
 .account-panel{display:none}
-.account-head{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
-.account-email{color:#9fb1c9}
+.account-identity-heading{display:none}
+.auth-intro{margin:0;line-height:1.5}
+.profile-title{display:flex;align-items:center;gap:10px}
+.profile-avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid #4e8bd6;background:#101827}
+.avatar-settings{display:flex;align-items:center;gap:14px;margin:4px 0 16px;padding:14px;background:#101827;border:1px solid #2b3b56;border-radius:10px}
+.avatar-preview,.avatar-preview-fallback{width:80px;height:80px;border-radius:50%;border:2px solid #4e8bd6;background:#172033}
+.avatar-preview{object-fit:cover}.avatar-preview-fallback{display:grid;place-items:center;font-size:28px}
+.avatar-upload-actions{display:grid;gap:7px}
+.avatar-upload-actions input{max-width:260px;color:#cde7ff}
+.avatar-status{min-height:17px;color:#9fb1c9;font-size:12px}
+@media(max-width:650px){.avatar-settings{align-items:flex-start}.avatar-upload-actions input{max-width:200px}}
 .stat{background:#101827;border-radius:10px;padding:16px}
 .stat-number{font-size:28px;font-weight:bold;color:#75bdff}
 .stat-label{color:#9fb1c9;font-size:13px;margin-top:5px}
 .profile-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.profile-action-button{width:170px}
+.profile-actions .regen{margin-top:0}
 .logout-button{background:#7d3441}
 .logout-button:hover{background:#963e4d}
 .account-note{color:#9fb1c9;line-height:1.55;margin-top:12px}
 .settings-button{background:#30415e}.settings-button:hover{background:#3d5275}
-.account-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.account-actions{position:relative}
+.subtitle{max-width:none;margin:0}
+.header-account-actions{display:none;position:absolute;top:64px;right:0}
+.account-menu-trigger{display:flex;align-items:center;gap:8px;background:#30415e;white-space:nowrap}
+.account-menu-trigger:hover{background:#3d5275}
+.account-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;z-index:50;min-width:210px;padding:8px;background:#101827;border:1px solid #30415e;border-radius:10px;box-shadow:0 16px 32px rgba(0,0,0,.32)}
+.account-menu.open{display:grid;gap:5px}
+.account-menu button{width:100%;text-align:left;padding:11px 12px;font-size:14px}
+.account-menu .logout-button{margin-top:3px}
+.team-dialog{max-width:940px}.team-create-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end}.team-layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:14px;margin-top:16px}.team-list{display:grid;gap:8px}.team-list button{width:100%;text-align:left;background:#101827;border:1px solid #2b3b56}.team-list button.active{border-color:#168cff;background:#122a46}.team-workspace{display:grid;gap:12px}.team-section{background:#101827;border:1px solid #2b3b56;border-radius:10px;padding:14px}.team-section h3{margin:0 0 8px}.team-roster{display:grid;gap:7px}.team-member{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:10px;border-radius:8px;background:#172033}.team-member-name{font-weight:bold;color:#cde7ff}.team-member-meta,.team-empty{color:#8fa3bd;font-size:13px;line-height:1.45}.team-invite-grid{display:grid;grid-template-columns:minmax(0,1fr) 150px auto;gap:9px;align-items:end}.team-search-results{display:grid;gap:7px;margin-top:10px}.team-search-result{display:flex;justify-content:space-between;gap:10px;align-items:center;background:#172033;border-radius:8px;padding:10px}.team-search-actions{display:flex;gap:7px;flex-wrap:wrap}.team-search-actions button{padding:8px 10px;font-size:13px}.team-status{display:none;margin:0;padding:10px 12px;border-radius:8px;line-height:1.4}.team-status.info{display:block;background:#122238;color:#cde7ff}.team-status.success{display:block;background:#182a22;color:#c8f1d9}.team-status.error{display:block;background:#3a1f24;color:#ffc3c9}
+.friends-dialog{max-width:720px}.friends-search{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end}.friends-list{display:grid;gap:8px;margin-top:10px}.friend-row{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#101827;border:1px solid #2b3b56;border-radius:9px;padding:12px}.friend-name{font-weight:bold;color:#cde7ff}.friend-meta{margin-top:4px;color:#8fa3bd;font-size:13px}.friend-actions{display:flex;gap:7px;flex-wrap:wrap}.friend-actions button{padding:8px 10px;font-size:13px}
+.messages-dialog{max-width:920px}.messages-layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:12px;margin-top:14px}.message-conversations{display:grid;gap:7px}.message-conversations button{text-align:left;background:#101827;border:1px solid #2b3b56}.message-conversations button.active{background:#122a46;border-color:#168cff}.message-thread{height:340px;overflow:auto;display:grid;align-content:start;gap:8px;background:#101827;border:1px solid #2b3b56;border-radius:10px;padding:12px}.message-bubble{max-width:82%;padding:10px;border-radius:9px;background:#172033;color:#d9e4f2}.message-bubble.mine{justify-self:end;background:#12385d}.message-meta{color:#8fa3bd;font-size:12px;margin-bottom:4px}.message-instruction{border-left:3px solid #54d98c}.message-composer{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}.message-composer textarea{min-height:70px;resize:vertical;background:#fff;color:#111827;border:0;border-radius:8px;padding:11px;font:inherit}.instruction-composer{display:none;margin-top:10px;padding:10px;background:#13241d;border:1px solid #2f5942;border-radius:9px}.instruction-composer.show{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end}.instruction-composer textarea{min-height:44px;padding:10px;border-radius:8px;font:inherit}.message-empty{color:#8fa3bd;padding:10px}@media(max-width:700px){.messages-layout{grid-template-columns:1fr}.instruction-composer,.message-composer{grid-template-columns:1fr}}
+@media(max-width:650px){.header-account-actions{position:relative;top:auto;right:auto;width:100%;margin-top:18px}.account-actions{width:100%}.account-menu-trigger{width:100%;justify-content:center}.account-menu{left:0;right:0;min-width:0}}
+@media(max-width:750px){.team-layout{grid-template-columns:1fr}.team-create-row,.team-invite-grid{grid-template-columns:1fr}.team-search-result{align-items:flex-start;flex-direction:column}}
 .settings-modal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(4,8,15,.78);padding:24px;overflow:auto}
 .settings-modal.open{display:block}
-.settings-dialog{max-width:900px;margin:35px auto;background:#172033;border:1px solid #30415e;border-radius:14px;padding:24px;box-shadow:0 24px 70px rgba(0,0,0,.45)}
-.settings-dialog-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:18px}
+.settings-dialog{max-width:820px;margin:35px auto;background:#172033;border:1px solid #30415e;border-radius:14px;padding:20px;box-shadow:0 24px 70px rgba(0,0,0,.45)}
+.settings-dialog-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:8px}
 .settings-dialog-head h2{margin:0}
+.settings-intro{margin:0 0 14px;color:#9fb1c9;font-size:14px;line-height:1.45}
+.account-settings-stack{display:grid;gap:12px}
+.account-settings-section{background:#101827;border:1px solid #2b3b56;border-radius:12px;padding:17px}
+.account-settings-section-head{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-bottom:14px}
+.account-settings-section h3{margin:0;font-size:17px}
+.account-settings-section-note{margin:0;color:#8ea2bd;font-size:13px;line-height:1.4}
+.account-settings-section .account-note{margin:0 0 14px}
+.account-settings-section .profile-actions{margin-top:14px}
+.account-settings-section.danger-section{border-color:#6b3440}
+.account-settings-section.danger-section h3{color:#ffc3c9}
+.danger-section .danger-zone{margin:0;padding:0;background:transparent;border:0}
 .settings-close{background:#30415e;padding:9px 12px;font-size:14px}
 .settings-section{background:#101827;border:1px solid #2b3b56;border-radius:10px;padding:18px;margin-top:16px}
 .settings-section h3{margin-top:0}
 .settings-summary{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .settings-pill{background:#101827;color:#cde7ff;border-radius:18px;padding:6px 10px;font-size:12px}
-.auth-secondary{margin-top:12px;display:flex;justify-content:flex-end}
+.auth-secondary{display:flex;justify-content:flex-start}
 .link-button{background:transparent;color:#75bdff;padding:6px 0;font-size:14px;text-decoration:underline}
 .link-button:hover{background:transparent;color:#a8d8ff}
 .recovery-panel{display:none;margin-top:18px;padding:18px;background:#101827;border:1px solid #2b3b56;border-radius:10px}
 .recovery-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}
 @media(max-width:750px){.recovery-grid{grid-template-columns:1fr}.auth-secondary{justify-content:flex-start}}
 /* ===== ACCOUNT SETTINGS ===== */
-.settings-accordion{background:#101827;border:1px solid #2b3b56;border-radius:10px;margin-top:12px;overflow:hidden}
-.settings-accordion summary{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px;cursor:pointer;font-weight:800;color:#fff;list-style:none;user-select:none}
+.settings-accordion{background:#101827;border:1px solid #2b3b56;border-radius:10px;margin-top:10px;overflow:hidden}
+.settings-accordion summary{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 15px;cursor:pointer;font-weight:800;color:#fff;list-style:none;user-select:none}
 .settings-accordion summary::-webkit-details-marker{display:none}
 .settings-accordion summary::after{content:"＋";color:#75bdff;font-size:20px;line-height:1;margin-left:auto}
 .settings-accordion[open] summary::after{content:"−"}
 .settings-accordion summary:hover{background:#142033}
 .settings-accordion-hint{color:#8ea2bd;font-size:12px;font-weight:600;margin-left:auto}
-.settings-accordion-body{padding:0 18px 18px;border-top:1px solid #263650}
-.settings-accordion-body>.profile-grid,.settings-accordion-body>.account-note{margin-top:16px}
+.settings-accordion-body{padding:0 15px 15px;border-top:1px solid #263650}
+.settings-accordion-body>.profile-grid,.settings-accordion-body>.account-note{margin-top:14px}
 .danger-accordion{border-color:#6b3440}
 .danger-accordion summary{color:#ffc3c9}
 .danger-accordion summary::after{color:#ffc3c9}
 .danger-accordion .danger-zone{margin-top:16px}
 .account-settings{margin-top:18px;padding:16px;background:#101827;border:1px solid #2b3b56;border-radius:10px}
-.settings-grid{display:grid;grid-template-columns:1.5fr auto;gap:10px;align-items:end}
-.settings-password-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin-top:14px}
+.settings-grid{display:grid;grid-template-columns:1.5fr auto;gap:10px;align-items:start}
+.settings-password-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:start;margin-top:14px;padding-top:14px;border-top:1px solid #263650}
+.settings-grid>button,.settings-password-grid>button{align-self:start;margin-top:25px}
 .danger-zone{margin-top:18px;padding:16px;background:#2a171b;border:1px solid #6b3440;border-radius:10px}
 .danger-zone h4{margin:0 0 8px;color:#ffc3c9}
 .danger-grid{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;margin-top:12px}
 .delete-account-button{background:#a52e3e}
 .delete-account-button:hover{background:#c3374a}
-@media(max-width:750px){.settings-grid,.settings-password-grid,.danger-grid{grid-template-columns:1fr}}
+.delete-confirm-dialog{max-width:520px;margin:12vh auto;background:#172033;border:1px solid #8f3e4d;border-radius:14px;padding:22px;box-shadow:0 24px 70px rgba(0,0,0,.5)}
+.delete-confirm-dialog h2{margin:0;color:#ffc3c9}
+.delete-confirm-dialog p{color:#c7d0df;line-height:1.55}
+.delete-confirm-warning{margin-top:16px;padding:14px;background:#2a171b;border:1px solid #6b3440;border-radius:10px;color:#ffd0d5;line-height:1.5}
+.delete-confirm-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+.delete-cancel-button{background:#30415e}.delete-cancel-button:hover{background:#3d5275}
+@media(max-width:750px){.settings-grid,.settings-password-grid,.danger-grid{grid-template-columns:1fr}.settings-grid>button,.settings-password-grid>button{margin-top:0}}
 @media(max-width:950px){.auth-grid{grid-template-columns:1fr 1fr}.profile-grid{grid-template-columns:1fr 1fr}.stat-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:650px){.auth-grid,.profile-grid,.stat-grid{grid-template-columns:1fr}.profile-actions button{width:100%}}
+@media(max-width:650px){.auth-grid,.profile-grid,.stat-grid{grid-template-columns:1fr}.auth-submit-row{align-items:stretch;flex-direction:column}.auth-actions{width:100%}.auth-actions button{flex:1;min-width:0}.login-actions{flex:1;width:auto}.profile-actions button{width:100%}}
 
 /* ===== SESSION COMPLETION TRACKING ===== */
 .session-save-panel{margin-top:22px;padding:16px;border-radius:10px;background:#102033;border:1px solid #28425f;line-height:1.55}
 .session-save-panel strong{color:#a8d8ff}
+.session-plan-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.session-plan-actions button{margin:0}
 .session-progress{margin-top:10px;color:#cde7ff;font-weight:bold}
 .completion-controls{margin-top:16px;padding:14px;border-radius:8px;background:#13241d;border:1px solid #2f5942}
 .completion-controls label{display:flex;gap:9px;align-items:center;margin:7px 0;color:#d4f5df;cursor:pointer}
@@ -111,8 +162,11 @@
 .history-meta,.schedule-meta{color:#8fa3bd;font-size:13px;margin-top:5px;line-height:1.5}
 .history-stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .history-pill{background:#17283a;color:#cde7ff;border-radius:18px;padding:6px 9px;font-size:12px}
+.history-delete{background:#6b3440;padding:8px 10px;font-size:13px}
+.history-delete:hover{background:#8a4250}
 .schedule-builder{margin-top:18px;padding:16px;background:#101827;border-radius:10px}
-.schedule-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr 1fr auto;gap:9px;align-items:end}
+.schedule-grid{display:grid;grid-template-columns:1.15fr repeat(5,minmax(0,1fr));gap:10px;align-items:end}
+.schedule-grid .field input,.schedule-grid .field select,.schedule-grid>button{width:100%;height:44px;padding:0 12px}
 .day-picker{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .day-picker label{display:flex;align-items:center;gap:4px;background:#172033;padding:7px 9px;border-radius:7px;color:#c7d0df;font-size:13px}
 .day-picker input{width:auto;accent-color:#54d98c}
@@ -152,6 +206,7 @@
 .feedback-message-wrap textarea::placeholder{color:#71809a}
 .feedback-char-count{position:absolute;right:12px;bottom:8px;color:rgba(159,177,201,.58);font-size:12px;pointer-events:none}
 .feedback-actions{display:flex;justify-content:flex-end;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}
+.feedback-actions .regen{margin-top:0}
 .feedback-status{display:none;margin-top:12px;padding:10px 12px;border-radius:8px;line-height:1.45}
 .feedback-status.info{display:block;background:#122238;color:#cde7ff}
 .feedback-status.success{display:block;background:#182a22;color:#c8f1d9}
@@ -201,6 +256,8 @@
   outline:2px solid #168cff;
   outline-offset:3px;
 }
+.footer-legal{margin-top:13px;font-size:12px}.footer-legal a{color:#8fa3bd;text-decoration:none;margin:0 8px}.footer-legal a:hover{color:#a8d8ff;text-decoration:underline}
+.welcome-dialog{max-width:650px}.welcome-steps{display:grid;gap:10px;margin-top:18px}.welcome-step{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;padding:13px;background:#101827;border:1px solid #2b3b56;border-radius:10px}.welcome-step-number{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#168cff;color:#fff;font-weight:bold}.welcome-step strong{display:block;color:#fff;margin-bottom:3px}.welcome-step p{margin:0;color:#9fb1c9;font-size:14px;line-height:1.45}.welcome-actions{display:flex;justify-content:center;margin-top:22px}.welcome-primary{min-width:200px;font-weight:bold;box-shadow:0 8px 20px rgba(22,140,255,.22)}
 
 
 /* ===== PRIVATE FEEDBACK INBOX ===== */
@@ -217,6 +274,12 @@
 .feedback-inbox-toolbar select,.feedback-inbox-toolbar button{width:100%}
 .feedback-inbox-alert{display:none;margin:12px 0;padding:12px;border-radius:9px;background:#352b16;border:1px solid #6e5825;color:#f5dda0;line-height:1.5}
 .feedback-inbox-alert.show{display:block}
+.feedback-review-queue{display:grid;gap:10px;margin:14px 0 18px;padding:14px;border:1px solid #6e5825;border-radius:12px;background:#241e14}
+.feedback-review-queue h3{margin:0;color:#f5dda0;font-size:15px}
+.feedback-review-item{padding:12px;border:1px solid #5a4a2a;border-radius:9px;background:#151b26}
+.feedback-review-label{color:#f5dda0;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.feedback-review-batch{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;padding-top:10px;border-top:1px solid #5a4a2a}.feedback-review-batch select{min-width:0}.feedback-review-check{display:flex;gap:8px;align-items:center;margin:0 0 8px;color:#cde7ff;font-size:13px}.feedback-review-check input{width:auto;accent-color:#168cff}
+.feedback-assignment{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;margin-top:10px}.feedback-assignment select{min-width:0}.feedback-assignment button{padding:9px 11px;font-size:12px}
 .feedback-theme-list{display:grid;gap:12px}
 .feedback-theme-card{background:#0d1523;border:1px solid #2b3b56;border-radius:12px;overflow:hidden}
 .feedback-theme-main{padding:15px 16px}
@@ -305,20 +368,74 @@
 </head>
 <body>
 <div class="container">
-<header><h1>🚀 RL Trainer</h1><div class="subtitle">Purpose-built Rocket League sessions where every block teaches the exact skill you selected.</div></header>
+<header>
+<h1>🚀 RL Trainer</h1>
+<div class="subtitle">Purpose-built Rocket League sessions where every block teaches the exact skill you selected.</div>
+<div id="headerAccountActions" class="account-actions header-account-actions">
+<button id="accountMenuTrigger" class="account-menu-trigger" type="button" aria-haspopup="true" aria-expanded="false" onclick="toggleAccountMenu()">☰ Accounts</button>
+<div id="accountMenu" class="account-menu" role="menu" aria-label="Account menu">
+<button class="settings-button" role="menuitem" onclick="openAccountSettings();closeAccountMenu()">⚙ Account Settings</button>
+<button class="settings-button" role="menuitem" onclick="openMessagesModal();closeAccountMenu()">💬 Messages</button>
+<button class="settings-button" role="menuitem" onclick="openFriendsModal();closeAccountMenu()">🫂 Friends</button>
+<button class="settings-button" role="menuitem" onclick="openTeamsModal();closeAccountMenu()">👥 Teams</button>
+<button class="settings-button" role="menuitem" onclick="openFeedbackModal();closeAccountMenu()">💬 Feedback</button>
+<button id="feedbackRepliesButton" class="settings-button feedback-notify-button" role="menuitem" onclick="openFeedbackReplies();closeAccountMenu()">🔔 Replies<span id="feedbackRepliesBadge" class="feedback-notify-badge">0</span></button>
+<button id="adminFeedbackButton" class="settings-button admin-feedback-button" role="menuitem" onclick="openFeedbackInbox();closeAccountMenu()">🛡 Feedback Inbox</button>
+<button class="logout-button" role="menuitem" onclick="closeAccountMenu();logOutUser()">Log Out</button>
+</div>
+</div>
+</header>
+<div id="messagesModal" class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="messagesModalTitle" onclick="closeMessagesOnBackdrop(event)"><div class="settings-dialog messages-dialog"><div class="settings-dialog-head"><h2 id="messagesModalTitle">💬 Messages</h2><button class="settings-close" type="button" onclick="closeMessagesModal()">Close</button></div><div id="messagesStatus" class="team-status"></div><div class="messages-layout"><div id="messageConversations" class="message-conversations"></div><div><div id="messageThread" class="message-thread"></div><div id="teamInstructionComposer" class="instruction-composer"><div class="field"><label for="messagePack">Training Pack</label><select id="messagePack"></select></div><div class="field"><label for="teamInstructionText">Coach Instruction</label><textarea id="teamInstructionText" maxlength="2000" placeholder="What should the team work on?"></textarea></div><button type="button" onclick="sendTeamInstruction()">Send Instruction</button></div><div class="message-composer"><textarea id="messageText" maxlength="2000" placeholder="Write a message..."></textarea><button type="button" onclick="sendMessage()">Send</button></div></div></div></div></div>
+<div id="welcomeGuideModal" class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="welcomeGuideTitle">
+<div class="settings-dialog welcome-dialog">
+<div class="settings-dialog-head"><h2 id="welcomeGuideTitle">🚀 Welcome to RL Trainer</h2></div>
+<p class="settings-intro">Here’s the quick setup—then you can get straight into training.</p>
+<div class="welcome-steps">
+<div class="welcome-step"><div class="welcome-step-number">1</div><div><strong>Set your player profile</strong><p>Add your in-game name, platform, rank, and daily training target in Account Settings.</p></div></div>
+<div class="welcome-step"><div class="welcome-step-number">2</div><div><strong>Build your first session</strong><p>Choose your rank, focus, and available time. RL Trainer creates a focused training plan for you.</p></div></div>
+<div class="welcome-step"><div class="welcome-step-number">3</div><div><strong>Track what you do</strong><p>Save sessions, goals, schedules, and match performance so your progress has a real history.</p></div></div>
+</div>
+<div class="welcome-actions"><button class="welcome-primary" type="button" onclick="completeOnboarding(true)">Let’s Train</button></div>
+</div>
+</div>
+<div id="friendsModal" class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="friendsModalTitle" onclick="closeFriendsOnBackdrop(event)">
+<div class="settings-dialog friends-dialog"><div class="settings-dialog-head"><h2 id="friendsModalTitle">🫂 Friends</h2><button class="settings-close" type="button" onclick="closeFriendsModal()">Close</button></div>
+<p class="settings-intro">Find players by their in-game name and keep your RL Trainer friends in one place.</p><div id="friendsStatus" class="team-status"></div>
+<div class="friends-search"><div class="field"><label for="friendPlayerSearch">In-Game Name</label><input id="friendPlayerSearch" type="text" maxlength="40" placeholder="Search players"></div><button type="button" onclick="searchFriends()">Search</button></div><div id="friendSearchResults" class="friends-list"></div>
+<section class="team-section"><h3>Requests</h3><div id="friendRequestsList" class="friends-list"></div></section><section class="team-section"><h3>Friends</h3><div id="friendsList" class="friends-list"></div></section>
+</div>
+</div>
+<div id="teamsModal" class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="teamsModalTitle" onclick="closeTeamsOnBackdrop(event)">
+<div class="settings-dialog team-dialog">
+<div class="settings-dialog-head"><h2 id="teamsModalTitle">👥 Teams</h2><button class="settings-close" type="button" onclick="closeTeamsModal()">Close</button></div>
+<p class="settings-intro">Create your team, invite your coach and players, and keep your roster in one private place.</p>
+<div id="teamStatus" class="team-status"></div>
+<div class="team-create-row"><div class="field"><label for="teamNameInput">New Team Name</label><input id="teamNameInput" type="text" maxlength="48" placeholder="Example: RL Trainer Titans"></div><button type="button" onclick="createTeam()">Create Team</button></div>
+<div class="team-layout"><div><div id="teamList" class="team-list"></div></div><div id="teamWorkspace" class="team-workspace"><div class="team-empty">Create a team or accept an invitation to get started.</div></div></div>
+</div>
+</div>
+<div id="teamDeleteModal" class="settings-modal" role="alertdialog" aria-modal="true" aria-labelledby="teamDeleteModalTitle" onclick="closeTeamDeleteOnBackdrop(event)">
+<div class="delete-confirm-dialog">
+<h2 id="teamDeleteModalTitle">⚠️ Permanently delete team?</h2>
+<p id="teamDeleteModalCopy">This cannot be undone.</p>
+<div class="delete-confirm-warning">Deleting a team removes its roster and all team training assignments. Individual player accounts and personal training data stay untouched.</div>
+<div class="field" style="margin-top:16px"><label for="teamDeleteConfirm">Type DELETE to confirm</label><input id="teamDeleteConfirm" type="text" autocomplete="off" placeholder="DELETE"></div>
+<div class="delete-confirm-actions"><button class="delete-cancel-button" type="button" onclick="closeTeamDeleteModal()">Cancel</button><button class="delete-account-button" type="button" onclick="confirmSelectedTeamDeletion()">Delete Team</button></div>
+</div>
+</div>
 <div class="card" id="accountCard">
-<h2>👤 Player Account</h2>
+<h2 id="accountIdentityHeading" class="profile-title account-identity-heading"><span id="profileAvatarFallback" aria-hidden="true">👤</span><img id="profileAvatar" class="profile-avatar" alt="Profile picture" hidden><span id="accountDisplayName">Player Account</span></h2>
 <div id="authForms">
-<p>Create a free RL Trainer account to save your profile and, next, your training history, goals, schedules, and progress.</p>
+<p class="auth-intro">Create a free RL Trainer account to save your profile and, next, your training history, goals, schedules, and progress.</p>
 <div class="auth-grid">
 <div class="field"><label for="authDisplayName">In-Game Name</label><input id="authDisplayName" type="text" maxlength="40" autocomplete="nickname" placeholder="Your Rocket League name"><div class="field-help">Use the name players can find you by in Rocket League.</div></div>
 <div class="field"><label for="authPlatform">Platform</label><select id="authPlatform"><option value="">Choose Platform</option><option value="Epic">Epic</option><option value="Steam">Steam</option><option value="Xbox">Xbox</option><option value="PlayStation">PlayStation</option><option value="Switch">Switch</option></select><div class="field-help">Your platform + in-game name identifies your RL Trainer profile.</div></div>
 <div class="field"><label for="authEmail">Email</label><input id="authEmail" type="email" autocomplete="email" placeholder="you@example.com"></div>
 <div class="field"><label for="authPassword">Password</label><input id="authPassword" type="password" minlength="12" autocomplete="current-password" placeholder="12+ characters" oninput="updatePasswordRequirements()"><div id="passwordRequirements" class="password-requirements">12+ characters • uppercase • lowercase • number • special character</div></div>
-<button onclick="signUpUser()">Sign Up</button>
-<button onclick="logInUser()">Log In</button>
 </div>
-<div class="auth-secondary"><button class="link-button" onclick="requestPasswordReset()">Forgot Password?</button></div>
+<div class="auth-submit-row">
+<div class="auth-actions"><button onclick="signUpUser()">Sign Up</button><div class="login-actions"><button onclick="logInUser()">Log In</button><button class="link-button" onclick="requestPasswordReset()">Forgot Password?</button></div></div>
+</div>
 <div class="account-note">Your trainer still works without an account. Logging in will let us save progress to your private profile.</div>
 </div>
 <div id="passwordRecoveryPanel" class="recovery-panel">
@@ -331,19 +448,6 @@
 </div>
 </div>
 <div id="accountPanel" class="account-panel">
-<div class="account-head">
-<div>
-<strong id="accountDisplayName">Player Dashboard</strong>
-<div id="accountEmail" class="account-email"></div>
-</div>
-<div class="account-actions">
-<button class="settings-button" onclick="openAccountSettings()">⚙ Account Settings</button>
-<button class="settings-button" onclick="openFeedbackModal()">💬 Feedback</button>
-<button id="feedbackRepliesButton" class="settings-button feedback-notify-button" onclick="openFeedbackReplies()">🔔 Replies<span id="feedbackRepliesBadge" class="feedback-notify-badge">0</span></button>
-<button id="adminFeedbackButton" class="settings-button admin-feedback-button" onclick="openFeedbackInbox()">🛡 Feedback Inbox</button>
-<button class="logout-button" onclick="logOutUser()">Log Out</button>
-</div>
-</div>
 <div class="stat-grid">
 <div class="stat"><div id="statSessions" class="stat-number">0</div><div class="stat-label">Completed Sessions</div></div>
 <div class="stat"><div id="statMinutes" class="stat-number">0</div><div class="stat-label">Training Minutes</div></div>
@@ -372,7 +476,7 @@
 <div class="field"><label for="scheduleTitle">Schedule Name</label><input id="scheduleTitle" type="text" maxlength="60" value="Training Session"></div>
 <div class="field"><label for="scheduleTime">Start Time</label><input id="scheduleTime" type="time" value="18:00"></div>
 <div class="field"><label for="scheduleDuration">Minutes</label><select id="scheduleDuration"><option value="15">15</option><option value="30" selected>30</option><option value="45">45</option><option value="60">60</option></select></div>
-<div class="field"><label for="scheduleRank">Rank</label><select id="scheduleRank"><option value="">Use Current Rank</option><option value="Bronze">Bronze</option><option value="Silver">Silver</option><option value="Gold">Gold</option><option value="Platinum">Platinum</option><option value="Diamond">Diamond</option><option value="Champion">Champion</option><option value="Grand Champion">Grand Champion</option><option value="Supersonic Legend">Supersonic Legend</option></select></div>
+<div class="field"><label for="scheduleRank">Rank</label><select id="scheduleRank"><option value="">Current Rank</option><option value="Bronze">Bronze</option><option value="Silver">Silver</option><option value="Gold">Gold</option><option value="Platinum">Platinum</option><option value="Diamond">Diamond</option><option value="Champion">Champion</option><option value="Grand Champion">Grand Champion</option><option value="Supersonic Legend">Supersonic Legend</option></select></div>
 <div class="field"><label for="scheduleFocus">Focus</label><select id="scheduleFocus"><option value="">Any Focus</option><option value="All-Around Improvement">All-Around Improvement</option><option value="Shooting Accuracy">Shooting Accuracy</option><option value="Power Shots">Power Shots</option><option value="Ground Control">Ground Control</option><option value="Saves">Saves</option><option value="Clears">Clears</option><option value="Shadow Defense">Shadow Defense</option><option value="Basic Aerials">Basic Aerials</option><option value="Fast Aerials">Fast Aerials</option><option value="Aerial Accuracy">Aerial Accuracy</option><option value="Redirects">Redirects</option><option value="Wall Play">Wall Play</option><option value="Backboard Reads">Backboard Reads</option><option value="Double Touches">Double Touches</option><option value="Recoveries / Car Control">Recoveries / Car Control</option><option value="Free Play / Speed">Free Play / Speed</option></select></div>
 <button onclick="createSchedule()">Add Schedule</button>
 </div>
@@ -388,8 +492,9 @@
 <div class="account-note">Your latest saved sessions, actual timer minutes, completion status, and success-target results.</div>
 <div id="historyList" class="history-list"></div>
 
+<section id="matchPerformanceSection">
 <h3>Match Performance</h3>
-<div class="account-note">For now, match results can be entered manually. This is the same dashboard the future RL Trainer PC companion can feed automatically from supported Rocket League telemetry.</div>
+<div class="account-note">Match results can be entered manually.</div>
 <div class="performance-stats">
 <div class="stat"><div id="perfMatches" class="stat-number">0</div><div class="stat-label">Matches</div></div>
 <div class="stat"><div id="perfWins" class="stat-number">0</div><div class="stat-label">Wins</div></div>
@@ -418,6 +523,7 @@
 <div class="field-help">These entries are labeled manual. When a supported automatic source is connected later, imported matches will use a different source label.</div>
 </div>
 <div id="performanceList" class="performance-list"></div>
+</section>
 
 <div class="settings-summary">
 <span id="profileSummaryPlatform" class="settings-pill">Platform: —</span>
@@ -432,27 +538,37 @@
 <h2 id="accountSettingsTitle">⚙ Account Settings</h2>
 <button class="settings-close" onclick="closeAccountSettings()">Close</button>
 </div>
-<details class="settings-accordion">
-<summary><span>🎮 Rocket League Profile</span><span class="settings-accordion-hint">Edit profile</span></summary>
-<div class="settings-accordion-body">
+<p class="settings-intro">Keep your player profile, sign-in details, and preferences in one place.</p>
+<div class="account-settings-stack">
+<section class="account-settings-section">
+<div class="account-settings-section-head">
+<div><h3>🎮 Player Profile</h3><p class="account-settings-section-note">Your Rocket League identity and training goals.</p></div>
+</div>
+<div class="avatar-settings">
+<span id="settingsAvatarFallback" class="avatar-preview-fallback" aria-hidden="true">👤</span><img id="settingsAvatarPreview" class="avatar-preview" alt="Current profile picture" hidden>
+<div class="avatar-upload-actions">
+<label for="profileAvatarInput">Profile picture</label>
+<input id="profileAvatarInput" type="file" accept="image/jpeg,image/png,image/webp">
+<button id="profileAvatarUploadButton" type="button" onclick="uploadProfileAvatar()">Upload Picture</button>
+<div id="profileAvatarStatus" class="avatar-status">JPG, PNG, or WebP — up to 2 MB.</div>
+</div>
+</div>
 <div class="profile-grid">
-<div class="field"><label for="profileDisplayName">In-Game Name</label><input id="profileDisplayName" type="text" maxlength="40" autocomplete="nickname" placeholder="Your Rocket League name"></div>
+<div class="field"><label for="profileDisplayName">In-Game Name</label><input id="profileDisplayName" type="text" maxlength="40" autocomplete="nickname" placeholder="Your Rocket League name"><div class="field-help">To keep team rosters clear, your in-game name can be changed once every 30 days.</div></div>
 <div class="field"><label for="profilePlatform">Platform</label><select id="profilePlatform"><option value="">Choose Platform</option><option value="Epic">Epic</option><option value="Steam">Steam</option><option value="Xbox">Xbox</option><option value="PlayStation">PlayStation</option><option value="Switch">Switch</option></select></div>
-<div class="field"><label for="profilePlayerId">Rocket League Player ID</label><input id="profilePlayerId" type="text" maxlength="100" placeholder="Epic / Steam / console ID"></div>
-<div class="field"><label for="profileTrackerUrl">RL Tracker Profile URL</label><input id="profileTrackerUrl" type="url" maxlength="500" placeholder="https://rocketleague.tracker.network/..."></div>
 <div class="field"><label for="profileRank">Current Rank</label><select id="profileRank"><option value="">Choose Rank</option><option value="Bronze">Bronze</option><option value="Silver">Silver</option><option value="Gold">Gold</option><option value="Platinum">Platinum</option><option value="Diamond">Diamond</option><option value="Champion">Champion</option><option value="Grand Champion">Grand Champion</option><option value="Supersonic Legend">Supersonic Legend</option></select></div>
 <div class="field"><label for="profileDailyMinutes">Daily Training Target (minutes)</label><input id="profileDailyMinutes" type="number" min="0" max="480" step="5" value="30"></div>
 </div>
 <div class="profile-actions">
-<button onclick="saveProfile()">Save Profile</button>
-<button class="regen" onclick="refreshDashboard()">Refresh Dashboard</button>
+<button class="profile-action-button" onclick="saveProfile()">Save Profile</button>
+<button class="regen profile-action-button" onclick="refreshDashboard()">Refresh Dashboard</button>
 </div>
-</div>
-</details>
+</section>
 
-<details class="settings-accordion">
-<summary><span>🔐 Login &amp; Security</span><span class="settings-accordion-hint">Email &amp; password</span></summary>
-<div class="settings-accordion-body">
+<section class="account-settings-section">
+<div class="account-settings-section-head">
+<div><h3>🔐 Sign-in &amp; Notifications</h3><p class="account-settings-section-note">Email, password, and feedback updates.</p></div>
+</div>
 <div class="account-note">Update the email address or password used to sign in to RL Trainer.</div>
 <div class="settings-grid">
 <div class="field"><label for="settingsEmail">Login Email</label><input id="settingsEmail" type="email" autocomplete="email" placeholder="you@example.com"><div class="field-help">Changing your email may require confirmation before the new address becomes active.</div></div>
@@ -474,22 +590,31 @@
   </label>
 </div>
 <div id="feedbackEmailPreferenceStatus" class="feedback-email-pref-status"></div>
-</div>
-</details>
+</section>
 
-<details class="settings-accordion danger-accordion">
-<summary><span>⚠️ Danger Zone</span><span class="settings-accordion-hint">Permanent actions</span></summary>
-<div class="settings-accordion-body">
+<section class="account-settings-section danger-section">
+<div class="account-settings-section-head">
+<div><h3>⚠️ Delete Account</h3></div>
+</div>
 <div class="danger-zone">
-<h4>Delete Account</h4>
-<div class="account-note">Permanently deletes your RL Trainer account and its saved profile, training sessions, drills, goals, schedules, tracker snapshots, and match-performance data. This cannot be undone.</div>
 <div class="danger-grid">
 <div class="field"><label for="deleteAccountConfirm">Type DELETE to confirm</label><input id="deleteAccountConfirm" type="text" autocomplete="off" placeholder="DELETE"></div>
 <button class="delete-account-button" onclick="deleteAccountPermanently()">Delete My Account</button>
 </div>
 </div>
+</section>
 </div>
-</details>
+</div>
+</div>
+<div id="deleteAccountModal" class="settings-modal" role="alertdialog" aria-modal="true" aria-labelledby="deleteAccountModalTitle" onclick="closeDeleteAccountOnBackdrop(event)">
+<div class="delete-confirm-dialog">
+<h2 id="deleteAccountModalTitle">⚠️ Permanently delete your account?</h2>
+<p>This cannot be undone.</p>
+<div class="delete-confirm-warning">This will permanently remove your RL Trainer profile, saved training sessions, drills, goals, schedules, tracker snapshots, and match-performance data.</div>
+<div class="delete-confirm-actions">
+<button class="delete-cancel-button" type="button" onclick="closeDeleteAccountModal()">Cancel</button>
+<button class="delete-account-button" type="button" onclick="confirmAccountDeletion()">Yes, Delete Everything</button>
+</div>
 </div>
 </div>
 <div id="accountStatus" class="account-status"></div>
@@ -563,7 +688,7 @@
         <button id="submitFeedbackButton" class="feedback-submit" onclick="submitFeedback()">Send Feedback</button>
       </div>
 
-      <div class="feedback-privacy">Private feedback • anonymous when logged out • never shown publicly</div>
+      <div class="feedback-privacy">Private feedback</div>
     </div>
   </div>
 </div>
@@ -633,6 +758,7 @@
     <span aria-hidden="true">💬</span>
     <span>Feedback</span>
   </button>
+  <div class="footer-legal"><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a></div>
 </footer>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -644,10 +770,12 @@ const SUPABASE_URL="https://swyeowcjcinmqqdhywma.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_JWsXjqui4WTVHm0xTWu5UQ_M0EBamz9";
 const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 let currentUser=null;
+let profileAvatarRequest=0;
 let currentBuiltSession=null;
 let activeSavedSession=null;
 let timerUiInterval=null;
 let currentProfile=null;
+let welcomeGuideShown=false;
 let feedbackInboxThemes=[];
 let feedbackInboxRows=[];
 let feedbackInboxResponses=[];
@@ -680,6 +808,7 @@ const el=document.getElementById("passwordRequirements");
 if(!input||!el)return;
 const checks=passwordChecks(input.value);
 const allGood=Object.values(checks).every(Boolean);
+el.classList.toggle("show",Boolean(input.value));
 el.classList.toggle("valid",allGood);
 el.textContent=allGood
 ?"Strong password requirements met."
@@ -701,6 +830,7 @@ const el=document.getElementById("resetPasswordRequirements");
 if(!input||!el)return;
 const checks=passwordChecks(input.value);
 const allGood=Object.values(checks).every(Boolean);
+el.classList.toggle("show",Boolean(input.value));
 el.classList.toggle("valid",allGood);
 el.textContent=allGood?"Strong password requirements met.":`${checks.length?"✓":"○"} 12+ characters  •  ${checks.upper?"✓":"○"} uppercase  •  ${checks.lower?"✓":"○"} lowercase  •  ${checks.number?"✓":"○"} number  •  ${checks.special?"✓":"○"} special character`;
 }
@@ -747,7 +877,7 @@ setAuthBusy(true);setAccountStatus("Logging in…","info");
 const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
 setAuthBusy(false);
 if(error){setAccountStatus(error.message,"error");return;}
-setAccountStatus("Logged in.","success");
+setAccountStatus("");
 await renderAuth(data.session);
 }
 async function logOutUser(){
@@ -782,17 +912,72 @@ const adminFeedbackButton=document.getElementById("adminFeedbackButton");
 if(adminFeedbackButton)adminFeedbackButton.style.display=["admin","owner"].includes(profile.account_role)?"inline-block":"none";
 document.getElementById("profileDisplayName").value=profile.display_name||"";
 document.getElementById("profilePlatform").value=profile.rl_platform||"";
-document.getElementById("profilePlayerId").value=profile.rl_player_id||"";
-document.getElementById("profileTrackerUrl").value=profile.tracker_profile_url||"";
 document.getElementById("profileRank").value=profile.current_rank||"";
 document.getElementById("profileDailyMinutes").value=profile.daily_minutes_target??30;
-document.getElementById("accountDisplayName").textContent=profile.display_name||"Player Dashboard";
+document.getElementById("accountDisplayName").textContent=profile.display_name||"Player";
 const summaryPlatform=document.getElementById("profileSummaryPlatform");
 const summaryRank=document.getElementById("profileSummaryRank");
 const summaryDaily=document.getElementById("profileSummaryDaily");
 if(summaryPlatform)summaryPlatform.textContent=`Platform: ${profile.rl_platform||"—"}`;
 if(summaryRank)summaryRank.textContent=`Rank: ${profile.current_rank||"—"}`;
 if(summaryDaily)summaryDaily.textContent=`Daily target: ${profile.daily_minutes_target??30} min`;
+loadProfileAvatar(profile);
+}
+
+function setProfileAvatarStatus(message,type=""){
+const status=document.getElementById("profileAvatarStatus");
+if(!status)return;
+status.textContent=message;
+status.style.color=type==="error"?"#ffc3c9":type==="success"?"#86efac":"#9fb1c9";
+}
+function renderProfileAvatar(url=""){
+const headerAvatar=document.getElementById("profileAvatar");
+const headerFallback=document.getElementById("profileAvatarFallback");
+const settingsAvatar=document.getElementById("settingsAvatarPreview");
+const settingsFallback=document.getElementById("settingsAvatarFallback");
+const hasAvatar=Boolean(url);
+for(const image of [headerAvatar,settingsAvatar]){
+if(!image)continue;
+image.hidden=!hasAvatar;
+if(hasAvatar)image.src=url;
+else image.removeAttribute("src");
+}
+if(headerFallback)headerFallback.hidden=hasAvatar;
+if(settingsFallback)settingsFallback.hidden=hasAvatar;
+}
+async function loadProfileAvatar(profile){
+const request=++profileAvatarRequest;
+renderProfileAvatar();
+if(!profile?.avatar_path)return;
+const {data,error}=await supabaseClient.storage.from("profile-avatars").createSignedUrl(profile.avatar_path,3600);
+if(request!==profileAvatarRequest)return;
+if(error){console.error("Profile picture load error",error);return;}
+renderProfileAvatar(data?.signedUrl||"");
+}
+async function uploadProfileAvatar(){
+if(!currentUser||!currentProfile)return;
+const input=document.getElementById("profileAvatarInput");
+const button=document.getElementById("profileAvatarUploadButton");
+const file=input?.files?.[0];
+if(!file){setProfileAvatarStatus("Choose a picture first.","error");return;}
+const allowedTypes={"image/jpeg":"jpg","image/png":"png","image/webp":"webp"};
+if(!allowedTypes[file.type]){setProfileAvatarStatus("Use a JPG, PNG, or WebP image.","error");return;}
+if(file.size>2*1024*1024){setProfileAvatarStatus("That picture is over the 2 MB limit.","error");return;}
+input.disabled=true;
+if(button)button.disabled=true;
+setProfileAvatarStatus("Uploading picture…");
+const path=`${currentUser.id}/${Date.now()}.${allowedTypes[file.type]}`;
+const {error:uploadError}=await supabaseClient.storage.from("profile-avatars").upload(path,file,{cacheControl:"3600",upsert:false,contentType:file.type});
+if(uploadError){input.disabled=false;if(button)button.disabled=false;setProfileAvatarStatus(uploadError.message,"error");return;}
+const oldPath=currentProfile.avatar_path;
+const {data,error:updateError}=await supabaseClient.from("profiles").update({avatar_path:path}).eq("user_id",currentUser.id).select("*").single();
+if(updateError){await supabaseClient.storage.from("profile-avatars").remove([path]);input.disabled=false;if(button)button.disabled=false;setProfileAvatarStatus(updateError.message,"error");return;}
+if(oldPath&&oldPath!==path){const {error:removeError}=await supabaseClient.storage.from("profile-avatars").remove([oldPath]);if(removeError)console.warn("Old profile picture could not be removed",removeError);}
+input.value="";
+input.disabled=false;
+if(button)button.disabled=false;
+populateProfile(data);
+setProfileAvatarStatus("Profile picture saved.","success");
 }
 
 function setFeedbackEmailPreferenceStatus(message,type="success"){
@@ -844,7 +1029,144 @@ document.body.style.overflow="";
 function closeSettingsOnBackdrop(event){
 if(event.target?.id==="accountSettingsModal")closeAccountSettings();
 }
-document.addEventListener("keydown",event=>{if(event.key==="Escape"){closeAccountSettings();closeFeedbackModal();closeFeedbackInbox();closeFeedbackReplies();}});
+async function maybeShowWelcomeGuide(profile){
+if(!currentUser||profile?.onboarding_completed||welcomeGuideShown)return;
+welcomeGuideShown=true;
+const modal=document.getElementById("welcomeGuideModal");
+if(modal){modal.classList.add("open");document.body.style.overflow="hidden";}
+}
+async function completeOnboarding(startTraining=false){
+if(!currentUser)return;
+const {data,error}=await supabaseClient.from("profiles").update({onboarding_completed:true}).eq("user_id",currentUser.id).select("*").single();
+if(error){setAccountStatus(error.message,"error");return;}
+currentProfile=data;
+const modal=document.getElementById("welcomeGuideModal");if(modal)modal.classList.remove("open");document.body.style.overflow="";
+if(startTraining)document.getElementById("rankSelect")?.scrollIntoView({behavior:"smooth",block:"start"});
+}
+let messagesState={friends:[],teams:[],selected:null,rows:[]};
+function setMessagesStatus(message,type="info"){const el=document.getElementById("messagesStatus");if(el){el.textContent=message||"";el.className=`team-status ${message?type:""}`;}}
+function closeMessagesModal(){document.getElementById("messagesModal")?.classList.remove("open");document.body.style.overflow="";}
+function closeMessagesOnBackdrop(event){if(event.target?.id==="messagesModal")closeMessagesModal();}
+async function openMessagesModal(){if(!currentUser)return;document.getElementById("messagesModal")?.classList.add("open");document.body.style.overflow="hidden";const [friends,memberRows]=await Promise.all([supabaseClient.rpc("get_friendships"),supabaseClient.from("team_memberships").select("team_id,role").eq("user_id",currentUser.id).eq("status","active")]);if(friends.error||memberRows.error){setMessagesStatus((friends.error||memberRows.error).message,"error");return;}const ids=(memberRows.data||[]).map(x=>x.team_id);const teams=ids.length?await supabaseClient.from("teams").select("id,name").in("id",ids):{data:[]};messagesState.friends=(friends.data||[]).filter(x=>x.status==="accepted");messagesState.teams=(teams.data||[]).map(team=>({...team,role:memberRows.data.find(x=>x.team_id===team.id)?.role}));messagesState.selected=messagesState.selected|| (messagesState.friends[0]?{type:"friend",id:messagesState.friends[0].other_user_id}:messagesState.teams[0]?{type:"team",id:messagesState.teams[0].id}:null);await renderMessages();}
+function msgEscape(v){return teamEscape(v).replace(/\n/g,"<br>");}
+async function selectConversation(type,id){messagesState.selected={type,id};await renderMessages();}
+async function renderMessages(){const nav=document.getElementById("messageConversations"),thread=document.getElementById("messageThread"),instruction=document.getElementById("teamInstructionComposer");if(!nav||!thread)return;const s=messagesState.selected;nav.innerHTML=[...messagesState.friends.map(f=>`<button class="${s?.type==="friend"&&s.id===f.other_user_id?"active":""}" onclick="selectConversation('friend','${f.other_user_id}')">🫂 ${teamEscape(f.display_name)}</button>`),...messagesState.teams.map(t=>`<button class="${s?.type==="team"&&s.id===t.id?"active":""}" onclick="selectConversation('team','${t.id}')">👥 ${teamEscape(t.name)}</button>`)].join("")||"<div class=\"message-empty\">Add friends or join a team to start messaging.</div>";if(!s){thread.innerHTML="<div class=\"message-empty\">Choose a conversation.</div>";return;}const result=s.type==="friend"?await supabaseClient.rpc("get_direct_messages",{p_other_user_id:s.id}):await supabaseClient.rpc("get_team_messages",{p_team_id:s.id});if(result.error){thread.innerHTML=`<div class="message-empty">${teamEscape(result.error.message)}</div>`;return;}messagesState.rows=result.data||[];thread.innerHTML=messagesState.rows.map(m=>{const mine=s.type==="friend"?m.is_mine:m.sender_id===currentUser.id;return `<div class="message-bubble ${mine?"mine":""} ${m.message_type==="training_instruction"?"message-instruction":""}"><div class="message-meta">${s.type==="team"?`${teamEscape(m.sender_name)} • ${teamEscape(teamLabel(m.sender_role))} • `:""}${new Date(m.created_at).toLocaleString()}</div>${m.message_type==="training_instruction"?`<strong>🎮 ${teamEscape(m.pack_name||"Training Instruction")}</strong>${m.pack_code?`<div class="code">${teamEscape(m.pack_code)}</div>`:""}`:""}<div>${msgEscape(m.body)}</div></div>`;}).join("")||"<div class=\"message-empty\">No messages yet.</div>";thread.scrollTop=thread.scrollHeight;const team=messagesState.teams.find(t=>t.id===s.id);const staff=s.type==="team"&&["manager","coach"].includes(team?.role);instruction?.classList.toggle("show",staff);if(staff){const select=document.getElementById("messagePack");if(select&&!select.options.length)select.innerHTML=`<option value="">No pack attached</option>${packs.map(p=>`<option value="${p.id}">${teamEscape(p.name)} — ${teamEscape(p.code)}</option>`).join("")}`;}}
+async function sendMessage(){const text=document.getElementById("messageText")?.value.trim()||"",s=messagesState.selected;if(!s||!text)return;const r=s.type==="friend"?await supabaseClient.rpc("send_direct_message",{p_recipient_id:s.id,p_body:text}):await supabaseClient.rpc("send_team_message",{p_team_id:s.id,p_body:text});if(r.error){setMessagesStatus(r.error.message,"error");return;}document.getElementById("messageText").value="";await renderMessages();}
+async function sendTeamInstruction(){const s=messagesState.selected,text=document.getElementById("teamInstructionText")?.value.trim()||"",pack=packs.find(p=>p.id===document.getElementById("messagePack")?.value);if(!s||!text)return;const r=await supabaseClient.rpc("send_team_training_instruction",{p_team_id:s.id,p_pack_name:pack?.name||"",p_pack_code:pack?.code||"",p_body:text});if(r.error){setMessagesStatus(r.error.message,"error");return;}document.getElementById("teamInstructionText").value="";await renderMessages();}
+let teamState={teams:[],memberships:[],selectedId:null,roster:[],searchResults:[]};
+function teamEscape(value){return String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[char]));}
+function teamLabel(value){return String(value??"").replace(/\b\w/g,char=>char.toUpperCase());}
+function setTeamStatus(message,type="info"){
+const el=document.getElementById("teamStatus");if(!el)return;
+el.textContent=message||"";el.className=`team-status ${message?type:""}`;
+}
+function closeTeamsModal(){const modal=document.getElementById("teamsModal");if(modal)modal.classList.remove("open");document.body.style.overflow="";}
+function closeTeamsOnBackdrop(event){if(event.target?.id==="teamsModal")closeTeamsModal();}
+let friendState={rows:[],searchResults:[]};
+function setFriendsStatus(message,type="info"){const el=document.getElementById("friendsStatus");if(!el)return;el.textContent=message||"";el.className=`team-status ${message?type:""}`;}
+function closeFriendsModal(){const modal=document.getElementById("friendsModal");if(modal)modal.classList.remove("open");document.body.style.overflow="";}
+function closeFriendsOnBackdrop(event){if(event.target?.id==="friendsModal")closeFriendsModal();}
+async function openFriendsModal(){if(!currentUser)return;document.getElementById("friendsModal")?.classList.add("open");document.body.style.overflow="hidden";await loadFriends();}
+async function loadFriends(){const {data,error}=await supabaseClient.rpc("get_friendships");if(error){setFriendsStatus(error.message,"error");return;}friendState.rows=data||[];setFriendsStatus("");renderFriends();}
+function friendRow(player,actions=""){return `<div class="friend-row"><div><div class="friend-name">${teamEscape(player.display_name||"Player")}</div><div class="friend-meta">${teamEscape(player.rl_platform||"Platform not set")}${player.current_rank?` • ${teamEscape(player.current_rank)}`:""}${player.status?` • ${teamEscape(teamLabel(player.status))}`:""}</div></div><div class="friend-actions">${actions}</div></div>`;}
+function renderFriends(){
+const results=document.getElementById("friendSearchResults"),requests=document.getElementById("friendRequestsList"),friends=document.getElementById("friendsList");if(!results||!requests||!friends)return;
+results.innerHTML=friendState.searchResults.map(player=>friendRow(player,`<button type="button" onclick="sendFriendRequest('${player.user_id}',true)">Add Friend</button>`)).join("");
+const pending=friendState.rows.filter(row=>row.status==="pending");
+requests.innerHTML=pending.length?pending.map(row=>friendRow(row,row.direction==="incoming"?`<button type="button" onclick="respondToFriendRequest('${row.request_id}',true)">Accept</button><button class="regen" type="button" onclick="respondToFriendRequest('${row.request_id}',false)">Decline</button>`:`<span class="friend-meta">Sent</span>`)).join(""):"<div class=\"team-empty\">No pending requests.</div>";
+const accepted=friendState.rows.filter(row=>row.status==="accepted");
+friends.innerHTML=accepted.length?accepted.map(row=>friendRow(row)).join(""):"<div class=\"team-empty\">No friends added yet.</div>";
+}
+async function searchFriends(){const query=document.getElementById("friendPlayerSearch")?.value.trim()||"";if(query.length<2){setFriendsStatus("Enter at least 2 characters to search players.","error");return;}const {data,error}=await supabaseClient.rpc("search_team_players",{p_query:query,p_platform:null});if(error){setFriendsStatus(error.message,"error");return;}friendState.searchResults=(data||[]).filter(player=>player.user_id!==currentUser.id);renderFriends();}
+async function sendFriendRequest(userId,refreshFriends=false){const {error}=await supabaseClient.rpc("request_friend",{p_recipient_id:userId});if(error){if(refreshFriends)setFriendsStatus(error.message,"error");else setTeamStatus(error.message,"error");return;}if(refreshFriends){setFriendsStatus("Friend request sent.","success");await loadFriends();}else setTeamStatus("Friend request sent.","success");}
+async function respondToFriendRequest(requestId,accept){const {error}=await supabaseClient.rpc("respond_to_friend_request",{p_request_id:requestId,p_accept:accept});setFriendsStatus(error?error.message:(accept?"Friend request accepted.":"Friend request declined."),error?"error":"success");if(!error)await loadFriends();}
+async function openTeamsModal(){
+if(!currentUser)return;
+document.getElementById("teamsModal")?.classList.add("open");document.body.style.overflow="hidden";
+await loadTeams();
+}
+async function loadTeams(){
+if(!currentUser)return;
+setTeamStatus("Loading your teams…","info");
+const {data:memberships,error:membershipError}=await supabaseClient.from("team_memberships").select("id,team_id,user_id,role,status,created_at").eq("user_id",currentUser.id).in("status",["pending","active"]).order("created_at",{ascending:true});
+if(membershipError){setTeamStatus(membershipError.message,"error");return;}
+const ids=(memberships||[]).map(row=>row.team_id);
+let teams=[];
+if(ids.length){const {data,error}=await supabaseClient.from("teams").select("id,name,created_by,created_at").in("id",ids).order("created_at",{ascending:true});if(error){setTeamStatus(error.message,"error");return;}teams=data||[];}
+teamState.teams=teams;teamState.memberships=memberships||[];
+if(!teamState.selectedId||!teams.some(team=>team.id===teamState.selectedId))teamState.selectedId=teams[0]?.id||null;
+setTeamStatus("");
+await renderTeams();
+}
+function selectedTeam(){return teamState.teams.find(team=>team.id===teamState.selectedId)||null;}
+function selectedMembership(){return teamState.memberships.find(row=>row.team_id===teamState.selectedId)||null;}
+async function selectTeam(teamId){teamState.selectedId=teamId;teamState.searchResults=[];await renderTeams();}
+async function renderTeams(){
+const list=document.getElementById("teamList"),workspace=document.getElementById("teamWorkspace");if(!list||!workspace)return;
+if(!teamState.teams.length){list.innerHTML="<div class=\"team-empty\">No teams yet.</div>";workspace.innerHTML="<div class=\"team-empty\">Create a team above. You will become its manager automatically.</div>";return;}
+list.innerHTML=teamState.teams.map(team=>{const membership=teamState.memberships.find(row=>row.team_id===team.id);return `<button type="button" class="${team.id===teamState.selectedId?"active":""}" onclick="selectTeam('${team.id}')"><strong>${teamEscape(team.name)}</strong><br><span class="team-member-meta">${teamEscape(teamLabel(membership?.role||"member"))} • ${teamEscape(teamLabel(membership?.status||""))}</span></button>`;}).join("");
+const team=selectedTeam(),membership=selectedMembership();if(!team||!membership)return;
+if(membership.status==="pending"){
+workspace.innerHTML=`<section class="team-section"><h3>${teamEscape(team.name)}</h3><p class="team-empty">You have been invited as a ${teamEscape(teamLabel(membership.role))}.</p><div class="profile-actions"><button type="button" onclick="respondToTeamInvite('${membership.id}',true)">Accept Invite</button><button class="regen" type="button" onclick="respondToTeamInvite('${membership.id}',false)">Decline</button></div></section>`;return;
+}
+const {data:roster,error}=await supabaseClient.rpc("get_team_roster",{p_team_id:team.id});
+if(error){workspace.innerHTML=`<div class="team-empty">${teamEscape(error.message)}</div>`;return;}teamState.roster=roster||[];
+const manager=membership.role==="manager";
+const rosterHtml=teamState.roster.map(row=>`<div class="team-member"><div><div class="team-member-name">${teamEscape(row.display_name||"Player")}</div><div class="team-member-meta">${teamEscape(teamLabel(row.role))} • ${teamEscape(teamLabel(row.status))}${row.rl_platform?` • ${teamEscape(row.rl_platform)}`:""}${row.current_rank?` • ${teamEscape(row.current_rank)}`:""}</div></div>${manager&&row.role!=="manager"?`<button class="schedule-delete" type="button" onclick="removeTeamMember('${row.membership_id}')">Remove</button>`:""}</div>`).join("")||"<div class=\"team-empty\">Your roster is empty.</div>";
+const searchHtml=teamState.searchResults.map(player=>`<div class="team-search-result"><div><div class="team-member-name">${teamEscape(player.display_name)}</div><div class="team-member-meta">${teamEscape(player.rl_platform||"Platform not set")}${player.current_rank?` • ${teamEscape(player.current_rank)}`:""}</div></div><div class="team-search-actions"><button class="regen" type="button" onclick="sendTeamFriendRequest('${player.user_id}')">Add Friend</button>${manager?`<button type="button" onclick="inviteTeamPlayer('${player.user_id}')">Invite</button>`:""}</div></div>`).join("");
+workspace.innerHTML=`<section class="team-section"><h3>${teamEscape(team.name)}</h3><div class="team-member-meta">You are the ${teamEscape(teamLabel(membership.role))}. Starters: ${teamState.roster.filter(row=>row.role==="starter"&&row.status!=="declined").length}/3 • Subs: ${teamState.roster.filter(row=>row.role==="substitute"&&row.status!=="declined").length}/2</div>${manager?`<div class="profile-actions"><button class="delete-account-button" type="button" onclick="openTeamDeleteModal()">Delete Team</button></div>`:""}</section><section class="team-section"><h3>Roster</h3><div class="team-roster">${rosterHtml}</div></section><section class="team-section"><h3>Find Players</h3><div class="team-invite-grid"><div class="field"><label for="teamPlayerSearch">In-Game Name</label><input id="teamPlayerSearch" type="text" maxlength="40" placeholder="Search players"></div><div class="field"><label for="teamInviteRole">Invite As</label><select id="teamInviteRole"><option value="coach">Coach</option><option value="starter">Starter</option><option value="substitute">Substitute</option></select></div><button type="button" onclick="searchTeamPlayers()">Search</button></div><div id="teamSearchResults" class="team-search-results">${searchHtml}</div></section>`;
+}
+async function createTeam(){const input=document.getElementById("teamNameInput"),name=input?.value.trim()||"";if(name.length<2){setTeamStatus("Give the team a name with at least 2 characters.","error");return;}const {error}=await supabaseClient.rpc("create_team",{p_name:name});if(error){setTeamStatus(error.message,"error");return;}input.value="";setTeamStatus("Team created. You are its manager.","success");await loadTeams();}
+async function searchTeamPlayers(){const query=document.getElementById("teamPlayerSearch")?.value.trim()||"";if(query.length<2){setTeamStatus("Enter at least 2 characters to search players.","error");return;}const {data,error}=await supabaseClient.rpc("search_team_players",{p_query:query,p_platform:null});if(error){setTeamStatus(error.message,"error");return;}teamState.searchResults=(data||[]).filter(player=>player.user_id!==currentUser.id);await renderTeams();}
+async function sendTeamFriendRequest(userId){const {error}=await supabaseClient.rpc("request_friend",{p_recipient_id:userId});setTeamStatus(error?error.message:"Friend request sent.",error?"error":"success");}
+async function inviteTeamPlayer(userId){const role=document.getElementById("teamInviteRole")?.value||"starter";const {error}=await supabaseClient.rpc("invite_team_member",{p_team_id:teamState.selectedId,p_user_id:userId,p_role:role});setTeamStatus(error?error.message:"Team invitation sent.",error?"error":"success");if(!error)await renderTeams();}
+async function respondToTeamInvite(membershipId,accept){const {error}=await supabaseClient.rpc("respond_to_team_invite",{p_membership_id:membershipId,p_accept:accept});setTeamStatus(error?error.message:(accept?"You joined the team.":"Invitation declined."),error?"error":"success");if(!error)await loadTeams();}
+async function removeTeamMember(membershipId){if(!confirm("Remove this member from the team?"))return;const {error}=await supabaseClient.rpc("remove_team_member",{p_membership_id:membershipId});setTeamStatus(error?error.message:"Team member removed.",error?"error":"success");if(!error)await renderTeams();}
+function openTeamDeleteModal(){
+const team=selectedTeam();if(!team)return;
+const modal=document.getElementById("teamDeleteModal"),copy=document.getElementById("teamDeleteModalCopy"),input=document.getElementById("teamDeleteConfirm");
+if(copy)copy.textContent=`You are deleting ${team.name}. This cannot be undone.`;
+if(input)input.value="";
+if(modal)modal.classList.add("open");
+}
+function closeTeamDeleteModal(){const modal=document.getElementById("teamDeleteModal");if(modal)modal.classList.remove("open");}
+function closeTeamDeleteOnBackdrop(event){if(event.target?.id==="teamDeleteModal")closeTeamDeleteModal();}
+async function confirmSelectedTeamDeletion(){
+const team=selectedTeam();if(!team)return;
+if((document.getElementById("teamDeleteConfirm")?.value.trim()||"")!=="DELETE"){setTeamStatus("Type DELETE exactly to remove this team.","error");return;}
+const {error}=await supabaseClient.rpc("delete_team",{p_team_id:team.id});
+if(error){setTeamStatus(error.message,"error");return;}
+closeTeamDeleteModal();
+teamState.selectedId=null;teamState.roster=[];teamState.searchResults=[];
+setTeamStatus("Team permanently deleted.","success");await loadTeams();
+}
+function closeDeleteAccountModal(){
+const modal=document.getElementById("deleteAccountModal");
+if(modal)modal.classList.remove("open");
+if(!document.getElementById("accountSettingsModal")?.classList.contains("open"))document.body.style.overflow="";
+}
+function closeDeleteAccountOnBackdrop(event){
+if(event.target?.id==="deleteAccountModal")closeDeleteAccountModal();
+}
+function toggleAccountMenu(){
+const menu=document.getElementById("accountMenu");
+const trigger=document.getElementById("accountMenuTrigger");
+if(!menu||!trigger)return;
+const willOpen=!menu.classList.contains("open");
+menu.classList.toggle("open",willOpen);
+trigger.setAttribute("aria-expanded",String(willOpen));
+}
+function closeAccountMenu(){
+const menu=document.getElementById("accountMenu");
+const trigger=document.getElementById("accountMenuTrigger");
+if(menu)menu.classList.remove("open");
+if(trigger)trigger.setAttribute("aria-expanded","false");
+}
+document.addEventListener("click",event=>{
+const actions=document.querySelector(".account-actions");
+if(actions&&!actions.contains(event.target))closeAccountMenu();
+});
+document.addEventListener("keydown",event=>{if(event.key==="Escape"){closeAccountMenu();closeDeleteAccountModal();closeTeamDeleteModal();closeAccountSettings();closeFriendsModal();closeTeamsModal();closeFeedbackModal();closeFeedbackInbox();closeFeedbackReplies();}});
 
 function populateAccountSettings(user){
 const emailInput=document.getElementById("settingsEmail");
@@ -856,6 +1178,7 @@ const el=document.getElementById("settingsPasswordRequirements");
 if(!input||!el)return;
 const checks=passwordChecks(input.value);
 const allGood=Object.values(checks).every(Boolean);
+el.classList.toggle("show",Boolean(input.value));
 el.classList.toggle("valid",allGood);
 el.textContent=allGood
 ?"Strong password requirements met."
@@ -888,11 +1211,20 @@ document.getElementById("settingsPasswordConfirm").value="";
 updateSettingsPasswordRequirements();
 setAccountStatus("Password updated successfully.","success");
 }
-async function deleteAccountPermanently(){
+function deleteAccountPermanently(){
 if(!currentUser){setAccountStatus("Log in before deleting your account.","error");return;}
 const typed=document.getElementById("deleteAccountConfirm")?.value.trim()||"";
 if(typed!=="DELETE"){setAccountStatus("Type DELETE exactly before deleting your account.","error");return;}
-if(!confirm("Permanently delete your RL Trainer account and all saved data? This cannot be undone."))return;
+const modal=document.getElementById("deleteAccountModal");
+if(!modal)return;
+modal.classList.add("open");
+document.body.style.overflow="hidden";
+}
+async function confirmAccountDeletion(){
+if(!currentUser){closeDeleteAccountModal();setAccountStatus("Log in before deleting your account.","error");return;}
+const typed=document.getElementById("deleteAccountConfirm")?.value.trim()||"";
+if(typed!=="DELETE"){closeDeleteAccountModal();setAccountStatus("Type DELETE exactly before deleting your account.","error");return;}
+closeDeleteAccountModal();
 setAccountStatus("Deleting account and saved data…","info");
 const {error}=await supabaseClient.rpc("delete_own_account");
 if(error){setAccountStatus(error.message,"error");return;}
@@ -925,6 +1257,7 @@ async function refreshDashboard(){
 if(!currentUser)return;
 const profile=await ensureProfile(currentUser);
 populateProfile(profile);
+await maybeShowWelcomeGuide(profile);
 await loadDashboardStats(currentUser.id);
 await loadGoals();
 await loadSchedules();
@@ -941,8 +1274,6 @@ const dailyMinutes=Math.max(0,Math.min(480,Number(document.getElementById("profi
 const updates={
   display_name:displayName,
   rl_platform:platform,
-  rl_player_id:document.getElementById("profilePlayerId").value.trim()||null,
-  tracker_profile_url:document.getElementById("profileTrackerUrl").value.trim()||null,
   current_rank:document.getElementById("profileRank").value||null,
   daily_minutes_target:dailyMinutes,
   timezone:Intl.DateTimeFormat().resolvedOptions().timeZone||"UTC"
@@ -955,18 +1286,28 @@ setAccountStatus(message,"error");return;
 populateProfile(data);
 setAccountStatus("Profile saved.","success");
 }
+function placeMatchPerformanceFirst(){
+const panel=document.getElementById("accountPanel");
+const section=document.getElementById("matchPerformanceSection");
+const stats=panel?.querySelector(".stat-grid");
+if(panel&&section&&stats)panel.insertBefore(section,stats);
+}
 async function renderAuth(session){
 currentUser=session?.user||null;
+if(!currentUser)welcomeGuideShown=false;
 const forms=document.getElementById("authForms");
 const panel=document.getElementById("accountPanel");
 const recoveryPanel=document.getElementById("passwordRecoveryPanel");
-if(passwordRecoveryMode&&currentUser){forms.style.display="none";panel.style.display="none";recoveryPanel.style.display="block";setAccountStatus("Recovery link accepted. Choose your new password below.","info");return;}
+const headerAccountActions=document.getElementById("headerAccountActions");
+const accountIdentityHeading=document.getElementById("accountIdentityHeading");
+if(passwordRecoveryMode&&currentUser){forms.style.display="none";panel.style.display="none";if(accountIdentityHeading)accountIdentityHeading.style.display="none";if(headerAccountActions)headerAccountActions.style.display="none";recoveryPanel.style.display="block";setAccountStatus("Recovery link accepted. Choose your new password below.","info");return;}
 recoveryPanel.style.display="none";
-if(!currentUser){closeAccountSettings();closeFeedbackInbox();closeFeedbackReplies();feedbackReplyNotifications=[];updateFeedbackReplyBadge();currentProfile=null;const adminFeedbackButton=document.getElementById("adminFeedbackButton");if(adminFeedbackButton)adminFeedbackButton.style.display="none";forms.style.display="block";panel.style.display="none";document.getElementById("accountEmail").textContent="";const settingsEmail=document.getElementById("settingsEmail");if(settingsEmail)settingsEmail.value="";const goalList=document.getElementById("goalList");if(goalList)goalList.innerHTML="";const scheduleList=document.getElementById("scheduleList");if(scheduleList)scheduleList.innerHTML="";const historyList=document.getElementById("historyList");if(historyList)historyList.innerHTML="";const performanceList=document.getElementById("performanceList");if(performanceList)performanceList.innerHTML="";renderSessionStartPanel();return;}
-forms.style.display="none";panel.style.display="block";document.getElementById("accountEmail").textContent=currentUser.email||"";
+if(!currentUser){closeAccountMenu();closeAccountSettings();closeFeedbackInbox();closeFeedbackReplies();feedbackReplyNotifications=[];updateFeedbackReplyBadge();currentProfile=null;profileAvatarRequest++;renderProfileAvatar();const accountDisplayName=document.getElementById("accountDisplayName");if(accountDisplayName)accountDisplayName.textContent="Player Account";if(accountIdentityHeading)accountIdentityHeading.style.display="none";["authDisplayName","authEmail","authPassword"].forEach(id=>{const input=document.getElementById(id);if(input)input.value="";});const authPlatform=document.getElementById("authPlatform");if(authPlatform)authPlatform.value="";updatePasswordRequirements();const adminFeedbackButton=document.getElementById("adminFeedbackButton");if(adminFeedbackButton)adminFeedbackButton.style.display="none";if(headerAccountActions)headerAccountActions.style.display="none";forms.style.display="block";panel.style.display="none";const settingsEmail=document.getElementById("settingsEmail");if(settingsEmail)settingsEmail.value="";const goalList=document.getElementById("goalList");if(goalList)goalList.innerHTML="";const scheduleList=document.getElementById("scheduleList");if(scheduleList)scheduleList.innerHTML="";const historyList=document.getElementById("historyList");if(historyList)historyList.innerHTML="";const performanceList=document.getElementById("performanceList");if(performanceList)performanceList.innerHTML="";renderSessionStartPanel();return;}
+forms.style.display="none";panel.style.display="block";placeMatchPerformanceFirst();if(accountIdentityHeading)accountIdentityHeading.style.display="flex";if(headerAccountActions)headerAccountActions.style.display="block";
 populateAccountSettings(currentUser);
 const profile=await ensureProfile(currentUser);
 populateProfile(profile);
+await maybeShowWelcomeGuide(profile);
 await loadDashboardStats(currentUser.id);
 await loadGoals();
 await loadSchedules();
@@ -1191,6 +1532,57 @@ if(error){setAccountStatus(error.message,"error");return;}
 setAccountStatus(`Queued ${data?.[0]?.queued_count??0} failed email${(data?.[0]?.queued_count??0)===1?"":"s"} for retry.`,"success");
 await loadFeedbackInbox();
 }
+function feedbackAssignmentControl(row){
+const choices=feedbackInboxThemes.filter(theme=>theme.category===row.feedback_type&&theme.id!==row.theme_id);
+const options=[`<option value="">Create a separate theme</option>`,...choices.map(theme=>`<option value="${theme.id}">Move to: ${escapeFeedbackHtml(theme.title)}</option>`)].join("");
+return`<div class="feedback-assignment"><div class="field"><label for="reviewTheme-${row.id}">Grouping decision</label><select id="reviewTheme-${row.id}">${options}</select></div><button class="regen" onclick="resolveFeedbackAssignment('${row.id}')">${row.grouping_status==="grouped"?"Move / Split":"Resolve"}</button></div>`;
+}
+function renderFeedbackReviewQueue(){
+const reviewRows=feedbackInboxRows.filter(row=>["pending","needs_review"].includes(row.grouping_status));
+if(!reviewRows.length)return"";
+const destinations=feedbackInboxThemes.filter(theme=>theme.status!=="wont_do");
+const batchOptions=destinations.map(theme=>`<option value="${theme.id}">${feedbackCategoryLabel(theme.category)} — ${escapeFeedbackHtml(theme.title)}</option>`).join("");
+return`<section class="feedback-review-queue"><h3>${reviewRows.length} report${reviewRows.length===1?"":"s"} need a grouping decision</h3><div class="feedback-review-batch"><div class="field"><label for="reviewBatchTheme">Merge selected reports into</label><select id="reviewBatchTheme"><option value="">Choose same-category destination…</option>${batchOptions}</select><div class="field-help">Select reports from one category only.</div></div><button class="regen" onclick="resolveSelectedFeedbackReviews()">Merge Selected</button></div>${reviewRows.map(row=>`<div class="feedback-review-item"><label class="feedback-review-check"><input type="checkbox" data-feedback-review="${row.id}"> Include in batch merge</label><div class="feedback-review-label">${row.grouping_status==="pending"?"Pending grouping":"Ambiguous match"}</div><div class="feedback-message-text">${escapeFeedbackHtml(row.message)}</div><div class="feedback-message-meta">${feedbackCategoryLabel(row.feedback_type)} • ${row.user_id?"Logged-in user":"Anonymous"} • ${feedbackDateLabel(row.created_at)}</div>${feedbackAssignmentControl(row)}</div>`).join("")}</section>`;
+}
+async function resolveFeedbackAssignment(feedbackId){
+if(!isFeedbackStaff())return;
+const select=document.getElementById(`reviewTheme-${feedbackId}`);
+const targetThemeId=select?.value||null;
+const action=targetThemeId?"move this report to the selected theme":"create a separate theme for this report";
+if(!window.confirm(`Confirm: ${action}?`))return;
+const {data,error}=await supabaseClient.rpc("resolve_feedback_review",{target_feedback_id:feedbackId,target_theme_id:targetThemeId});
+if(error){setAccountStatus(error.message,"error");return;}
+const result=data?.[0];
+setAccountStatus(result?.action==="created_theme"?"Separate theme created and report resolved.":"Report moved and grouping resolved.","success");
+await loadFeedbackInbox();
+}
+async function resolveSelectedFeedbackReviews(){
+if(!isFeedbackStaff())return;
+const feedbackIds=[...document.querySelectorAll("input[data-feedback-review]:checked")].map(input=>input.dataset.feedbackReview).filter(Boolean);
+const destinationThemeId=document.getElementById("reviewBatchTheme")?.value||"";
+if(!feedbackIds.length){setAccountStatus("Select one or more review reports first.","error");return;}
+if(!destinationThemeId){setAccountStatus("Choose a destination theme first.","error");return;}
+if(!window.confirm(`Merge ${feedbackIds.length} selected report${feedbackIds.length===1?"":"s"} into the chosen theme?`))return;
+const {data,error}=await supabaseClient.rpc("assign_feedback_reviews_to_theme",{target_feedback_ids:feedbackIds,target_theme_id:destinationThemeId});
+if(error){setAccountStatus(error.message,"error");return;}
+const resolved=data?.[0]?.resolved_count??feedbackIds.length;
+setAccountStatus(`Merged ${resolved} review report${resolved===1?"":"s"} into the selected theme.`,"success");
+await loadFeedbackInbox();
+}
+async function mergeFeedbackTheme(sourceThemeId){
+if(!isFeedbackStaff())return;
+const select=document.getElementById(`mergeTheme-${sourceThemeId}`);
+const destinationThemeId=select?.value||"";
+if(!destinationThemeId){setAccountStatus("Choose a destination theme before merging.","error");return;}
+const source=feedbackInboxThemes.find(theme=>theme.id===sourceThemeId);
+const destination=feedbackInboxThemes.find(theme=>theme.id===destinationThemeId);
+if(!window.confirm(`Merge “${source?.title||"this theme"}” into “${destination?.title||"the selected theme"}”? The source stays in history but its reports move to the destination.`))return;
+const {data,error}=await supabaseClient.rpc("merge_feedback_themes",{source_theme_id:sourceThemeId,destination_theme_id:destinationThemeId});
+if(error){setAccountStatus(error.message,"error");return;}
+const moved=data?.[0]?.moved_reports??0;
+setAccountStatus(`Merged ${moved} report${moved===1?"":"s"} into the selected theme.`,"success");
+await loadFeedbackInbox();
+}
 function renderFeedbackInbox(){
 const list=document.getElementById("feedbackThemeList");
 if(!list)return;
@@ -1201,8 +1593,9 @@ let themes=feedbackInboxThemes.filter(t=>(category==="all"||t.category===categor
 if(sort==="newest")themes.sort((a,b)=>new Date(b.last_reported_at||0)-new Date(a.last_reported_at||0));
 else if(sort==="priority")themes.sort((a,b)=>feedbackPriorityWeight(b.priority)-feedbackPriorityWeight(a.priority)||(Number(b.report_count)||0)-(Number(a.report_count)||0));
 else themes.sort((a,b)=>(Number(b.report_count)||0)-(Number(a.report_count)||0)||new Date(b.last_reported_at||0)-new Date(a.last_reported_at||0));
-if(!themes.length){list.innerHTML=`<div class="feedback-empty">No feedback themes match these filters.</div>`;return;}
-list.innerHTML=themes.map(theme=>{
+const reviewQueueHtml=renderFeedbackReviewQueue();
+if(!themes.length){list.innerHTML=reviewQueueHtml||`<div class="feedback-empty">No feedback themes match these filters.</div>`;return;}
+list.innerHTML=reviewQueueHtml+themes.map(theme=>{
 const messages=feedbackInboxRows.filter(r=>r.theme_id===theme.id);
 const anonymous=messages.filter(r=>!r.user_id).length;
 const uniqueLoggedInUsers=new Set(messages.filter(r=>r.user_id).map(r=>r.user_id)).size;
@@ -1219,6 +1612,7 @@ const replyControl=row.user_id?`<div class="feedback-message-reply">
 return`<div class="feedback-message-item">
 <div class="feedback-message-text">${escapeFeedbackHtml(row.message)}</div>
 <div class="feedback-message-meta">${row.user_id?"Logged-in user":"Anonymous"}${row.rating?` • Rating ${row.rating}/5`:""}${row.page_context?` • ${escapeFeedbackHtml(row.page_context)}`:""}${row.rank_context?` • ${escapeFeedbackHtml(row.rank_context)}`:""}${row.platform_context?` • ${escapeFeedbackHtml(row.platform_context)}`:""}<br>${feedbackDateLabel(row.created_at)}</div>
+${feedbackAssignmentControl(row)}
 ${responseHistory}
 ${replyControl}
 </div>`}).join(""):`<div class="feedback-empty">No raw messages are attached to this theme.</div>`;
@@ -1229,6 +1623,7 @@ return`<div class="feedback-theme-card">
 <div class="feedback-theme-badges"><span class="feedback-theme-badge count">${theme.report_count||messages.length} report${Number(theme.report_count||messages.length)===1?"":"s"}</span><span class="feedback-theme-badge">${uniqueLoggedInUsers} logged-in</span><span class="feedback-theme-badge">${anonymous} anonymous</span><span class="feedback-theme-badge">${feedbackStatusLabel(theme.status)}</span><span class="feedback-theme-badge priority-${theme.priority}">${String(theme.priority||"normal").toUpperCase()}</span></div>
 </div>
 <div class="feedback-theme-summary">${escapeFeedbackHtml(theme.summary||"No summary yet.")}</div>
+${(()=>{const mergeTargets=feedbackInboxThemes.filter(candidate=>candidate.category===theme.category&&candidate.id!==theme.id&&candidate.status!=="wont_do");return mergeTargets.length?`<div class="feedback-assignment"><div class="field"><label for="mergeTheme-${theme.id}">Merge this theme into</label><select id="mergeTheme-${theme.id}"><option value="">Choose destination…</option>${mergeTargets.map(candidate=>`<option value="${candidate.id}">${escapeFeedbackHtml(candidate.title)}</option>`).join("")}</select></div><button class="regen" onclick="mergeFeedbackTheme('${theme.id}')">Merge Themes</button></div>`:"";})()}
 ${themeResponseHtml}
 <div class="feedback-reply-box">
 <label for="groupReply-${theme.id}">Respond to entire group</label>
@@ -1315,7 +1710,7 @@ count.textContent=`${input.value.length} / ${input.maxLength||3000}`;
 function openFeedbackModal(){
 const modal=document.getElementById("feedbackModal");
 if(!modal)return;
-setFeedbackStatus(currentUser?"Submitting as your RL Trainer account.":"Submitting anonymously.","info");
+setFeedbackStatus("");
 modal.classList.add("open");
 document.body.style.overflow="hidden";
 setTimeout(()=>document.getElementById("feedbackMessage")?.focus(),0);
@@ -1850,8 +2245,21 @@ const actualSeconds=ds.reduce((sum,d)=>sum+(Number(d.elapsed_seconds)||0),0);
 const actualMinutes=actualSeconds>0?Math.round(actualSeconds/6)/10:Number(s.completed_minutes)||0;
 const completedDrills=ds.filter(d=>d.completed).length;
 const successHits=ds.filter(d=>d.success_target_met).length;
-return`<div class="history-item"><div class="history-head"><div><div class="history-title">${s.focus} • ${s.program_name||"Training Session"}</div><div class="history-meta">${s.session_date} • ${s.rank} • Planned ${s.planned_minutes} min${s.completed?" • COMPLETE":" • IN PROGRESS"}</div></div></div><div class="history-stats"><span class="history-pill">⏱ ${actualMinutes} actual min</span><span class="history-pill">✓ ${completedDrills}/${ds.length} drills</span><span class="history-pill">🎯 ${successHits} targets hit</span></div></div>`;
+return`<div class="history-item"><div class="history-head"><div><div class="history-title">${s.focus} • ${s.program_name||"Training Session"}</div><div class="history-meta">${s.session_date} • ${s.rank} • Planned ${s.planned_minutes} min${s.completed?" • COMPLETE":" • IN PROGRESS"}</div></div><button class="history-delete" onclick="deleteTrainingSession('${s.id}')">Delete</button></div><div class="history-stats"><span class="history-pill">⏱ ${actualMinutes} actual min</span><span class="history-pill">✓ ${completedDrills}/${ds.length} drills</span><span class="history-pill">🎯 ${successHits} targets hit</span></div></div>`;
 }).join("");
+}
+async function deleteTrainingSession(sessionId){
+if(!currentUser)return;
+if(!confirm("Delete this saved training session? Its completed minutes, drills, and progress toward goals will be removed."))return;
+const {error}=await supabaseClient.from("training_sessions").delete().eq("id",sessionId).eq("user_id",currentUser.id);
+if(error){setAccountStatus(error.message,"error");return;}
+if(activeSavedSession?.session?.id===sessionId){
+activeSavedSession=null;
+if(timerUiInterval){clearInterval(timerUiInterval);timerUiInterval=null;}
+renderSessionStartPanel();
+}
+await Promise.all([loadDashboardStats(currentUser.id),loadGoals(),loadHistory()]);
+setAccountStatus("Training session deleted. Your dashboard totals were updated.","success");
 }
 
 /* =====================================================
@@ -1976,6 +2384,24 @@ dribbleTraining:{name:"Dribble Training",creator:"Virge",code:"04C1-42C8-6E5D-6F
 passTraining:{name:"Pass Training",creator:"FLuuMP",code:"BFD6-DA9F-49A2-81B3",category:"Aerials"},
 shadowSaves:{name:"Shadow Saves",creator:"Wayprotein",code:"6A8C-7B90-2AAA-B6B5",category:"Defense"},
 selfDoubleTouchPro:{name:"Self Double Touch: Pro",creator:"Plasmid",code:"E8EB-C454-38AF-9637",category:"Double Touches"},
+pinchShots:{name:"Pinch Shots",creator:"Squishy Muffinz",code:"21C6-0DC1-233D-EEF7",category:"Shooting"},
+jstnWallClears:{name:"Wall Clears",creator:"JSTN",code:"9274-D4A2-967B-0D7A",category:"Wall Play"},
+jstnRedirects:{name:"Redirect Pack #1",creator:"JSTN",code:"1BE0-6E01-7ABF-53BA",category:"Redirects"},
+reverseAerialPractice:{name:"Reverse Aerial Practice",creator:"Lachinio",code:"9746-627A-0DBD-3F6E",category:"Aerials"},
+fastAerials:{name:"Fast Aerials",creator:"al0t",code:"C5C6-3EFC-AFD5-4ECC",category:"Aerials"},
+groundShotConsistency:{name:"Ground Shot Consistency",creator:"Torment",code:"E4AE-EDC9-E77E-9FC0",category:"Shooting"},
+chicagoRedirects:{name:"Redirects",creator:"Chicago",code:"CBCC-61BF-34B5-7E47",category:"Redirects"},
+sideWallReads:{name:"Side Wall Reads",creator:"Tylacto",code:"5CF8-898D-E2CE-201A",category:"Wall Play"},
+tylactoStriking:{name:"Striking",creator:"Tylacto",code:"960C-4C1C-686E-3427",category:"Shooting"},
+advancedGoaliePractice:{name:"Advanced Goalie Practice",creator:"Zentz",code:"085A-5F77-A0CF-DD30",category:"Defense"},
+avengersWarmup:{name:"Avenger's Warmup",creator:"A' WP",code:"753D-C24B-0A5B-49D7",category:"All-Around"},
+physixRedirects:{name:"Physix Redirects",creator:"Physix",code:"BE27-2F2E-44FF-5A38",category:"Redirects"},
+backboardTrainingV1:{name:"Backboard Training V1",creator:"Stabbers",code:"152C-2EAC-5269-4402",category:"Backboard"},
+strikerAllInOne:{name:"Striker All-in-one",creator:"kioW",code:"6DFD-62E3-AE0A-6A86",category:"All-Around"},
+airDragV1:{name:"Airdrag V1",creator:"dollynhogameplays",code:"E3B4-22E7-8097-8073",category:"Aerials"},
+airRollShotPractice:{name:"Air Roll Shot Practice",creator:"w00t",code:"2445-FBED-EF65-6F8C",category:"Aerials"},
+breakawayPasses:{name:"Breakaway Passes",creator:"Lethamyr",code:"5A61-5289-FD96-5884",category:"Aerials"},
+longPowerShots:{name:"Long/Power Shots",creator:"Noir1992",code:"7380-12D1-8D8D-ACB2",category:"Shooting"},
 shadowDefense:{name:"[Why You Suck] Shadow Defense",creator:"OrangePie",code:"5CCE-FB29-7B05-A0B1",category:"Defense"}
 };
 const rankProfiles={
@@ -2432,6 +2858,49 @@ ssl:{goal:"Vary the defensive story so the attacker cannot read your challenge t
 }
 };
 
+const researchedPackProfiles={
+pinchShots:{minLevel:4,goal:"Create purposeful pinches that travel toward a useful lane instead of gambling on random contact.",execution:"Approach from a repeatable wall or corner angle, set the ball at a controllable height, and strike through the ball-wall seam with a clear target.",mistake:"Throwing the car at every wall touch and calling any hard bounce a productive pinch.",standard:"Keep the setup playable and recover through the attempt even when the pinch is not there.",tip:"A good pinch is a positioning tool, not a highlight attempt."},
+jstnWallClears:{minLevel:2,goal:"Turn wall reads into reliable clears that remove pressure without gifting the center.",execution:"Read the bounce early, meet it with the car pointed toward a safe side lane, and recover downfield after contact.",mistake:"Clearing blindly across the middle because the first touch was treated as the whole play.",standard:"Use a safe target and recover quickly enough to handle the next touch.",tip:"The clear is only useful if the next play is safer too."},
+jstnRedirects:{minLevel:4,goal:"Read and redirect aerial passes with controlled placement rather than hopeful contact.",execution:"Match the ball's path before boosting hard, square the nose through the target line, and use minimal late adjustment.",mistake:"Over-rotating under the ball and turning a redirect into a soft side touch.",standard:"Make the first aerial route predictable before demanding difficult placements.",tip:"Redirect accuracy starts with arriving on the ball's line."},
+reverseAerialPractice:{minLevel:4,goal:"Control reverse aerial orientation so awkward recoveries and backward reads become usable.",execution:"Launch with a deliberate backward line, use small air-roll corrections, and keep enough boost for a controlled landing.",mistake:"Holding full air roll and boost until the car has no stable reference.",standard:"Finish each attempt with a recoverable landing, not just an airborne touch.",tip:"Reverse aerials become practical when the landing is planned first."},
+fastAerials:{minLevel:2,goal:"Build a fast aerial launch that reaches the ball quickly without losing car control.",execution:"Use a clean jump-boost sequence, keep the nose on the ball line, and stop adding inputs once the route is correct.",mistake:"Diagonal flipping too early or boosting without a controlled launch angle.",standard:"Prioritize repeatable takeoffs before adding maximum speed.",tip:"A fast aerial is a clean launch, not frantic button presses."},
+groundShotConsistency:{minLevel:2,goal:"Place ground shots with a repeatable approach, contact point, and recovery.",execution:"Arrive behind the ball, choose a corner before contact, and strike through the middle with enough speed to stay accurate.",mistake:"Aiming only after reaching the ball and slicing across it at the last second.",standard:"Make each shot deliberate enough that a miss has a clear cause to correct.",tip:"Shot consistency comes from the approach before the strike."},
+chicagoRedirects:{minLevel:4,goal:"Convert faster redirect reads into purposeful shots or passes at game speed.",execution:"Commit to the interception line early, use the final adjustment for placement, and maintain momentum through the touch.",mistake:"Reacting late and using emergency air roll to chase the ball from underneath.",standard:"Keep the aerial path efficient enough to recover after misses.",tip:"High-level redirects reward early reads more than last-second mechanics."},
+sideWallReads:{minLevel:2,goal:"Read side-wall bounces early enough to turn them into controlled touches.",execution:"Match the ball's wall line, decide whether to clear, carry, or pass before contact, and land facing the next play.",mistake:"Driving parallel to the wall without a target, then taking a panic touch.",standard:"Use the wall as a predictable setup instead of an emergency surface.",tip:"A wall read is easier when the next touch is chosen before the first."},
+tylactoStriking:{minLevel:2,goal:"Build match-useful striking from varied angles and incoming ball speeds.",execution:"Set the approach line early, choose a target before the final touch, and keep the shot compact instead of over-correcting.",mistake:"Trying to create extra power with a late sideways approach that ruins placement.",standard:"Score cleanly while staying able to recover for a rebound or miss.",tip:"Simple, repeatable finishes win more games than perfect-looking setups."},
+advancedGoaliePractice:{minLevel:5,goal:"Handle difficult saves while controlling the rebound and recovery after the first block.",execution:"Set from a patient goal-line or back-post position, read the shot's final line, and direct contact toward a safe side.",mistake:"Chasing a spectacular save line that leaves no second-save option.",standard:"Treat every save as the start of the next defensive action.",tip:"Advanced goalkeeping is about the rebound as much as the initial stop."},
+avengersWarmup:{minLevel:4,goal:"Use varied warm-up reps to sharpen several mechanics without losing quality.",execution:"Treat each shot as a short diagnostic: identify the mechanic, choose one cue, and reset after a poor rep instead of rushing.",mistake:"Mindlessly completing shots without noticing what the setup is testing.",standard:"Keep the routine broad but intentional enough to expose a useful weakness.",tip:"A warm-up works when it tells you what deserves focused practice."},
+physixRedirects:{minLevel:6,goal:"Execute high-speed redirects with enough control to choose shot, pass, or safe continuation.",execution:"Read the trajectory before launch, preserve a stable aerial route, and make the final contact decision late.",mistake:"Forcing maximum-speed contact when the pass line calls for a controlled redirection.",standard:"Demand accurate, recoverable touches at realistic Grand Champion pace.",tip:"Top-level redirects are valuable because they keep options open until contact."},
+backboardTrainingV1:{minLevel:3,goal:"Read backboard rebounds and convert them into controlled defensive or offensive touches.",execution:"Track the bounce point, arrive with a simple line, and choose a safe clear, shot, or follow-up before touching the ball.",mistake:"Jumping at the backboard without reading how the ball will leave it.",standard:"Use predictable rebound reads before adding difficult double-touch finishes.",tip:"The backboard becomes easier when you read the exit, not just the entry."},
+strikerAllInOne:{minLevel:4,goal:"Blend different striking looks into a reliable game-speed finishing routine.",execution:"Identify the shot type quickly, use the simplest stable approach, and adjust placement only after the contact line is secure.",mistake:"Using one favorite mechanic for every setup regardless of angle or pace.",standard:"Make varied shots feel like variations of the same controlled striking process.",tip:"Strong strikers adapt the setup while keeping their fundamentals stable."},
+airDragV1:{minLevel:3,goal:"Develop controlled aerial carries and touches that stay useful beyond a perfect training setup.",execution:"Match the ball's speed first, take soft directional touches, and preserve boost for the exit or finish.",mistake:"Boosting through the ball and turning every carry into a hard uncontrollable hit.",standard:"Keep the ball within a reachable lane and land with a usable recovery.",tip:"Air-dribble control is measured by the next touch you still have."},
+airRollShotPractice:{minLevel:1,goal:"Use simple air-roll adjustments to meet aerial shots with a stable car orientation.",execution:"Start with small corrections, keep the nose aimed through the shot line, and avoid spinning once alignment is good.",mistake:"Adding continuous air roll that hides the ball and removes a clean contact point.",standard:"Build confident aerial contact before pursuing flashy orientation changes.",tip:"Air roll is a correction tool before it is a style choice."},
+breakawayPasses:{minLevel:4,goal:"Turn breakaway touches into placed passes or finishes while preserving momentum.",execution:"Read the open lane early, use a controlled first touch, and choose the release point before the defender would close it.",mistake:"Taking an extra touch for a perfect setup and letting the passing window disappear.",standard:"Make quick decisions that remain accurate at realistic attack speed.",tip:"Breakaway plays are won by timing the release, not by adding touches."},
+longPowerShots:{minLevel:3,goal:"Generate powerful long shots without trading away placement or recovery.",execution:"Build speed on a straight approach, contact through the ball's center, and aim before using the final dodge.",mistake:"Flipping across the ball for power and sending the shot wide.",standard:"Keep enough control to react to a save or rebound after the strike.",tip:"Power matters only when the ball is still a threat."}
+};
+const rankTrainingPhase={
+bronze:"At this level, slow the setup down and learn the basic contact before increasing difficulty.",
+silver:"At this level, repeat one controlled version until the setup and contact stop feeling accidental.",
+gold:"At this level, add useful speed while keeping the same clean decision and recovery.",
+platinum:"At this level, introduce varied entries and demand that the mechanic still works away from the perfect setup.",
+diamond:"At this level, work at match pace and recover quickly enough to handle the next touch.",
+champion:"At this level, make each rep decision-aware and abandon low-value attempts before they become overcommits.",
+grandchampion:"At this level, preserve possession, boost, and options while executing at full game speed.",
+ssl:"At this level, vary the final decision late so the mechanic remains useful against an adapting defender."
+};
+for(const [packKey,profile] of Object.entries(researchedPackProfiles)){
+packRankCoaching[packKey]={};
+for(const rankKey of Object.keys(rankProfiles)){
+packRankCoaching[packKey][rankKey]={
+goal:profile.goal,
+execution:`${profile.execution} ${rankTrainingPhase[rankKey]}`,
+mistake:profile.mistake,
+standard:`${rankProfiles[rankKey].target} ${profile.standard}`,
+tip:`${profile.tip} ${rankProfiles[rankKey].style}`
+};
+}
+}
+
 const free={
 ballContact:{name:"Ball Contact Fundamentals",category:"Ground Control"},
 recovery:{name:"Recovery Circuit",category:"Recoveries"},
@@ -2464,6 +2933,21 @@ recoveries:[{free:"recovery"},{free:"wall"},{free:"pressure"},{free:"integrated"
 freeplaySpeed:[{free:"ballContact"},{free:"power"},{free:"recovery"},{free:"pressure"},{free:"integrated"}],
 allaround:[{pack:"ultimateWarmup"},{pack:"shootingConsistency"},{pack:"saves"},{pack:"aerialPass"},{pack:"wallShots"},{pack:"consistencyPack"},{pack:"uncomfortableSaves"},{free:"pressure"},{free:"integrated"}]
 };
+const rankedPackVariants={
+shootingAccuracy:{1:[{pack:"groundShotConsistency"}],2:[{pack:"tylactoStriking"},{pack:"longPowerShots"}],3:[{pack:"pinchShots"}]},
+powerShots:{1:[{pack:"longPowerShots"}],2:[{pack:"groundShotConsistency"}],3:[{pack:"pinchShots"}]},
+saves:{0:[{pack:"advancedGoaliePractice"}],1:[{pack:"advancedGoaliePractice"}]},
+clears:{1:[{pack:"jstnWallClears"}],3:[{pack:"sideWallReads"}]},
+shadowDefense:{3:[{pack:"advancedGoaliePractice"}]},
+basicAerials:{1:[{pack:"airRollShotPractice",maxLevel:3}],2:[{pack:"fastAerials",maxLevel:4}]},
+fastAerials:{0:[{pack:"fastAerials",maxLevel:6}],2:[{pack:"reverseAerialPractice"}],3:[{pack:"airRollShotPractice",minLevel:2,maxLevel:4}]},
+aerialAccuracy:{1:[{pack:"breakawayPasses"}],2:[{pack:"airDragV1"}]},
+redirects:{1:[{pack:"jstnRedirects"}],2:[{pack:"chicagoRedirects"}],3:[{pack:"physixRedirects"}]},
+wallPlay:{1:[{pack:"sideWallReads"}],2:[{pack:"jstnWallClears"}]},
+backboardReads:{1:[{pack:"backboardTrainingV1"}],3:[{pack:"reverseAerialPractice"}]},
+recoveries:{1:[{pack:"reverseAerialPractice"}]},
+allaround:{0:[{pack:"avengersWarmup"}],1:[{pack:"strikerAllInOne"}],2:[{pack:"longPowerShots"}],3:[{pack:"breakawayPasses"}]}
+};
 const programBanks={
 15:[
 {name:"Quick Fix",desc:"One narrow weakness, high-value reps, immediate transfer.",steps:[{label:"Diagnostic",min:4,slot:0},{label:"Main Fix",min:7,slot:1},{label:"Game Transfer",min:4,slot:4}]},
@@ -2495,9 +2979,20 @@ if(advanced.includes(focus)&&level<=4)
 return"Prioritize controlled setups and repeatable contact before maximum speed.";
 return rankProfiles[rankKey].style;
 }
-function resourceAt(focus,index){
+function isResourceEligible(resource,rankKey){
+if(!resource.pack)return true;
+const profile=researchedPackProfiles[resource.pack];
+const minLevel=resource.minLevel??profile?.minLevel??0;
+const maxLevel=resource.maxLevel??profile?.maxLevel??7;
+const level=rankProfiles[rankKey].level;
+return level>=minLevel&&level<=maxLevel;
+}
+function resourceAt(focus,index,rankKey,rotation=0){
 const list=focusResources[focus];
-return list[index%list.length];
+const base=list[index%list.length];
+const variants=rankedPackVariants[focus]?.[index]||[];
+const choices=[base,...variants].filter(resource=>isResourceEligible(resource,rankKey));
+return choices[(rotation+index)%choices.length];
 }
 function materializeResource(resource,focus,rankKey){
 const coach=focusCoaching[focus];
@@ -2544,10 +3039,11 @@ return bank[pick];
 }
 function buildSession(rank,focus,time){
 const program=chooseProgram(rank,focus,time);
+const rotation=Math.floor(Math.random()*1000000);
 const session=program.steps.map(step=>({
 ...step,
 drill:materializeResource(
-resourceAt(focus,step.slot),
+resourceAt(focus,step.slot,rank,rotation),
 focus,
 rank
 )
@@ -2582,10 +3078,10 @@ panel.innerHTML="";
 return;
 }
 panel.style.display="block";
+const {time,focus}=currentBuiltSession;
 panel.innerHTML=`<strong>Track this workout:</strong><br>
 ${currentUser?"Save this generated session to your account, then check off each block as you finish it.":"Log in to save this workout, track completed minutes, and check off training blocks."}
-<br>
-<button id="saveSessionButton" style="margin-top:12px" onclick="saveCurrentSession()" ${currentUser?"":"disabled"}>${currentUser?"Save & Start This Session":"Log In to Track Session"}</button>
+<div class="session-plan-actions"><button id="saveSessionButton" onclick="saveCurrentSession()" ${currentUser?"":"disabled"}>${currentUser?"Save & Start This Session":"Log In to Track Session"}</button><button class="regen" onclick="buildPlan()">Give Me Another ${time}-Minute ${focusLabels[focus]} Session</button></div>
 <div id="savedSessionProgress" class="session-progress"></div>`;
 if(activeSavedSession){
 const saveButton=document.getElementById("saveSessionButton");
@@ -2778,14 +3274,6 @@ In STRICT FOCUS mode,
 every block is instructed and scored specifically for
 ${focusLabels[focus]}.
 </div>
-<button
-class="regen"
-onclick="buildPlan()">
-Give Me Another
-${time}-Minute
-${focusLabels[focus]}
-Session
-</button>
 `;
 results.innerHTML=html;
 results.style.display="block";
@@ -2864,6 +3352,25 @@ r.free &&
 errors.push(
 `${f} missing free drill ${r.free}`
 );
+}
+}
+}
+for(const[focus,slots]of Object.entries(rankedPackVariants)){
+if(!focusResources[focus]){errors.push(`Ranked variants use unknown focus ${focus}`);continue;}
+for(const[slotKey,variants]of Object.entries(slots)){
+const slot=Number(slotKey);
+if(!Number.isInteger(slot)||slot<0||slot>4){errors.push(`${focus} has invalid ranked slot ${slotKey}`);continue;}
+for(const variant of variants){
+if(!packs[variant.pack]||!researchedPackProfiles[variant.pack])errors.push(`${focus} has unresearched pack ${variant.pack}`);
+const minLevel=variant.minLevel??researchedPackProfiles[variant.pack]?.minLevel??0;
+const maxLevel=variant.maxLevel??researchedPackProfiles[variant.pack]?.maxLevel??7;
+if(minLevel<0||maxLevel>7||minLevel>maxLevel)errors.push(`${focus}/${variant.pack} has invalid rank range`);
+}
+for(const rankKey of Object.keys(rankProfiles)){
+for(let rotation=0;rotation<=variants.length;rotation++){
+const selected=resourceAt(focus,slot,rankKey,rotation);
+if(!isResourceEligible(selected,rankKey))errors.push(`${focus}/${rankKey} selected an out-of-range pack`);
+}
 }
 }
 }
@@ -2954,7 +3461,7 @@ if(!profile[field]||profile[field].trim().length<20)errors.push(`Weak ${field} c
 }
 }
 if(Object.values(packRankCoaching).reduce((sum,r)=>sum+Object.keys(r).length,0)!==Object.keys(packs).length*ranks.length){
-errors.push("Pack coaching matrix is not 33 x 8.");
+errors.push("Pack coaching matrix does not cover every pack/rank pair.");
 }
 if(errors.length){
 console.error(
