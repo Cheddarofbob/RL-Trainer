@@ -1834,7 +1834,15 @@ platform_context:platformContext||null
 }
 });
 if(button){button.disabled=false;button.textContent="Send Feedback";}
-if(error){setFeedbackStatus(error.message,"error");return;}
+if(error){
+let message=error.message||"Could not send feedback. Please try again.";
+try{
+const details=await error.context?.json?.();
+if(typeof details?.error==="string"&&details.error.trim())message=details.error;
+}catch{}
+setFeedbackStatus(message,"error");
+return;
+}
 document.getElementById("feedbackMessage").value="";
 document.getElementById("feedbackRating").value="";
 updateFeedbackCharacterCount();
