@@ -76,9 +76,11 @@ async function verifyTurnstile(token: string, remoteIp: string | null) {
     method: "POST",
     body: form,
   });
-  const result = await response.json() as { success?: boolean; hostname?: string };
-  const expectedHostname = new URL(SITE_URL).hostname;
-  return Boolean(response.ok && result.success && result.hostname === expectedHostname);
+  const result = await response.json() as { success?: boolean };
+  // Cloudflare enforces the widget's hostname allowlist before issuing a
+  // valid token. Do not duplicate that check here: equivalent public origins
+  // (such as a configured www redirect) can otherwise be rejected locally.
+  return Boolean(response.ok && result.success);
 }
 
 Deno.serve(async (req) => {
