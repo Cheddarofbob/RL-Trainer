@@ -10,3 +10,7 @@
 -- through existing RLS. It only removes browser-side direct INSERT access.
 
 revoke insert on table public.feedback from anon, authenticated;
+
+-- Keep the vetted server-side submission path working. The service-role key
+-- remains confined to the Edge Function and is never available in browser code.
+grant insert on table public.feedback to service_role;
